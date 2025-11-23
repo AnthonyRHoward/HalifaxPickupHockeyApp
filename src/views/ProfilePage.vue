@@ -43,7 +43,11 @@
               <ion-item>
                 <ion-label>
                   <h2>Skill Level</h2>
-                  <p>{{ getSkillLevelDescription(authStore.userProfile.skillLevel) }}</p>
+                  <p>
+                    {{
+                      getSkillLevelDescription(authStore.userProfile.skillLevel)
+                    }}
+                  </p>
                 </ion-label>
               </ion-item>
               <ion-item>
@@ -62,11 +66,17 @@
           </ion-card-header>
           <ion-card-content>
             <ion-list>
-              <ion-radio-group :value="authStore.userProfile.skillLevel" @ionChange="updateSkillLevel">
+              <ion-radio-group
+                :value="authStore.userProfile.skillLevel"
+                @ionChange="updateSkillLevel"
+              >
                 <ion-item>
                   <ion-label class="skill-label">
                     <h2>Level 1</h2>
-                    <p>Basic skating ability but struggles with backward skating and crossovers</p>
+                    <p>
+                      Basic skating ability but struggles with backward skating
+                      and crossovers
+                    </p>
                   </ion-label>
                   <ion-radio slot="start" :value="1"></ion-radio>
                 </ion-item>
@@ -74,7 +84,10 @@
                 <ion-item>
                   <ion-label class="skill-label">
                     <h2>Level 3</h2>
-                    <p>A good mix of basic skills, decent knowledge of the game, and athletic ability</p>
+                    <p>
+                      A good mix of basic skills, decent knowledge of the game,
+                      and athletic ability
+                    </p>
                   </ion-label>
                   <ion-radio slot="start" :value="3"></ion-radio>
                 </ion-item>
@@ -82,7 +95,10 @@
                 <ion-item>
                   <ion-label class="skill-label">
                     <h2>Level 5</h2>
-                    <p>Advanced skills, strong physical shape, and a high understanding of the game</p>
+                    <p>
+                      Advanced skills, strong physical shape, and a high
+                      understanding of the game
+                    </p>
                   </ion-label>
                   <ion-radio slot="start" :value="5"></ion-radio>
                 </ion-item>
@@ -103,15 +119,30 @@
               <ion-item>
                 <ion-label>
                   <h2>Pass Type</h2>
-                  <p v-if="authStore.userProfile.passType === '5-game'">5 Game Pass</p>
-                  <p v-else-if="authStore.userProfile.passType === '10-game'">10 Game Pass</p>
-                  <p v-else-if="authStore.userProfile.passType === 'full-season'">Full Season Pass</p>
+                  <p v-if="authStore.userProfile.passType === '5-game'">
+                    5 Game Pass
+                  </p>
+                  <p v-else-if="authStore.userProfile.passType === '10-game'">
+                    10 Game Pass
+                  </p>
+                  <p
+                    v-else-if="authStore.userProfile.passType === 'full-season'"
+                  >
+                    Full Season Pass
+                  </p>
                 </ion-label>
               </ion-item>
               <ion-item v-if="authStore.userProfile.passType !== 'full-season'">
                 <ion-label>
                   <h2>Games Remaining</h2>
-                  <p :style="{ color: authStore.userProfile.passGamesRemaining === 0 ? 'var(--ion-color-danger)' : '' }">
+                  <p
+                    :style="{
+                      color:
+                        authStore.userProfile.passGamesRemaining === 0
+                          ? 'var(--ion-color-danger)'
+                          : '',
+                    }"
+                  >
                     {{ authStore.userProfile.passGamesRemaining }} games
                   </p>
                 </ion-label>
@@ -125,7 +156,9 @@
               <ion-item v-if="authStore.userProfile.passStartDate">
                 <ion-label>
                   <h2>Pass Start Date</h2>
-                  <p>{{ formatPassDate(authStore.userProfile.passStartDate) }}</p>
+                  <p>
+                    {{ formatPassDate(authStore.userProfile.passStartDate) }}
+                  </p>
                 </ion-label>
               </ion-item>
             </ion-list>
@@ -133,7 +166,9 @@
               <ion-item lines="none">
                 <ion-label class="ion-text-wrap">
                   <p style="color: var(--ion-color-medium)">
-                    You don't have a skate pass yet. Skate passes are available in 5-game, 10-game, or full-season options. Contact an administrator to purchase a pass.
+                    You don't have a skate pass yet. Skate passes are available
+                    in 5-game, 10-game, or full-season options. Contact an
+                    administrator to purchase a pass.
                   </p>
                 </ion-label>
               </ion-item>
@@ -144,49 +179,94 @@
         <ion-card>
           <ion-card-header>
             <ion-card-title>Regular Nights</ion-card-title>
-            <ion-card-subtitle>Contact an admin to modify your regular status</ion-card-subtitle>
+            <ion-card-subtitle
+              >Contact an admin to modify your regular status</ion-card-subtitle
+            >
           </ion-card-header>
           <ion-card-content>
             <ion-list>
               <ion-item>
-                <ion-label>Sunday 10:30 PM - Civic</ion-label>
-                <ion-badge :color="authStore.userProfile.regulars?.sunday_1030pm_civic ? 'success' : 'medium'">
-                  {{ authStore.userProfile.regulars?.sunday_1030pm_civic ? 'Regular' : 'Not Regular' }}
-                </ion-badge>
-              </ion-item>
-
-              <ion-item>
                 <ion-label>Monday 11:00 PM - Forum</ion-label>
-                <ion-badge :color="authStore.userProfile.regulars?.monday_11pm_forum ? 'success' : 'medium'">
-                  {{ authStore.userProfile.regulars?.monday_11pm_forum ? 'Regular' : 'Not Regular' }}
+                <ion-badge
+                  :color="
+                    authStore.userProfile.regulars?.monday_11pm_forum
+                      ? 'success'
+                      : 'medium'
+                  "
+                >
+                  {{
+                    authStore.userProfile.regulars?.monday_11pm_forum
+                      ? "Regular"
+                      : "Not Regular"
+                  }}
                 </ion-badge>
               </ion-item>
 
               <ion-item>
                 <ion-label>Tuesday 10:30 PM - Forum</ion-label>
-                <ion-badge :color="authStore.userProfile.regulars?.tuesday_1030pm_forum ? 'success' : 'medium'">
-                  {{ authStore.userProfile.regulars?.tuesday_1030pm_forum ? 'Regular' : 'Not Regular' }}
+                <ion-badge
+                  :color="
+                    authStore.userProfile.regulars?.tuesday_1030pm_forum
+                      ? 'success'
+                      : 'medium'
+                  "
+                >
+                  {{
+                    authStore.userProfile.regulars?.tuesday_1030pm_forum
+                      ? "Regular"
+                      : "Not Regular"
+                  }}
                 </ion-badge>
               </ion-item>
 
               <ion-item>
                 <ion-label>Thursday 10:30 PM - Civic</ion-label>
-                <ion-badge :color="authStore.userProfile.regulars?.thursday_1030pm_civic ? 'success' : 'medium'">
-                  {{ authStore.userProfile.regulars?.thursday_1030pm_civic ? 'Regular' : 'Not Regular' }}
+                <ion-badge
+                  :color="
+                    authStore.userProfile.regulars?.thursday_1030pm_civic
+                      ? 'success'
+                      : 'medium'
+                  "
+                >
+                  {{
+                    authStore.userProfile.regulars?.thursday_1030pm_civic
+                      ? "Regular"
+                      : "Not Regular"
+                  }}
                 </ion-badge>
               </ion-item>
 
               <ion-item>
                 <ion-label>Friday 10:30 PM - Forum</ion-label>
-                <ion-badge :color="authStore.userProfile.regulars?.friday_1030pm_forum ? 'success' : 'medium'">
-                  {{ authStore.userProfile.regulars?.friday_1030pm_forum ? 'Regular' : 'Not Regular' }}
+                <ion-badge
+                  :color="
+                    authStore.userProfile.regulars?.friday_1030pm_forum
+                      ? 'success'
+                      : 'medium'
+                  "
+                >
+                  {{
+                    authStore.userProfile.regulars?.friday_1030pm_forum
+                      ? "Regular"
+                      : "Not Regular"
+                  }}
                 </ion-badge>
               </ion-item>
 
               <ion-item>
                 <ion-label>Saturday 10:30 PM - Forum</ion-label>
-                <ion-badge :color="authStore.userProfile.regulars?.saturday_1030pm_forum ? 'success' : 'medium'">
-                  {{ authStore.userProfile.regulars?.saturday_1030pm_forum ? 'Regular' : 'Not Regular' }}
+                <ion-badge
+                  :color="
+                    authStore.userProfile.regulars?.saturday_1030pm_forum
+                      ? 'success'
+                      : 'medium'
+                  "
+                >
+                  {{
+                    authStore.userProfile.regulars?.saturday_1030pm_forum
+                      ? "Regular"
+                      : "Not Regular"
+                  }}
                 </ion-badge>
               </ion-item>
             </ion-list>
@@ -228,59 +308,59 @@ import {
   IonBadge,
   IonRadio,
   IonRadioGroup,
-  toastController
-} from '@ionic/vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
-import GameHistory from '@/components/GameHistory.vue'
+  toastController,
+} from "@ionic/vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
+import GameHistory from "@/components/GameHistory.vue";
 
-const router = useRouter()
-const authStore = useAuthStore()
+const router = useRouter();
+const authStore = useAuthStore();
 
 const getSkillLevelDescription = (level) => {
   const descriptions = {
-    1: 'Level 1 - Basic skating ability but struggles with backward skating and crossovers',
-    3: 'Level 3 - A good mix of basic skills, decent knowledge of the game, and athletic ability',
-    5: 'Level 5 - Advanced skills, strong physical shape, and a high understanding of the game'
-  }
-  return descriptions[level] || 'Not set'
-}
+    1: "Level 1 - Basic skating ability but struggles with backward skating and crossovers",
+    3: "Level 3 - A good mix of basic skills, decent knowledge of the game, and athletic ability",
+    5: "Level 5 - Advanced skills, strong physical shape, and a high understanding of the game",
+  };
+  return descriptions[level] || "Not set";
+};
 
 const updateSkillLevel = async (event) => {
-  const newLevel = event.detail.value
-  const result = await authStore.updateUserProfile({ skillLevel: newLevel })
+  const newLevel = event.detail.value;
+  const result = await authStore.updateUserProfile({ skillLevel: newLevel });
 
   const toast = await toastController.create({
-    message: result.success ? 'Skill level updated!' : 'Failed to update',
+    message: result.success ? "Skill level updated!" : "Failed to update",
     duration: 2000,
-    color: result.success ? 'success' : 'danger'
-  })
-  await toast.present()
-}
+    color: result.success ? "success" : "danger",
+  });
+  await toast.present();
+};
 
 const handleLogout = async () => {
-  const result = await authStore.logout()
+  const result = await authStore.logout();
 
   if (result.success) {
     const toast = await toastController.create({
-      message: 'Logged out successfully!',
+      message: "Logged out successfully!",
       duration: 2000,
-      color: 'success'
-    })
-    await toast.present()
-    router.push('/home')
+      color: "success",
+    });
+    await toast.present();
+    router.push("/home");
   }
-}
+};
 
 const formatPassDate = (dateString) => {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-}
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
 </script>
 
 <style scoped>

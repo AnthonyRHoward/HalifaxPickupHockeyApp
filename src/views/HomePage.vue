@@ -17,13 +17,19 @@
         <div class="cards-layout">
           <!-- Weekly Schedule -->
           <div class="schedule-section">
+            <h1>Welcome to Halifax Pickup Hockey</h1>
+
+            <div class="info-section">
+              <ion-text color="medium">
+                <p>
+                  <strong>NEW TO US?</strong> Email: <a href="mailto:halifaxpickuphockey@gmail.com">halifaxpickuphockey@gmail.com</a> for more info!
+                  <br></br><br></br>
+                  Check in begins at 8:00am for each skate, and is closed at 6:00pm, at which time we attempt to confirm spares.
+                </p>
+              </ion-text>
+            </div>
             <h2 class="section-title">Weekly Schedule</h2>
             <ion-list class="schedule-list">
-              <ion-item>
-                <ion-label>
-                  <p><span class="day-name">Sunday</span> - 10:30 PM - Civic</p>
-                </ion-label>
-              </ion-item>
               <ion-item>
                 <ion-label>
                   <p><span class="day-name">Monday</span> - 11:00 PM - Forum</p>
@@ -54,18 +60,7 @@
 
           <!-- Game Section -->
           <div class="game-section">
-            <h1>Welcome to Halifax Pickup Hockey</h1>
-
-            <div class="info-section">
-              <ion-text color="medium">
-                <p>
-                  Here is where players check in or out, for either paid subscription spots, or for the wait list. <br></br><br></br>
-                  <strong>NEW TO US?</strong> Email: <a href="mailto:halifaxpickuphockey@gmail.com">halifaxpickuphockey@gmail.com</a> for more info!
-                  <br></br><br></br>
-                  Check in begins at 8:00am for each skate, and is closed at 6:00pm, at which time we attempt to confirm spares.
-                </p>
-              </ion-text>
-            </div>
+            
 
             <div v-if="gameStore.currentGame">
               <h2 class="section-title">{{ getTodayGameTitle() }}</h2>
@@ -128,6 +123,7 @@
             <div v-else class="no-game">
               <ion-text color="medium">
                 <p>No game scheduled for today</p>
+                <p v-if="nextGameDate" class="next-game">Next game: {{ nextGameDate }}</p>
               </ion-text>
             </div>
           </div>
@@ -170,6 +166,51 @@ const balancedTeams = computed(() => {
     return null
   }
   return gameStore.balanceTeams(gameStore.currentGame.players)
+})
+
+const nextGameDate = computed(() => {
+  // Game days: Monday (1), Tuesday (2), Thursday (4), Friday (5), Saturday (6)
+  const gameDays = [1, 2, 4, 5, 6]
+  const today = new Date()
+  const currentDay = today.getDay()
+
+  // Find the next game day
+  let nextDay = null
+  let daysUntilNext = 0
+
+  // First, check if there's a game day later this week
+  for (let i = 1; i <= 7; i++) {
+    const checkDay = (currentDay + i) % 7
+    if (gameDays.includes(checkDay)) {
+      nextDay = checkDay
+      daysUntilNext = i
+      break
+    }
+  }
+
+  if (nextDay === null) return null
+
+  // Calculate the date of the next game
+  const nextDate = new Date(today)
+  nextDate.setDate(today.getDate() + daysUntilNext)
+
+  // Format the date
+  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+  const dayName = dayNames[nextDate.getDay()]
+  const monthName = monthNames[nextDate.getMonth()]
+  const date = nextDate.getDate()
+  const year = nextDate.getFullYear()
+
+  // Add ordinal suffix (st, nd, rd, th)
+  const getOrdinalSuffix = (n) => {
+    const s = ['th', 'st', 'nd', 'rd']
+    const v = n % 100
+    return s[(v - 20) % 10] || s[v] || s[0]
+  }
+
+  return `${dayName}, ${monthName} ${date}${getOrdinalSuffix(date)}, ${year}`
 })
 
 onMounted(async () => {
@@ -358,6 +399,12 @@ h1 {
   text-align: center;
   background: var(--ion-color-light);
   border-radius: 8px;
+}
+
+.no-game .next-game {
+  margin-top: 0.5rem;
+  font-weight: 600;
+  color: var(--ion-color-primary);
 }
 
 .waitlist-section {

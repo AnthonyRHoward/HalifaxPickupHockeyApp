@@ -143,7 +143,6 @@ export const useAuthStore = defineStore('auth', () => {
         position: userData.position || 'Forward',
         skillLevel: userData.skillLevel || 3,
         regulars: userData.regulars || {
-          'sunday_1030pm_civic': false,
           'monday_11pm_forum': false,
           'tuesday_1030pm_forum': false,
           'thursday_1030pm_civic': false,

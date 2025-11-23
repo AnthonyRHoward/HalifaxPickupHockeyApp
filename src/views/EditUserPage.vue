@@ -102,14 +102,6 @@
           </ion-card-header>
           <ion-card-content>
             <ion-item lines="none">
-              <ion-label>Sunday 10:30 PM - Civic</ion-label>
-              <ion-checkbox
-                slot="end"
-                v-model="user.regulars.sunday_1030pm_civic"
-              ></ion-checkbox>
-            </ion-item>
-
-            <ion-item lines="none">
               <ion-label>Monday 11:00 PM - Forum</ion-label>
               <ion-checkbox
                 slot="end"
@@ -157,13 +149,13 @@
             <ion-card-title>Permissions</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-              <ion-item>
-                <ion-label>
-                  <h2>Admin Access</h2>
-                  <p>Grant administrative privileges to this user</p>
-                </ion-label>
-                <ion-toggle slot="end" v-model="user.isAdmin"></ion-toggle>
-              </ion-item>
+            <ion-item>
+              <ion-label>
+                <h2>Admin Access</h2>
+                <p>Grant administrative privileges to this user</p>
+              </ion-label>
+              <ion-toggle slot="end" v-model="user.isAdmin"></ion-toggle>
+            </ion-item>
           </ion-card-content>
         </ion-card>
 
@@ -174,56 +166,56 @@
             <ion-card-subtitle>Manage user's skate pass</ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>
-              <ion-item>
-                <ion-label position="floating">Pass Type</ion-label>
-                <ion-select
-                  v-model="user.passType"
-                  interface="popover"
-                  @ionChange="handlePassTypeChange"
+            <ion-item>
+              <ion-label position="floating">Pass Type</ion-label>
+              <ion-select
+                v-model="user.passType"
+                interface="popover"
+                @ionChange="handlePassTypeChange"
+              >
+                <ion-select-option :value="null">No Pass</ion-select-option>
+                <ion-select-option value="5-game"
+                  >5 Game Pass</ion-select-option
                 >
-                  <ion-select-option :value="null">No Pass</ion-select-option>
-                  <ion-select-option value="5-game"
-                    >5 Game Pass</ion-select-option
-                  >
-                  <ion-select-option value="10-game"
-                    >10 Game Pass</ion-select-option
-                  >
-                  <ion-select-option value="full-season"
-                    >Full Season Pass</ion-select-option
-                  >
-                </ion-select>
-              </ion-item>
+                <ion-select-option value="10-game"
+                  >10 Game Pass</ion-select-option
+                >
+                <ion-select-option value="full-season"
+                  >Full Season Pass</ion-select-option
+                >
+              </ion-select>
+            </ion-item>
 
-              <ion-item v-if="user.passType && user.passType !== 'full-season'">
-                <ion-label position="floating">Games Remaining</ion-label>
-                <ion-input
-                  v-model.number="user.passGamesRemaining"
-                  type="number"
-                  min="0"
-                ></ion-input>
-              </ion-item>
+            <ion-item v-if="user.passType && user.passType !== 'full-season'">
+              <ion-label position="floating">Games Remaining</ion-label>
+              <ion-input
+                v-model.number="user.passGamesRemaining"
+                type="number"
+                min="0"
+              ></ion-input>
+            </ion-item>
 
-              <ion-item v-if="user.passType">
-                <ion-label>
-                  <h2>Pass Status</h2>
-                  <p v-if="user.passType === 'full-season'">
-                    Full Season - Unlimited Games
-                  </p>
-                  <p v-else-if="user.passGamesRemaining > 0">
-                    {{ user.passGamesRemaining }} games remaining
-                  </p>
-                  <p v-else style="color: var(--ion-color-danger)">
-                    Pass expired - 0 games remaining
-                  </p>
-                </ion-label>
-              </ion-item>
+            <ion-item v-if="user.passType">
+              <ion-label>
+                <h2>Pass Status</h2>
+                <p v-if="user.passType === 'full-season'">
+                  Full Season - Unlimited Games
+                </p>
+                <p v-else-if="user.passGamesRemaining > 0">
+                  {{ user.passGamesRemaining }} games remaining
+                </p>
+                <p v-else style="color: var(--ion-color-danger)">
+                  Pass expired - 0 games remaining
+                </p>
+              </ion-label>
+            </ion-item>
 
-              <ion-item v-if="user.passStartDate">
-                <ion-label>
-                  <h2>Pass Start Date</h2>
-                  <p>{{ formatDate(user.passStartDate) }}</p>
-                </ion-label>
-              </ion-item>
+            <ion-item v-if="user.passStartDate">
+              <ion-label>
+                <h2>Pass Start Date</h2>
+                <p>{{ formatDate(user.passStartDate) }}</p>
+              </ion-label>
+            </ion-item>
           </ion-card-content>
         </ion-card>
 

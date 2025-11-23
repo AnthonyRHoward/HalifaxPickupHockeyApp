@@ -24,7 +24,6 @@ export const useGameStore = defineStore('game', () => {
   let unsubscribeGame = null
 
   const GAME_SCHEDULES = {
-    sunday_1030pm_civic: { day: 0, time: '22:30', venue: 'Civic' },
     monday_11pm_forum: { day: 1, time: '23:00', venue: 'Forum' },
     tuesday_1030pm_forum: { day: 2, time: '22:30', venue: 'Forum' },
     thursday_1030pm_civic: { day: 4, time: '22:30', venue: 'Civic' },
