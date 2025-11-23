@@ -2,158 +2,134 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <div slot="start" class="logo-container">
-          <img src="/Halifax-Pickup-Hockey.png" alt="Halifax Pickup Hockey Logo" class="header-logo" />
-        </div>
-        <ion-title>Halifax Pickup Hockey</ion-title>
-        <ion-buttons slot="end">
-          <ion-button @click="router.push('/about')">
-            About
-          </ion-button>
-          <ion-button v-if="authStore.isAdmin" @click="router.push('/admin')">
-            Admin
-          </ion-button>
-          <ion-button v-if="!authStore.isAuthenticated" @click="router.push('/login')">
-            Login
-          </ion-button>
-          <ion-button v-else @click="router.push('/profile')">
-            Profile
-          </ion-button>
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
         </ion-buttons>
+        <div class="header-content">
+          <img src="/Halifax-Pickup-Hockey.png" alt="Halifax Pickup Hockey Logo" class="header-logo" />
+          <ion-title>Halifax Pickup Hockey</ion-title>
+        </div>
       </ion-toolbar>
     </ion-header>
 
     <ion-content class="ion-padding">
       <div class="content-container">
-        <h1>Welcome to Halifax Pickup Hockey</h1>
-
-        <div class="info-section">
-          <ion-text color="medium">
-            <p>
-              Here is where players check in or out, for either paid subscription spots, or for the wait list. <br></br><br></br>
-              <strong>NEW TO US?</strong> Email: <a href="mailto:halifaxpickuphockey@gmail.com">halifaxpickuphockey@gmail.com</a> for more info!
-              <br></br><br></br>
-              Check in begins at 8:00am for each skate, and is closed at 6:00pm, at which time we attempt to confirm spares.
-            </p>
-          </ion-text>
-        </div>
-
         <div class="cards-layout">
-          <ion-card class="schedule-card">
-            <ion-card-header>
-              <ion-card-title>Weekly Schedule</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              <ion-list>
-                <ion-item>
-                  <ion-label>
-                    <h2>Sunday</h2>
-                    <p>10:30 PM - Civic</p>
-                  </ion-label>
-                </ion-item>
-                <ion-item>
-                  <ion-label>
-                    <h2>Monday</h2>
-                    <p>11:00 PM - Forum</p>
-                  </ion-label>
-                </ion-item>
-                <ion-item>
-                  <ion-label>
-                    <h2>Tuesday</h2>
-                    <p>10:30 PM - Forum</p>
-                  </ion-label>
-                </ion-item>
-                <ion-item>
-                  <ion-label>
-                    <h2>Thursday</h2>
-                    <p>10:30 PM - Civic</p>
-                  </ion-label>
-                </ion-item>
-                <ion-item>
-                  <ion-label>
-                    <h2>Friday</h2>
-                    <p>10:30 PM - Forum</p>
-                  </ion-label>
-                </ion-item>
-                <ion-item>
-                  <ion-label>
-                    <h2>Saturday</h2>
-                    <p>10:30 PM - Forum</p>
-                  </ion-label>
-                </ion-item>
-              </ion-list>
-            </ion-card-content>
-          </ion-card>
+          <!-- Weekly Schedule -->
+          <div class="schedule-section">
+            <h2 class="section-title">Weekly Schedule</h2>
+            <ion-list class="schedule-list">
+              <ion-item>
+                <ion-label>
+                  <p><span class="day-name">Sunday</span> - 10:30 PM - Civic</p>
+                </ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>
+                  <p><span class="day-name">Monday</span> - 11:00 PM - Forum</p>
+                </ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>
+                  <p><span class="day-name">Tuesday</span> - 10:30 PM - Forum</p>
+                </ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>
+                  <p><span class="day-name">Thursday</span> - 10:30 PM - Civic</p>
+                </ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>
+                  <p><span class="day-name">Friday</span> - 10:30 PM - Forum</p>
+                </ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>
+                  <p><span class="day-name">Saturday</span> - 10:30 PM - Forum</p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </div>
 
+          <!-- Game Section -->
           <div class="game-section">
-            <ion-card v-if="gameStore.currentGame">
-              <ion-card-header>
-                <ion-card-title>{{ getTodayGameTitle() }}</ion-card-title>
-                <ion-card-subtitle>{{ gameStore.currentGame.venue }} - {{ formatTime(gameStore.currentGame.time) }}</ion-card-subtitle>
-              </ion-card-header>
+            <h1>Welcome to Halifax Pickup Hockey</h1>
 
-              <ion-card-content>
-                <div v-if="!authStore.isAuthenticated" class="auth-notice">
-                  <ion-text color="warning">
-                    <p>Please <a @click="router.push('/login')">login</a> to check in for tonight's game</p>
-                  </ion-text>
-                </div>
+            <div class="info-section">
+              <ion-text color="medium">
+                <p>
+                  Here is where players check in or out, for either paid subscription spots, or for the wait list. <br></br><br></br>
+                  <strong>NEW TO US?</strong> Email: <a href="mailto:halifaxpickuphockey@gmail.com">halifaxpickuphockey@gmail.com</a> for more info!
+                  <br></br><br></br>
+                  Check in begins at 8:00am for each skate, and is closed at 6:00pm, at which time we attempt to confirm spares.
+                </p>
+              </ion-text>
+            </div>
 
-                <div v-else-if="!gameStore.isCheckInAllowed()" class="time-restriction">
-                  <ion-text color="danger">
-                    <p>Check-in is only available between 8:00 AM and 6:00 PM</p>
-                  </ion-text>
-                </div>
+            <div v-if="gameStore.currentGame">
+              <h2 class="section-title">{{ getTodayGameTitle() }}</h2>
+              <p class="game-info">{{ gameStore.currentGame.venue }} - {{ formatTime(gameStore.currentGame.time) }}</p>
 
-                <div v-else>
-                  <ion-button
-                    v-if="!gameStore.userCheckedIn"
-                    @click="handleCheckIn"
-                    expand="block"
-                    :disabled="loading"
-                  >
-                    <ion-spinner v-if="loading" />
-                    <span v-else>Check In</span>
-                  </ion-button>
-
-                  <ion-button
-                    v-else
-                    @click="handleCheckOut"
-                    expand="block"
-                    color="danger"
-                    :disabled="loading"
-                  >
-                    <ion-spinner v-if="loading" />
-                    <span v-else>Check Out</span>
-                  </ion-button>
-                </div>
-
-                <TeamRoster v-if="balancedTeams" :darkTeam="balancedTeams.darkTeam" :lightTeam="balancedTeams.lightTeam" />
-
-                <div class="waitlist-section">
-                  <h3>Waitlist ({{ gameStore.currentGame.waitlist?.length || 0 }})</h3>
-                  <ion-list>
-                    <ion-item v-for="player in gameStore.currentGame.waitlist" :key="player.uid">
-                      <ion-label>
-                        <h2>{{ player.name }}</h2>
-                        <p>{{ player.position }} - Skill Level {{ player.skillLevel || 3 }}</p>
-                      </ion-label>
-                    </ion-item>
-                    <ion-item v-if="!gameStore.currentGame.waitlist?.length">
-                      <ion-label color="medium">No players on waitlist</ion-label>
-                    </ion-item>
-                  </ion-list>
-                </div>
-              </ion-card-content>
-            </ion-card>
-
-            <ion-card v-else>
-              <ion-card-content>
-                <ion-text color="medium">
-                  <p>No game scheduled for today</p>
+              <div v-if="!authStore.isAuthenticated" class="auth-notice">
+                <ion-text color="warning">
+                  <p>Please <a @click="router.push('/login')">login</a> to check in for tonight's game</p>
                 </ion-text>
-              </ion-card-content>
-            </ion-card>
+              </div>
+
+              <div v-else-if="!gameStore.isCheckInAllowed()" class="time-restriction">
+                <ion-text color="danger">
+                  <p>Check-in is only available between 8:00 AM and 6:00 PM</p>
+                </ion-text>
+              </div>
+
+              <div v-else class="check-in-buttons">
+                <ion-button
+                  v-if="!gameStore.userCheckedIn"
+                  @click="handleCheckIn"
+                  expand="block"
+                  :disabled="loading"
+                >
+                  <ion-spinner v-if="loading" />
+                  <span v-else>Check In</span>
+                </ion-button>
+
+                <ion-button
+                  v-else
+                  @click="handleCheckOut"
+                  expand="block"
+                  color="danger"
+                  :disabled="loading"
+                >
+                  <ion-spinner v-if="loading" />
+                  <span v-else>Check Out</span>
+                </ion-button>
+              </div>
+
+              <TeamRoster v-if="balancedTeams" :darkTeam="balancedTeams.darkTeam" :lightTeam="balancedTeams.lightTeam" />
+
+              <div class="waitlist-section">
+                <h3>Waitlist ({{ gameStore.currentGame.waitlist?.length || 0 }})</h3>
+                <ion-list>
+                  <ion-item v-for="(player, index) in gameStore.currentGame.waitlist" :key="player.uid">
+                    <div slot="start" class="waitlist-number">{{ index + 1 }}</div>
+                    <ion-label>
+                      <p><span class="player-name">{{ player.name }}</span> - {{ player.position }} - Skill Level {{ player.skillLevel || 3 }}</p>
+                    </ion-label>
+                    <div slot="end" class="waitlist-time">{{ formatCheckInTime(player.checkedInAt) }}</div>
+                  </ion-item>
+                  <ion-item v-if="!gameStore.currentGame.waitlist?.length">
+                    <ion-label color="medium">No players on waitlist</ion-label>
+                  </ion-item>
+                </ion-list>
+              </div>
+            </div>
+
+            <div v-else class="no-game">
+              <ion-text color="medium">
+                <p>No game scheduled for today</p>
+              </ion-text>
+            </div>
           </div>
         </div>
       </div>
@@ -168,11 +144,6 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardSubtitle,
-  IonCardContent,
   IonButton,
   IonButtons,
   IonList,
@@ -180,6 +151,7 @@ import {
   IonLabel,
   IonText,
   IonSpinner,
+  IonMenuButton,
   toastController
 } from '@ionic/vue'
 import { onMounted, ref, computed } from 'vue'
@@ -218,6 +190,16 @@ const formatTime = (time) => {
   return `${displayHour}:${minutes} ${ampm}`
 }
 
+const formatCheckInTime = (timestamp) => {
+  if (!timestamp) return ''
+  const date = new Date(timestamp)
+  return date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  })
+}
+
 const handleCheckIn = async () => {
   loading.value = true
   const result = await gameStore.checkIn()
@@ -250,14 +232,15 @@ const handleCheckOut = async () => {
 </script>
 
 <style scoped>
-.logo-container {
+.header-content {
   display: flex;
   align-items: center;
-  padding-left: 0.5rem;
+  gap: 0.75rem;
+  flex: 1;
 }
 
 .header-logo {
-  height: 40px;
+  height: 36px;
   width: auto;
   object-fit: contain;
 }
@@ -266,11 +249,13 @@ const handleCheckOut = async () => {
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
+  padding: 0;
 }
 
 h1 {
   text-align: center;
   margin-bottom: 1rem;
+  margin-top: 0;
 }
 
 .info-section {
@@ -278,6 +263,21 @@ h1 {
   max-width: 800px;
   margin: 0 auto 2rem auto;
   padding: 1rem;
+}
+
+/* Mobile-first: h1 and info centered */
+/* On desktop, when inside game-section, keep centered but with better spacing */
+@media (min-width: 768px) {
+  .game-section h1 {
+    text-align: left;
+    margin-bottom: 0.5rem;
+  }
+
+  .game-section .info-section {
+    text-align: left;
+    margin: 0 0 2rem 0;
+    padding: 0;
+  }
 }
 
 .info-section p {
@@ -297,22 +297,54 @@ h1 {
 .cards-layout {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
   width: 100%;
 }
 
-.schedule-card {
-  width: 100%;
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--ion-color-primary);
 }
 
+.schedule-section,
 .game-section {
   width: 100%;
-  flex: 1;
+}
+
+.schedule-list {
+  background: var(--ion-card-background, #fff);
+  border-radius: 8px;
+  padding: 0;
+  margin: 0;
+}
+
+.schedule-list ion-label p {
+  color: #ffffff;
+}
+
+.schedule-list .day-name {
+  color: var(--ion-color-primary);
+  font-weight: 600;
+}
+
+.game-info {
+  color: var(--ion-color-medium);
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.check-in-buttons {
+  margin: 1rem 0;
 }
 
 .auth-notice,
 .time-restriction {
-  margin-bottom: 1rem;
+  margin: 1rem 0;
+  padding: 0.75rem;
+  background: var(--ion-color-light);
+  border-radius: 8px;
 }
 
 .auth-notice a {
@@ -321,12 +353,48 @@ h1 {
   text-decoration: underline;
 }
 
+.no-game {
+  padding: 2rem;
+  text-align: center;
+  background: var(--ion-color-light);
+  border-radius: 8px;
+}
+
 .waitlist-section {
   margin-top: 2rem;
 }
 
 .waitlist-section h3 {
   margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.waitlist-section ion-list {
+  background: var(--ion-card-background, #fff);
+  border-radius: 8px;
+}
+
+.waitlist-section ion-label p {
+  color: #ffffff;
+}
+
+.waitlist-section .player-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.waitlist-number {
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 700;
+  min-width: 30px;
+  text-align: center;
+}
+
+.waitlist-time {
+  color: var(--ion-color-medium);
+  font-size: 0.85rem;
+  white-space: nowrap;
 }
 
 /* Tablet and larger screens */
@@ -334,10 +402,11 @@ h1 {
   .cards-layout {
     flex-direction: row;
     align-items: flex-start;
+    gap: 2rem;
   }
 
-  .schedule-card {
-    flex: 0 0 320px;
+  .schedule-section {
+    flex: 0 0 300px;
     position: sticky;
     top: 1rem;
   }
@@ -350,8 +419,8 @@ h1 {
 
 /* Desktop screens */
 @media (min-width: 1200px) {
-  .schedule-card {
-    flex: 0 0 380px;
+  .schedule-section {
+    flex: 0 0 350px;
   }
 }
 </style>

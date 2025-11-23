@@ -19,31 +19,32 @@
             <ion-card-title>Basic Information</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <ion-list lines="none">
-              <ion-item>
-                <ion-label position="floating">Name</ion-label>
-                <ion-input v-model="user.name"></ion-input>
-              </ion-item>
+            <ion-item lines="none">
+              <ion-label position="floating">Name</ion-label>
+              <ion-input v-model="user.name"></ion-input>
+            </ion-item>
 
-              <ion-item>
-                <ion-label position="floating">Email</ion-label>
-                <ion-input v-model="user.email" type="email"></ion-input>
-              </ion-item>
+            <ion-item lines="none">
+              <ion-label position="floating">Email</ion-label>
+              <ion-input v-model="user.email" type="email"></ion-input>
+            </ion-item>
 
-              <ion-item>
-                <ion-label position="floating">Position</ion-label>
-                <ion-select v-model="user.position" interface="popover">
-                  <ion-select-option value="Forward">Forward</ion-select-option>
-                  <ion-select-option value="Defense">Defense</ion-select-option>
-                  <ion-select-option value="Goalie">Goalie</ion-select-option>
-                </ion-select>
-              </ion-item>
+            <ion-item lines="none">
+              <ion-label position="floating">Position</ion-label>
+              <ion-select v-model="user.position" interface="popover">
+                <ion-select-option value="Forward">Forward</ion-select-option>
+                <ion-select-option value="Defense">Defense</ion-select-option>
+                <ion-select-option value="Goalie">Goalie</ion-select-option>
+              </ion-select>
+            </ion-item>
 
-              <ion-item>
-                <ion-label position="floating">Games Played</ion-label>
-                <ion-input v-model.number="user.gamesPlayed" type="number"></ion-input>
-              </ion-item>
-            </ion-list>
+            <ion-item lines="none">
+              <ion-label position="floating">Games Played</ion-label>
+              <ion-input
+                v-model.number="user.gamesPlayed"
+                type="number"
+              ></ion-input>
+            </ion-item>
           </ion-card-content>
         </ion-card>
 
@@ -57,25 +58,34 @@
               <ion-item lines="none">
                 <ion-label class="skill-label">
                   <h2>Level 1</h2>
-                  <p>Basic skating ability but struggles with backward skating and crossovers</p>
+                  <p>
+                    Basic skating ability but struggles with backward skating
+                    and crossovers
+                  </p>
                 </ion-label>
-                <ion-radio slot="start" :value="1"></ion-radio>
+                <ion-radio slot="end" :value="1"></ion-radio>
               </ion-item>
 
               <ion-item lines="none">
                 <ion-label class="skill-label">
                   <h2>Level 3</h2>
-                  <p>A good mix of basic skills, decent knowledge of the game, and athletic ability</p>
+                  <p>
+                    A good mix of basic skills, decent knowledge of the game,
+                    and athletic ability
+                  </p>
                 </ion-label>
-                <ion-radio slot="start" :value="3"></ion-radio>
+                <ion-radio slot="end" :value="3"></ion-radio>
               </ion-item>
 
               <ion-item lines="none">
                 <ion-label class="skill-label">
                   <h2>Level 5</h2>
-                  <p>Advanced skills, strong physical shape, and a high understanding of the game</p>
+                  <p>
+                    Advanced skills, strong physical shape, and a high
+                    understanding of the game
+                  </p>
                 </ion-label>
-                <ion-radio slot="start" :value="5"></ion-radio>
+                <ion-radio slot="end" :value="5"></ion-radio>
               </ion-item>
             </ion-radio-group>
           </ion-card-content>
@@ -85,40 +95,59 @@
         <ion-card>
           <ion-card-header>
             <ion-card-title>Regular Nights</ion-card-title>
-            <ion-card-subtitle>Select which nights this player regularly attends</ion-card-subtitle>
+            <ion-card-subtitle
+              >Select which nights this player regularly
+              attends</ion-card-subtitle
+            >
           </ion-card-header>
           <ion-card-content>
-            <ion-list lines="none">
-              <ion-item>
-                <ion-label>Sunday 10:30 PM - Civic</ion-label>
-                <ion-checkbox v-model="user.regulars.sunday_1030pm_civic"></ion-checkbox>
-              </ion-item>
+            <ion-item lines="none">
+              <ion-label>Sunday 10:30 PM - Civic</ion-label>
+              <ion-checkbox
+                slot="end"
+                v-model="user.regulars.sunday_1030pm_civic"
+              ></ion-checkbox>
+            </ion-item>
 
-              <ion-item>
-                <ion-label>Monday 11:00 PM - Forum</ion-label>
-                <ion-checkbox v-model="user.regulars.monday_11pm_forum"></ion-checkbox>
-              </ion-item>
+            <ion-item lines="none">
+              <ion-label>Monday 11:00 PM - Forum</ion-label>
+              <ion-checkbox
+                slot="end"
+                v-model="user.regulars.monday_11pm_forum"
+              ></ion-checkbox>
+            </ion-item>
 
-              <ion-item>
-                <ion-label>Tuesday 10:30 PM - Forum</ion-label>
-                <ion-checkbox v-model="user.regulars.tuesday_1030pm_forum"></ion-checkbox>
-              </ion-item>
+            <ion-item lines="none">
+              <ion-label>Tuesday 10:30 PM - Forum</ion-label>
+              <ion-checkbox
+                slot="end"
+                v-model="user.regulars.tuesday_1030pm_forum"
+              ></ion-checkbox>
+            </ion-item>
 
-              <ion-item>
-                <ion-label>Thursday 10:30 PM - Civic</ion-label>
-                <ion-checkbox v-model="user.regulars.thursday_1030pm_civic"></ion-checkbox>
-              </ion-item>
+            <ion-item lines="none">
+              <ion-label>Thursday 10:30 PM - Civic</ion-label>
+              <ion-checkbox
+                slot="end"
+                v-model="user.regulars.thursday_1030pm_civic"
+              ></ion-checkbox>
+            </ion-item>
 
-              <ion-item>
-                <ion-label>Friday 10:30 PM - Forum</ion-label>
-                <ion-checkbox v-model="user.regulars.friday_1030pm_forum"></ion-checkbox>
-              </ion-item>
+            <ion-item lines="none">
+              <ion-label>Friday 10:30 PM - Forum</ion-label>
+              <ion-checkbox
+                slot="end"
+                v-model="user.regulars.friday_1030pm_forum"
+              ></ion-checkbox>
+            </ion-item>
 
-              <ion-item>
-                <ion-label>Saturday 10:30 PM - Forum</ion-label>
-                <ion-checkbox v-model="user.regulars.saturday_1030pm_forum"></ion-checkbox>
-              </ion-item>
-            </ion-list>
+            <ion-item lines="none">
+              <ion-label>Saturday 10:30 PM - Forum</ion-label>
+              <ion-checkbox
+                slot="end"
+                v-model="user.regulars.saturday_1030pm_forum"
+              ></ion-checkbox>
+            </ion-item>
           </ion-card-content>
         </ion-card>
 
@@ -128,15 +157,13 @@
             <ion-card-title>Permissions</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <ion-list lines="none">
               <ion-item>
                 <ion-label>
                   <h2>Admin Access</h2>
                   <p>Grant administrative privileges to this user</p>
                 </ion-label>
-                <ion-toggle v-model="user.isAdmin"></ion-toggle>
+                <ion-toggle slot="end" v-model="user.isAdmin"></ion-toggle>
               </ion-item>
-            </ion-list>
           </ion-card-content>
         </ion-card>
 
@@ -147,28 +174,47 @@
             <ion-card-subtitle>Manage user's skate pass</ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>
-            <ion-list lines="none">
               <ion-item>
                 <ion-label position="floating">Pass Type</ion-label>
-                <ion-select v-model="user.passType" interface="popover" @ionChange="handlePassTypeChange">
+                <ion-select
+                  v-model="user.passType"
+                  interface="popover"
+                  @ionChange="handlePassTypeChange"
+                >
                   <ion-select-option :value="null">No Pass</ion-select-option>
-                  <ion-select-option value="5-game">5 Game Pass</ion-select-option>
-                  <ion-select-option value="10-game">10 Game Pass</ion-select-option>
-                  <ion-select-option value="full-season">Full Season Pass</ion-select-option>
+                  <ion-select-option value="5-game"
+                    >5 Game Pass</ion-select-option
+                  >
+                  <ion-select-option value="10-game"
+                    >10 Game Pass</ion-select-option
+                  >
+                  <ion-select-option value="full-season"
+                    >Full Season Pass</ion-select-option
+                  >
                 </ion-select>
               </ion-item>
 
               <ion-item v-if="user.passType && user.passType !== 'full-season'">
                 <ion-label position="floating">Games Remaining</ion-label>
-                <ion-input v-model.number="user.passGamesRemaining" type="number" min="0"></ion-input>
+                <ion-input
+                  v-model.number="user.passGamesRemaining"
+                  type="number"
+                  min="0"
+                ></ion-input>
               </ion-item>
 
               <ion-item v-if="user.passType">
                 <ion-label>
                   <h2>Pass Status</h2>
-                  <p v-if="user.passType === 'full-season'">Full Season - Unlimited Games</p>
-                  <p v-else-if="user.passGamesRemaining > 0">{{ user.passGamesRemaining }} games remaining</p>
-                  <p v-else style="color: var(--ion-color-danger)">Pass expired - 0 games remaining</p>
+                  <p v-if="user.passType === 'full-season'">
+                    Full Season - Unlimited Games
+                  </p>
+                  <p v-else-if="user.passGamesRemaining > 0">
+                    {{ user.passGamesRemaining }} games remaining
+                  </p>
+                  <p v-else style="color: var(--ion-color-danger)">
+                    Pass expired - 0 games remaining
+                  </p>
                 </ion-label>
               </ion-item>
 
@@ -178,17 +224,27 @@
                   <p>{{ formatDate(user.passStartDate) }}</p>
                 </ion-label>
               </ion-item>
-            </ion-list>
           </ion-card-content>
         </ion-card>
 
         <!-- Action Buttons -->
         <div class="button-group">
-          <ion-button expand="block" @click="saveUserChanges" color="primary" size="large">
+          <ion-button
+            expand="block"
+            @click="saveUserChanges"
+            color="primary"
+            size="large"
+          >
             <ion-icon :icon="saveOutline" slot="start"></ion-icon>
             Save Changes
           </ion-button>
-          <ion-button expand="block" @click="router.push('/admin')" fill="outline" size="large" color="medium">
+          <ion-button
+            expand="block"
+            @click="router.push('/admin')"
+            fill="outline"
+            size="large"
+            color="medium"
+          >
             Cancel
           </ion-button>
         </div>
@@ -216,7 +272,6 @@ import {
   IonCardTitle,
   IonCardSubtitle,
   IonCardContent,
-  IonList,
   IonItem,
   IonLabel,
   IonInput,
@@ -228,29 +283,29 @@ import {
   IonToggle,
   IonIcon,
   IonSpinner,
-  toastController
-} from '@ionic/vue'
-import { saveOutline } from 'ionicons/icons'
-import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { useAdminStore } from '@/stores/admin'
+  toastController,
+} from "@ionic/vue";
+import { saveOutline } from "ionicons/icons";
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useAdminStore } from "@/stores/admin";
 
-const route = useRoute()
-const router = useRouter()
-const adminStore = useAdminStore()
+const route = useRoute();
+const router = useRouter();
+const adminStore = useAdminStore();
 
-const user = ref(null)
+const user = ref(null);
 
 onMounted(async () => {
-  const userId = route.params.userId
+  const userId = route.params.userId;
 
   // Try to find user in already loaded users
-  let foundUser = adminStore.allUsers.find(u => u.id === userId)
+  let foundUser = adminStore.allUsers.find((u) => u.id === userId);
 
   // If not found, load all users
   if (!foundUser) {
-    await adminStore.loadAllUsers()
-    foundUser = adminStore.allUsers.find(u => u.id === userId)
+    await adminStore.loadAllUsers();
+    foundUser = adminStore.allUsers.find((u) => u.id === userId);
   }
 
   if (foundUser) {
@@ -260,39 +315,39 @@ onMounted(async () => {
       regulars: { ...foundUser.regulars },
       passType: foundUser.passType || null,
       passGamesRemaining: foundUser.passGamesRemaining || 0,
-      passStartDate: foundUser.passStartDate || null
-    }
+      passStartDate: foundUser.passStartDate || null,
+    };
   } else {
     const toast = await toastController.create({
-      message: 'User not found',
+      message: "User not found",
       duration: 2000,
-      color: 'danger'
-    })
-    await toast.present()
-    router.push('/admin')
+      color: "danger",
+    });
+    await toast.present();
+    router.push("/admin");
   }
-})
+});
 
 const handlePassTypeChange = (event) => {
-  const newPassType = event.detail.value
+  const newPassType = event.detail.value;
 
-  if (newPassType === '5-game') {
-    user.value.passGamesRemaining = 5
-    user.value.passStartDate = new Date().toISOString()
-  } else if (newPassType === '10-game') {
-    user.value.passGamesRemaining = 10
-    user.value.passStartDate = new Date().toISOString()
-  } else if (newPassType === 'full-season') {
-    user.value.passGamesRemaining = 0
-    user.value.passStartDate = new Date().toISOString()
+  if (newPassType === "5-game") {
+    user.value.passGamesRemaining = 5;
+    user.value.passStartDate = new Date().toISOString();
+  } else if (newPassType === "10-game") {
+    user.value.passGamesRemaining = 10;
+    user.value.passStartDate = new Date().toISOString();
+  } else if (newPassType === "full-season") {
+    user.value.passGamesRemaining = 0;
+    user.value.passStartDate = new Date().toISOString();
   } else {
-    user.value.passGamesRemaining = 0
-    user.value.passStartDate = null
+    user.value.passGamesRemaining = 0;
+    user.value.passStartDate = null;
   }
-}
+};
 
 const saveUserChanges = async () => {
-  if (!user.value) return
+  if (!user.value) return;
 
   const result = await adminStore.updateUser(user.value.id, {
     name: user.value.name,
@@ -304,30 +359,30 @@ const saveUserChanges = async () => {
     isAdmin: user.value.isAdmin,
     passType: user.value.passType,
     passGamesRemaining: user.value.passGamesRemaining,
-    passStartDate: user.value.passStartDate
-  })
+    passStartDate: user.value.passStartDate,
+  });
 
   const toast = await toastController.create({
-    message: result.success ? 'User updated successfully!' : result.error,
+    message: result.success ? "User updated successfully!" : result.error,
     duration: 2000,
-    color: result.success ? 'success' : 'danger'
-  })
-  await toast.present()
+    color: result.success ? "success" : "danger",
+  });
+  await toast.present();
 
   if (result.success) {
-    router.push('/admin')
+    router.push("/admin");
   }
-}
+};
 
 const formatDate = (dateString) => {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-}
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
 </script>
 
 <style scoped>

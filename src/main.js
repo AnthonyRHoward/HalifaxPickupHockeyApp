@@ -26,10 +26,22 @@ app.use(pinia)
 app.use(IonicVue)
 app.use(router)
 
-// Initialize auth before mounting
+// Global error handler for debugging
+app.config.errorHandler = (err, instance, info) => {
+  console.error('Vue Error:', err)
+  console.error('Error Info:', info)
+}
+
+// Initialize auth before mounting, with error handling
 const authStore = useAuthStore()
-authStore.initAuth().then(() => {
-  router.isReady().then(() => {
-    app.mount('#app')
+authStore.initAuth()
+  .catch(error => {
+    console.error('Auth initialization error:', error)
   })
-})
+  .finally(() => {
+    router.isReady().then(() => {
+      console.log('Mounting app...')
+      app.mount('#app')
+      console.log('App mounted successfully')
+    })
+  })

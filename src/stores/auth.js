@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { Capacitor } from '@capacitor/core'
+import { FirebaseAuthentication } from '@capacitor-firebase/authentication'
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -8,6 +10,8 @@ import {
 } from 'firebase/auth'
 import { doc, setDoc, getDoc, onSnapshot } from 'firebase/firestore'
 import { auth, db } from '@/config/firebase'
+
+const isNative = Capacitor.isNativePlatform()
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(null)
@@ -18,23 +22,50 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = computed(() => !!user.value)
   const isAdmin = computed(() => userProfile.value?.isAdmin || false)
 
-  const initAuth = () => {
-    return new Promise((resolve) => {
-      onAuthStateChanged(auth, async (firebaseUser) => {
-        if (firebaseUser) {
-          user.value = firebaseUser
-          await loadUserProfile(firebaseUser.uid)
-        } else {
-          user.value = null
-          userProfile.value = null
+  const initAuth = async () => {
+    if (isNative) {
+      // For native platforms, get current user and set up listener
+      try {
+        const result = await FirebaseAuthentication.getCurrentUser()
+        if (result.user) {
+          user.value = result.user
+          await loadUserProfile(result.user.uid)
         }
-        loading.value = false
-        resolve(firebaseUser)
+
+        // Listen for auth state changes on native
+        FirebaseAuthentication.addListener('authStateChange', async (change) => {
+          if (change.user) {
+            user.value = change.user
+            await loadUserProfile(change.user.uid)
+          } else {
+            user.value = null
+            userProfile.value = null
+          }
+        })
+      } catch (error) {
+        console.error('Native auth init error:', error)
+      }
+      loading.value = false
+    } else {
+      // Web platform - use Firebase web SDK
+      return new Promise((resolve) => {
+        onAuthStateChanged(auth, async (firebaseUser) => {
+          if (firebaseUser) {
+            user.value = firebaseUser
+            await loadUserProfile(firebaseUser.uid)
+          } else {
+            user.value = null
+            userProfile.value = null
+          }
+          loading.value = false
+          resolve(firebaseUser)
+        })
       })
-    })
+    }
   }
 
   const loadUserProfile = async (uid) => {
+    console.log('Loading user profile for UID:', uid)
     // Unsubscribe from previous listener if it exists
     if (unsubscribeProfile) {
       unsubscribeProfile()
@@ -42,11 +73,16 @@ export const useAuthStore = defineStore('auth', () => {
 
     try {
       const docRef = doc(db, 'users', uid)
+      console.log('Setting up Firestore listener for user:', uid)
 
       // Set up real-time listener
       unsubscribeProfile = onSnapshot(docRef, (doc) => {
+        console.log('Firestore snapshot received, exists:', doc.exists())
         if (doc.exists()) {
+          console.log('User profile data:', doc.data())
           userProfile.value = { id: doc.id, ...doc.data() }
+        } else {
+          console.log('User profile document does not exist!')
         }
       }, (error) => {
         console.error('Error in user profile snapshot:', error)
@@ -65,18 +101,40 @@ export const useAuthStore = defineStore('auth', () => {
 
   const login = async (email, password) => {
     try {
-      const result = await signInWithEmailAndPassword(auth, email, password)
-      user.value = result.user
-      await loadUserProfile(result.user.uid)
+      if (isNative) {
+        // Use native authentication on iOS/Android
+        const result = await FirebaseAuthentication.signInWithEmailAndPassword({
+          email,
+          password
+        })
+        user.value = result.user
+        await loadUserProfile(result.user.uid)
+      } else {
+        // Use web SDK on web
+        const result = await signInWithEmailAndPassword(auth, email, password)
+        user.value = result.user
+        await loadUserProfile(result.user.uid)
+      }
       return { success: true }
     } catch (error) {
-      return { success: false, error: error.message }
+      return { success: false, error: error.message || error.code }
     }
   }
 
   const register = async (email, password, userData) => {
     try {
-      const result = await createUserWithEmailAndPassword(auth, email, password)
+      let result
+      if (isNative) {
+        // Use native authentication on iOS/Android
+        result = await FirebaseAuthentication.createUserWithEmailAndPassword({
+          email,
+          password
+        })
+      } else {
+        // Use web SDK on web
+        result = await createUserWithEmailAndPassword(auth, email, password)
+      }
+
       user.value = result.user
 
       const profileData = {
@@ -106,19 +164,23 @@ export const useAuthStore = defineStore('auth', () => {
 
       return { success: true }
     } catch (error) {
-      return { success: false, error: error.message }
+      return { success: false, error: error.message || error.code }
     }
   }
 
   const logout = async () => {
     try {
       stopProfileListener()
-      await signOut(auth)
+      if (isNative) {
+        await FirebaseAuthentication.signOut()
+      } else {
+        await signOut(auth)
+      }
       user.value = null
       userProfile.value = null
       return { success: true }
     } catch (error) {
-      return { success: false, error: error.message }
+      return { success: false, error: error.message || error.code }
     }
   }
 

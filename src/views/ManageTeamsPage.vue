@@ -32,8 +32,10 @@
                   <ion-item
                     v-for="(player, index) in sortedWaitlist"
                     :key="player.uid"
-                    draggable="true"
-                    @dragstart="handleDragStart($event, player, 'waitlist')"
+                    :draggable="!isMobile"
+                    @dragstart="!isMobile && handleDragStart($event, player, 'waitlist')"
+                    @click="handlePlayerClick(player, 'waitlist')"
+                    :button="isMobile"
                     class="draggable-player"
                   >
                     <ion-label>
@@ -45,7 +47,7 @@
                 </ion-list>
                 <div v-else class="empty-zone">
                   <p>No players in waitlist</p>
-                  <p class="hint">Drag players here to move them back to waitlist</p>
+                  <p class="hint">{{ isMobile ? 'Tap players to move them to waitlist' : 'Drag players here to move them back to waitlist' }}</p>
                 </div>
               </div>
             </ion-card-content>
@@ -68,8 +70,10 @@
                   <ion-item
                     v-for="player in darkTeamPlayers"
                     :key="player.uid"
-                    draggable="true"
-                    @dragstart="handleDragStart($event, player, 'dark')"
+                    :draggable="!isMobile"
+                    @dragstart="!isMobile && handleDragStart($event, player, 'dark')"
+                    @click="handlePlayerClick(player, 'dark')"
+                    :button="isMobile"
                     class="draggable-player"
                   >
                     <ion-label>
@@ -80,7 +84,7 @@
                 </ion-list>
                 <div v-else class="empty-zone">
                   <p>No players assigned</p>
-                  <p class="hint">Drag players here</p>
+                  <p class="hint">{{ isMobile ? 'Tap players to assign them' : 'Drag players here' }}</p>
                 </div>
               </div>
             </ion-card-content>
@@ -103,8 +107,10 @@
                   <ion-item
                     v-for="player in lightTeamPlayers"
                     :key="player.uid"
-                    draggable="true"
-                    @dragstart="handleDragStart($event, player, 'light')"
+                    :draggable="!isMobile"
+                    @dragstart="!isMobile && handleDragStart($event, player, 'light')"
+                    @click="handlePlayerClick(player, 'light')"
+                    :button="isMobile"
                     class="draggable-player"
                   >
                     <ion-label>
@@ -115,7 +121,7 @@
                 </ion-list>
                 <div v-else class="empty-zone">
                   <p>No players assigned</p>
-                  <p class="hint">Drag players here</p>
+                  <p class="hint">{{ isMobile ? 'Tap players to assign them' : 'Drag players here' }}</p>
                 </div>
               </div>
             </ion-card-content>
@@ -156,13 +162,15 @@ import {
   IonLabel,
   IonIcon,
   IonSpinner,
-  toastController
+  toastController,
+  actionSheetController
 } from '@ionic/vue'
 import { shuffleOutline } from 'ionicons/icons'
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAdminStore } from '@/stores/admin'
 import { useGameStore } from '@/stores/game'
+import { Capacitor } from '@capacitor/core'
 
 const route = useRoute()
 const router = useRouter()
@@ -171,6 +179,7 @@ const gameStore = useGameStore()
 
 const draggedPlayer = ref(null)
 const dragSource = ref(null)
+const isMobile = Capacitor.isNativePlatform()
 
 onMounted(async () => {
   const gameId = route.params.gameId
@@ -243,16 +252,49 @@ const handleDragStart = (event, player, source) => {
   event.dataTransfer.effectAllowed = 'move'
 }
 
-const handleDrop = async (event, target) => {
-  event.preventDefault()
+const handlePlayerClick = async (player, source) => {
+  if (!isMobile) return // Only handle clicks on mobile
 
-  if (!draggedPlayer.value || dragSource.value === target) {
-    return
+  const buttons = []
+
+  // Add buttons based on current location
+  if (source !== 'waitlist') {
+    buttons.push({
+      text: 'Move to Waitlist',
+      role: 'destructive',
+      handler: () => movePlayer(player, source, 'waitlist')
+    })
   }
 
-  const player = draggedPlayer.value
-  const source = dragSource.value
+  if (source !== 'dark') {
+    buttons.push({
+      text: 'Move to Dark Team',
+      handler: () => movePlayer(player, source, 'dark')
+    })
+  }
 
+  if (source !== 'light') {
+    buttons.push({
+      text: 'Move to Light Team',
+      handler: () => movePlayer(player, source, 'light')
+    })
+  }
+
+  buttons.push({
+    text: 'Cancel',
+    role: 'cancel'
+  })
+
+  const actionSheet = await actionSheetController.create({
+    header: `Move ${player.name}`,
+    subHeader: `${player.position} - Level ${player.skillLevel || 3}`,
+    buttons
+  })
+
+  await actionSheet.present()
+}
+
+const movePlayer = async (player, source, target) => {
   // Get current team assignments
   const currentAssignments = { ...teamAssignments.value }
   if (!currentAssignments.dark) currentAssignments.dark = []
@@ -283,15 +325,28 @@ const handleDrop = async (event, target) => {
     await adminStore.updateTeamAssignments(adminStore.selectedGame.id, currentAssignments)
   }
 
-  draggedPlayer.value = null
-  dragSource.value = null
-
   const toast = await toastController.create({
     message: 'Player moved successfully!',
     duration: 1000,
     color: 'success'
   })
   await toast.present()
+}
+
+const handleDrop = async (event, target) => {
+  event.preventDefault()
+
+  if (!draggedPlayer.value || dragSource.value === target) {
+    return
+  }
+
+  const player = draggedPlayer.value
+  const source = dragSource.value
+
+  await movePlayer(player, source, target)
+
+  draggedPlayer.value = null
+  dragSource.value = null
 }
 
 const autoBalanceTeams = async () => {
@@ -404,8 +459,16 @@ h1 {
   user-select: none;
 }
 
+.draggable-player[button] {
+  cursor: pointer;
+}
+
 .draggable-player:hover {
   --background: rgba(var(--ion-color-primary-rgb), 0.1);
+}
+
+.draggable-player:active {
+  --background: rgba(var(--ion-color-primary-rgb), 0.15);
 }
 
 .empty-zone {

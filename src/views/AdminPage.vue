@@ -47,50 +47,52 @@
 
               <div class="player-section" v-if="game.players?.length > 0">
                 <h3>Players</h3>
-                <ion-list>
-                  <ion-item v-for="player in game.players" :key="player.uid">
-                    <ion-label>
-                      <h2>{{ player.name }}</h2>
-                      <p>{{ player.position }}</p>
-                    </ion-label>
+                <div class="player-list">
+                  <div class="player-item" v-for="player in game.players" :key="player.uid">
+                    <div class="player-info">
+                      <strong>{{ player.name }}</strong>
+                      <span class="player-details">{{ player.position }}</span>
+                    </div>
                     <ion-button
-                      slot="end"
                       fill="clear"
                       color="danger"
+                      size="small"
                       @click="removePlayer(game.id, player.uid, false)"
                     >
                       <ion-icon :icon="closeCircleOutline"></ion-icon>
                     </ion-button>
-                  </ion-item>
-                </ion-list>
+                  </div>
+                </div>
               </div>
 
               <div class="player-section" v-if="game.waitlist?.length > 0">
                 <h3>Waitlist</h3>
-                <ion-list>
-                  <ion-item v-for="player in game.waitlist" :key="player.uid">
-                    <ion-label>
-                      <h2>{{ player.name }}</h2>
-                      <p>{{ player.position }}</p>
-                    </ion-label>
-                    <ion-button
-                      slot="end"
-                      fill="clear"
-                      color="success"
-                      @click="moveToPlayers(game.id, player.uid)"
-                    >
-                      <ion-icon :icon="checkmarkCircleOutline"></ion-icon>
-                    </ion-button>
-                    <ion-button
-                      slot="end"
-                      fill="clear"
-                      color="danger"
-                      @click="removePlayer(game.id, player.uid, true)"
-                    >
-                      <ion-icon :icon="closeCircleOutline"></ion-icon>
-                    </ion-button>
-                  </ion-item>
-                </ion-list>
+                <div class="player-list">
+                  <div class="player-item" v-for="player in game.waitlist" :key="player.uid">
+                    <div class="player-info">
+                      <strong>{{ player.name }}</strong>
+                      <span class="player-details">{{ player.position }}</span>
+                    </div>
+                    <div class="player-actions">
+                      <ion-button
+                        fill="clear"
+                        color="success"
+                        size="small"
+                        @click="moveToPlayers(game.id, player.uid)"
+                      >
+                        <ion-icon :icon="checkmarkCircleOutline"></ion-icon>
+                      </ion-button>
+                      <ion-button
+                        fill="clear"
+                        color="danger"
+                        size="small"
+                        @click="removePlayer(game.id, player.uid, true)"
+                      >
+                        <ion-icon :icon="closeCircleOutline"></ion-icon>
+                      </ion-button>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <ion-button
@@ -140,24 +142,20 @@
             Refresh Users
           </ion-button>
 
-          <ion-card>
-            <ion-card-content>
-              <ion-list>
-                <ion-item v-for="user in filteredUsers" :key="user.id">
-                  <ion-label>
-                    <h2>{{ user.name }}</h2>
-                    <p>{{ user.email }} - {{ user.position }} - Level {{ user.skillLevel || 3 }}</p>
-                  </ion-label>
-                  <ion-badge slot="end" :color="user.isAdmin ? 'primary' : 'medium'">
-                    {{ user.isAdmin ? 'Admin' : 'User' }}
-                  </ion-badge>
-                  <ion-button slot="end" fill="clear" @click="router.push(`/admin/edit-user/${user.id}`)">
-                    <ion-icon :icon="createOutline"></ion-icon>
-                  </ion-button>
-                </ion-item>
-              </ion-list>
-            </ion-card-content>
-          </ion-card>
+          <ion-list>
+            <ion-item v-for="user in filteredUsers" :key="user.id">
+              <ion-label>
+                <h2>{{ user.name }}</h2>
+                <p>{{ user.email }} - {{ user.position }} - Level {{ user.skillLevel || 3 }}</p>
+              </ion-label>
+              <ion-badge slot="end" :color="user.isAdmin ? 'primary' : 'medium'">
+                {{ user.isAdmin ? 'Admin' : 'User' }}
+              </ion-badge>
+              <ion-button slot="end" fill="clear" @click="router.push(`/admin/edit-user/${user.id}`)">
+                <ion-icon :icon="createOutline"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-list>
 
           <div v-if="filteredUsers.length === 0 && !adminStore.loading" class="empty-state">
             <ion-text color="medium">
@@ -188,14 +186,14 @@
 
               <div class="player-section" v-if="game.players?.length > 0">
                 <h3>Players</h3>
-                <ion-list>
-                  <ion-item v-for="player in game.players" :key="player.uid">
-                    <ion-label>
-                      <h2>{{ player.name }}</h2>
-                      <p>{{ player.position }}</p>
-                    </ion-label>
-                  </ion-item>
-                </ion-list>
+                <div class="player-list">
+                  <div class="player-item" v-for="player in game.players" :key="player.uid">
+                    <div class="player-info">
+                      <strong>{{ player.name }}</strong>
+                      <span class="player-details">{{ player.position }}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </ion-card-content>
           </ion-card>
@@ -235,7 +233,8 @@ import {
   IonSegmentButton,
   IonIcon,
   IonSearchbar,
-  toastController
+  toastController,
+  alertController
 } from '@ionic/vue'
 import {
   refreshOutline,
@@ -306,33 +305,84 @@ const loadUsers = async () => {
 }
 
 const moveToPlayers = async (gameId, playerUid) => {
-  const result = await adminStore.movePlayerFromWaitlist(gameId, playerUid)
+  const game = adminStore.allGames.find(g => g.id === gameId)
+  const player = game?.waitlist?.find(p => p.uid === playerUid)
 
-  const toast = await toastController.create({
-    message: result.success ? 'Player moved to active roster!' : result.error,
-    duration: 2000,
-    color: result.success ? 'success' : 'danger'
+  if (!player) return
+
+  const alert = await alertController.create({
+    header: 'Move Player to Active Roster',
+    message: `Are you sure you want to move ${player.name} from the waitlist to the active roster?`,
+    buttons: [
+      {
+        text: 'Cancel',
+        role: 'cancel'
+      },
+      {
+        text: 'Move Player',
+        role: 'confirm',
+        handler: async () => {
+          const result = await adminStore.movePlayerFromWaitlist(gameId, playerUid)
+
+          const toast = await toastController.create({
+            message: result.success ? 'Player moved to active roster!' : result.error,
+            duration: 2000,
+            color: result.success ? 'success' : 'danger'
+          })
+          await toast.present()
+
+          if (result.success) {
+            await loadGames()
+          }
+        }
+      }
+    ]
   })
-  await toast.present()
 
-  if (result.success) {
-    await loadGames()
-  }
+  await alert.present()
 }
 
 const removePlayer = async (gameId, playerUid, fromWaitlist) => {
-  const result = await adminStore.removePlayerFromGame(gameId, playerUid, fromWaitlist)
+  const game = adminStore.allGames.find(g => g.id === gameId)
+  const player = fromWaitlist
+    ? game?.waitlist?.find(p => p.uid === playerUid)
+    : game?.players?.find(p => p.uid === playerUid)
 
-  const toast = await toastController.create({
-    message: result.success ? 'Player removed!' : result.error,
-    duration: 2000,
-    color: result.success ? 'success' : 'danger'
+  if (!player) return
+
+  const location = fromWaitlist ? 'waitlist' : 'active roster'
+
+  const alert = await alertController.create({
+    header: 'Remove Player',
+    message: `Are you sure you want to remove ${player.name} from the ${location}?`,
+    buttons: [
+      {
+        text: 'Cancel',
+        role: 'cancel'
+      },
+      {
+        text: 'Remove',
+        role: 'confirm',
+        cssClass: 'danger-button',
+        handler: async () => {
+          const result = await adminStore.removePlayerFromGame(gameId, playerUid, fromWaitlist)
+
+          const toast = await toastController.create({
+            message: result.success ? 'Player removed!' : result.error,
+            duration: 2000,
+            color: result.success ? 'success' : 'danger'
+          })
+          await toast.present()
+
+          if (result.success) {
+            await loadGames()
+          }
+        }
+      }
+    ]
   })
-  await toast.present()
 
-  if (result.success) {
-    await loadGames()
-  }
+  await alert.present()
 }
 
 const markAsPlayed = async (gameId) => {
@@ -408,6 +458,43 @@ h2 {
   font-weight: 600;
 }
 
+.player-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.player-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: var(--ion-color-light);
+  border-radius: 6px;
+}
+
+.player-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: #ffffff;
+}
+
+.player-info strong {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.player-details {
+  font-size: 0.875rem;
+  color: var(--ion-color-medium);
+}
+
+.player-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
 .regulars-section {
   margin-top: 1rem;
   padding-top: 1rem;
@@ -432,8 +519,11 @@ h2 {
   flex-direction: column;
 }
 
-.users-tab > ion-card {
-  width: 100%;
+.users-tab > ion-list {
+  background: var(--ion-card-background, #fff);
+  border-radius: 8px;
+  padding: 0;
+  margin-bottom: 1rem;
 }
 
 /* Search section styling */

@@ -31,3 +31,6 @@ dist-ssr
 # Capacitor
 android/
 ios/
+
+resources/ios/**/*
+resources/android/**/*

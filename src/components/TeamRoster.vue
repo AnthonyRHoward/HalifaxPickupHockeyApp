@@ -1,101 +1,83 @@
 <template>
   <div class="team-roster">
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Dark Team</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-list>
-          <ion-item>
-            <ion-label>
-              <h2>Goalie</h2>
-              <p v-if="darkTeam.goalie">
-                {{ darkTeam.goalie.name }} (Skill: {{ darkTeam.goalie.skillLevel || 3 }})
-              </p>
-              <p v-else class="empty-slot">-</p>
-            </ion-label>
-          </ion-item>
+    <div class="team-section">
+      <h3 class="team-title dark-team">Dark Team</h3>
+      <ion-list>
+        <ion-item>
+          <ion-label>
+            <p v-if="darkTeam.goalie">
+              <span class="position-label">Goalie:</span> {{ darkTeam.goalie.name }} (Skill: {{ darkTeam.goalie.skillLevel || 3 }})
+            </p>
+            <p v-else><span class="position-label">Goalie:</span> <span class="empty-slot">-</span></p>
+          </ion-label>
+        </ion-item>
 
-          <ion-item v-for="(forward, index) in 3" :key="'dark-f-' + index">
-            <ion-label>
-              <h2>F</h2>
-              <p v-if="darkTeam.forwards[index]">
-                {{ darkTeam.forwards[index].name }} (Skill: {{ darkTeam.forwards[index].skillLevel || 3 }})
-              </p>
-              <p v-else class="empty-slot">-</p>
-            </ion-label>
-          </ion-item>
+        <ion-item v-for="(forward, index) in 3" :key="'dark-f-' + index">
+          <ion-label>
+            <p v-if="darkTeam.forwards[index]">
+              <span class="position-label">F:</span> {{ darkTeam.forwards[index].name }} (Skill: {{ darkTeam.forwards[index].skillLevel || 3 }})
+            </p>
+            <p v-else><span class="position-label">F:</span> <span class="empty-slot">-</span></p>
+          </ion-label>
+        </ion-item>
 
-          <ion-item v-for="(defense, index) in 2" :key="'dark-d-' + index">
-            <ion-label>
-              <h2>D</h2>
-              <p v-if="darkTeam.defense[index]">
-                {{ darkTeam.defense[index].name }} (Skill: {{ darkTeam.defense[index].skillLevel || 3 }})
-              </p>
-              <p v-else class="empty-slot">-</p>
-            </ion-label>
-          </ion-item>
-        </ion-list>
-        <div class="team-stats">
-          <ion-badge color="dark">
-            Avg Skill: {{ calculateAvgSkill(darkTeam).toFixed(1) }}
-          </ion-badge>
-        </div>
-      </ion-card-content>
-    </ion-card>
+        <ion-item v-for="(defense, index) in 2" :key="'dark-d-' + index">
+          <ion-label>
+            <p v-if="darkTeam.defense[index]">
+              <span class="position-label">D:</span> {{ darkTeam.defense[index].name }} (Skill: {{ darkTeam.defense[index].skillLevel || 3 }})
+            </p>
+            <p v-else><span class="position-label">D:</span> <span class="empty-slot">-</span></p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+      <div class="team-stats">
+        <ion-badge color="dark">
+          Avg Skill: {{ calculateAvgSkill(darkTeam).toFixed(1) }}
+        </ion-badge>
+      </div>
+    </div>
 
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Light Team</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-list>
-          <ion-item>
-            <ion-label>
-              <h2>Goalie</h2>
-              <p v-if="lightTeam.goalie">
-                {{ lightTeam.goalie.name }} (Skill: {{ lightTeam.goalie.skillLevel || 3 }})
-              </p>
-              <p v-else class="empty-slot">-</p>
-            </ion-label>
-          </ion-item>
+    <div class="team-section">
+      <h3 class="team-title light-team">Light Team</h3>
+      <ion-list>
+        <ion-item>
+          <ion-label>
+            <p v-if="lightTeam.goalie">
+              <span class="position-label">Goalie:</span> {{ lightTeam.goalie.name }} (Skill: {{ lightTeam.goalie.skillLevel || 3 }})
+            </p>
+            <p v-else><span class="position-label">Goalie:</span> <span class="empty-slot">-</span></p>
+          </ion-label>
+        </ion-item>
 
-          <ion-item v-for="(forward, index) in 3" :key="'light-f-' + index">
-            <ion-label>
-              <h2>F</h2>
-              <p v-if="lightTeam.forwards[index]">
-                {{ lightTeam.forwards[index].name }} (Skill: {{ lightTeam.forwards[index].skillLevel || 3 }})
-              </p>
-              <p v-else class="empty-slot">-</p>
-            </ion-label>
-          </ion-item>
+        <ion-item v-for="(forward, index) in 3" :key="'light-f-' + index">
+          <ion-label>
+            <p v-if="lightTeam.forwards[index]">
+              <span class="position-label">F:</span> {{ lightTeam.forwards[index].name }} (Skill: {{ lightTeam.forwards[index].skillLevel || 3 }})
+            </p>
+            <p v-else><span class="position-label">F:</span> <span class="empty-slot">-</span></p>
+          </ion-label>
+        </ion-item>
 
-          <ion-item v-for="(defense, index) in 2" :key="'light-d-' + index">
-            <ion-label>
-              <h2>D</h2>
-              <p v-if="lightTeam.defense[index]">
-                {{ lightTeam.defense[index].name }} (Skill: {{ lightTeam.defense[index].skillLevel || 3 }})
-              </p>
-              <p v-else class="empty-slot">-</p>
-            </ion-label>
-          </ion-item>
-        </ion-list>
-        <div class="team-stats">
-          <ion-badge color="light">
-            Avg Skill: {{ calculateAvgSkill(lightTeam).toFixed(1) }}
-          </ion-badge>
-        </div>
-      </ion-card-content>
-    </ion-card>
+        <ion-item v-for="(defense, index) in 2" :key="'light-d-' + index">
+          <ion-label>
+            <p v-if="lightTeam.defense[index]">
+              <span class="position-label">D:</span> {{ lightTeam.defense[index].name }} (Skill: {{ lightTeam.defense[index].skillLevel || 3 }})
+            </p>
+            <p v-else><span class="position-label">D:</span> <span class="empty-slot">-</span></p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+      <div class="team-stats">
+        <ion-badge color="dark">
+          Avg Skill: {{ calculateAvgSkill(lightTeam).toFixed(1) }}
+        </ion-badge>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import {
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
   IonList,
   IonItem,
   IonLabel,
@@ -131,10 +113,37 @@ const calculateAvgSkill = (team) => {
 
 <style scoped>
 .team-roster {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
+}
+
+.team-section {
+  width: 100%;
+}
+
+.team-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+.dark-team {
+  color: var(--ion-color-dark);
+  border-bottom: 3px solid var(--ion-color-dark);
+}
+
+.light-team {
+  color: #ffffff;
+  border-bottom: 3px solid #ffffff;
+}
+
+.team-section ion-list {
+  background: var(--ion-card-background, #fff);
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
 }
 
 .empty-slot {
@@ -143,25 +152,29 @@ const calculateAvgSkill = (team) => {
 }
 
 .team-stats {
-  margin-top: 1rem;
   text-align: center;
+  padding: 0.5rem;
 }
 
-ion-item h2 {
+.position-label {
   font-weight: 600;
   color: var(--ion-color-primary);
+  margin-right: 0.25rem;
+}
+
+ion-label p {
+  color: #ffffff;
 }
 
 /* Tablet and larger screens - display teams side by side */
 @media (min-width: 768px) {
   .team-roster {
     flex-direction: row;
-    gap: 1rem;
+    gap: 1.5rem;
   }
 
-  .team-roster > ion-card {
+  .team-section {
     flex: 1;
-    margin: 0;
   }
 }
 </style>
