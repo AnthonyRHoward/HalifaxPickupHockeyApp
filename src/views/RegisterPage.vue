@@ -3,7 +3,7 @@
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button default-href="/home"></ion-back-button>
+          <ion-back-button default-href="/"></ion-back-button>
         </ion-buttons>
         <ion-title>Register</ion-title>
       </ion-toolbar>
@@ -179,7 +179,7 @@ const handleRegister = async () => {
       color: "success",
     });
     await toast.present();
-    router.push("/home");
+    router.push("/");
   } else {
     const toast = await toastController.create({
       message: result.error || "Registration failed",

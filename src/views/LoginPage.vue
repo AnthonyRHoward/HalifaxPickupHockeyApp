@@ -3,7 +3,7 @@
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button default-href="/home"></ion-back-button>
+          <ion-back-button default-href="/"></ion-back-button>
         </ion-buttons>
         <ion-title>Login</ion-title>
       </ion-toolbar>
@@ -73,44 +73,44 @@ import {
   IonInput,
   IonText,
   IonSpinner,
-  toastController
-} from '@ionic/vue'
-import { ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
+  toastController,
+} from "@ionic/vue";
+import { ref } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 
-const router = useRouter()
-const route = useRoute()
-const authStore = useAuthStore()
+const router = useRouter();
+const route = useRoute();
+const authStore = useAuthStore();
 
-const email = ref('')
-const password = ref('')
-const loading = ref(false)
+const email = ref("");
+const password = ref("");
+const loading = ref(false);
 
 const handleLogin = async () => {
-  loading.value = true
-  const result = await authStore.login(email.value, password.value)
-  loading.value = false
+  loading.value = true;
+  const result = await authStore.login(email.value, password.value);
+  loading.value = false;
 
   if (result.success) {
     const toast = await toastController.create({
-      message: 'Logged in successfully!',
+      message: "Logged in successfully!",
       duration: 2000,
-      color: 'success'
-    })
-    await toast.present()
+      color: "success",
+    });
+    await toast.present();
 
-    const redirectPath = route.query.redirect || '/home'
-    router.push(redirectPath)
+    const redirectPath = route.query.redirect || "/";
+    router.push(redirectPath);
   } else {
     const toast = await toastController.create({
-      message: result.error || 'Login failed',
+      message: result.error || "Login failed",
       duration: 3000,
-      color: 'danger'
-    })
-    await toast.present()
+      color: "danger",
+    });
+    await toast.present();
   }
-}
+};
 </script>
 
 <style scoped>

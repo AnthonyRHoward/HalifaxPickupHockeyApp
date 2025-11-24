@@ -8,7 +8,7 @@
             alt="Halifax Pickup Hockey Logo"
             class="header-logo"
           />
-          <ion-back-button default-href="/home"></ion-back-button>
+          <ion-back-button default-href="/"></ion-back-button>
         </div>
         <ion-title>About Us</ion-title>
       </ion-toolbar>

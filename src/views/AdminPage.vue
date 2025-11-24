@@ -3,7 +3,7 @@
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button default-href="/home"></ion-back-button>
+          <ion-back-button default-href="/"></ion-back-button>
         </ion-buttons>
         <ion-title>Admin Panel</ion-title>
       </ion-toolbar>
@@ -28,7 +28,11 @@
         <div v-if="selectedTab === 'games'" class="tab-content">
           <h2>Game Management</h2>
 
-          <ion-button @click="loadGames" expand="block" class="ion-margin-bottom">
+          <ion-button
+            @click="loadGames"
+            expand="block"
+            class="ion-margin-bottom"
+          >
             <ion-icon :icon="refreshOutline" slot="start"></ion-icon>
             Refresh Games
           </ion-button>
@@ -36,19 +40,32 @@
           <ion-card v-for="game in adminStore.allGames" :key="game.id">
             <ion-card-header>
               <ion-card-title>{{ formatDate(game.date) }}</ion-card-title>
-              <ion-card-subtitle>{{ game.venue }} - {{ formatTime(game.time) }}</ion-card-subtitle>
+              <ion-card-subtitle
+                >{{ game.venue }} -
+                {{ formatTime(game.time) }}</ion-card-subtitle
+              >
             </ion-card-header>
             <ion-card-content>
               <div class="game-stats">
-                <ion-badge color="primary">{{ game.players?.length || 0 }} Players</ion-badge>
-                <ion-badge color="warning">{{ game.waitlist?.length || 0 }} Waitlist</ion-badge>
-                <ion-badge v-if="game.status === 'completed'" color="success">Completed</ion-badge>
+                <ion-badge color="primary"
+                  >{{ game.players?.length || 0 }} Players</ion-badge
+                >
+                <ion-badge color="warning"
+                  >{{ game.waitlist?.length || 0 }} Waitlist</ion-badge
+                >
+                <ion-badge v-if="game.status === 'completed'" color="success"
+                  >Completed</ion-badge
+                >
               </div>
 
               <div class="player-section" v-if="game.players?.length > 0">
                 <h3>Players</h3>
                 <div class="player-list">
-                  <div class="player-item" v-for="player in game.players" :key="player.uid">
+                  <div
+                    class="player-item"
+                    v-for="player in game.players"
+                    :key="player.uid"
+                  >
                     <div class="player-info">
                       <strong>{{ player.name }}</strong>
                       <span class="player-details">{{ player.position }}</span>
@@ -68,7 +85,11 @@
               <div class="player-section" v-if="game.waitlist?.length > 0">
                 <h3>Waitlist</h3>
                 <div class="player-list">
-                  <div class="player-item" v-for="player in game.waitlist" :key="player.uid">
+                  <div
+                    class="player-item"
+                    v-for="player in game.waitlist"
+                    :key="player.uid"
+                  >
                     <div class="player-info">
                       <strong>{{ player.name }}</strong>
                       <span class="player-details">{{ player.position }}</span>
@@ -118,7 +139,10 @@
             </ion-card-content>
           </ion-card>
 
-          <div v-if="adminStore.allGames.length === 0 && !adminStore.loading" class="empty-state">
+          <div
+            v-if="adminStore.allGames.length === 0 && !adminStore.loading"
+            class="empty-state"
+          >
             <ion-text color="medium">
               <p>No games found. Click "Refresh Games" to load.</p>
             </ion-text>
@@ -137,7 +161,11 @@
             ></ion-searchbar>
           </div>
 
-          <ion-button @click="loadUsers" expand="block" class="ion-margin-bottom">
+          <ion-button
+            @click="loadUsers"
+            expand="block"
+            class="ion-margin-bottom"
+          >
             <ion-icon :icon="refreshOutline" slot="start"></ion-icon>
             Refresh Users
           </ion-button>
@@ -146,20 +174,35 @@
             <ion-item v-for="user in filteredUsers" :key="user.id">
               <ion-label>
                 <h2>{{ user.name }}</h2>
-                <p>{{ user.email }} - {{ user.position }} - Level {{ user.skillLevel || 3 }}</p>
+                <p>
+                  {{ user.email }} - {{ user.position }} - Level
+                  {{ user.skillLevel || 3 }}
+                </p>
               </ion-label>
-              <ion-badge slot="end" :color="user.isAdmin ? 'primary' : 'medium'">
-                {{ user.isAdmin ? 'Admin' : 'User' }}
+              <ion-badge
+                slot="end"
+                :color="user.isAdmin ? 'primary' : 'medium'"
+              >
+                {{ user.isAdmin ? "Admin" : "User" }}
               </ion-badge>
-              <ion-button slot="end" fill="clear" @click="router.push(`/admin/edit-user/${user.id}`)">
+              <ion-button
+                slot="end"
+                fill="clear"
+                @click="router.push(`/admin/edit-user/${user.id}`)"
+              >
                 <ion-icon :icon="createOutline"></ion-icon>
               </ion-button>
             </ion-item>
           </ion-list>
 
-          <div v-if="filteredUsers.length === 0 && !adminStore.loading" class="empty-state">
+          <div
+            v-if="filteredUsers.length === 0 && !adminStore.loading"
+            class="empty-state"
+          >
             <ion-text color="medium">
-              <p v-if="userSearchQuery">No users found matching "{{ userSearchQuery }}"</p>
+              <p v-if="userSearchQuery">
+                No users found matching "{{ userSearchQuery }}"
+              </p>
               <p v-else>No users found. Click "Refresh Users" to load.</p>
             </ion-text>
           </div>
@@ -168,7 +211,11 @@
         <div v-if="selectedTab === 'history'" class="tab-content">
           <h2>Game History</h2>
 
-          <ion-button @click="loadGames" expand="block" class="ion-margin-bottom">
+          <ion-button
+            @click="loadGames"
+            expand="block"
+            class="ion-margin-bottom"
+          >
             <ion-icon :icon="refreshOutline" slot="start"></ion-icon>
             Refresh History
           </ion-button>
@@ -176,18 +223,30 @@
           <ion-card v-for="game in completedGames" :key="game.id">
             <ion-card-header>
               <ion-card-title>{{ formatDate(game.date) }}</ion-card-title>
-              <ion-card-subtitle>{{ game.venue }} - {{ formatTime(game.time) }}</ion-card-subtitle>
+              <ion-card-subtitle
+                >{{ game.venue }} -
+                {{ formatTime(game.time) }}</ion-card-subtitle
+              >
             </ion-card-header>
             <ion-card-content>
               <div class="game-stats">
-                <ion-badge color="success">{{ game.players?.length || 0 }} Players Attended</ion-badge>
-                <ion-badge color="medium">Completed {{ formatDate(game.completedAt || game.date) }}</ion-badge>
+                <ion-badge color="success"
+                  >{{ game.players?.length || 0 }} Players Attended</ion-badge
+                >
+                <ion-badge color="medium"
+                  >Completed
+                  {{ formatDate(game.completedAt || game.date) }}</ion-badge
+                >
               </div>
 
               <div class="player-section" v-if="game.players?.length > 0">
                 <h3>Players</h3>
                 <div class="player-list">
-                  <div class="player-item" v-for="player in game.players" :key="player.uid">
+                  <div
+                    class="player-item"
+                    v-for="player in game.players"
+                    :key="player.uid"
+                  >
                     <div class="player-info">
                       <strong>{{ player.name }}</strong>
                       <span class="player-details">{{ player.position }}</span>
@@ -198,7 +257,10 @@
             </ion-card-content>
           </ion-card>
 
-          <div v-if="completedGames.length === 0 && !adminStore.loading" class="empty-state">
+          <div
+            v-if="completedGames.length === 0 && !adminStore.loading"
+            class="empty-state"
+          >
             <ion-text color="medium">
               <p>No completed games yet.</p>
             </ion-text>
@@ -234,190 +296,203 @@ import {
   IonIcon,
   IonSearchbar,
   toastController,
-  alertController
-} from '@ionic/vue'
+  alertController,
+} from "@ionic/vue";
 import {
   refreshOutline,
   closeCircleOutline,
   checkmarkCircleOutline,
   createOutline,
-  peopleOutline
-} from 'ionicons/icons'
-import { ref, computed, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAdminStore } from '@/stores/admin'
+  peopleOutline,
+} from "ionicons/icons";
+import { ref, computed, onMounted, watch } from "vue";
+import { useRouter } from "vue-router";
+import { useAdminStore } from "@/stores/admin";
 
-const router = useRouter()
-const adminStore = useAdminStore()
-const selectedTab = ref('games')
-const userSearchQuery = ref('')
+const router = useRouter();
+const adminStore = useAdminStore();
+const selectedTab = ref("games");
+const userSearchQuery = ref("");
 
 onMounted(() => {
-  loadGames()
-})
+  loadGames();
+});
 
 const completedGames = computed(() => {
-  return adminStore.allGames.filter(game => game.status === 'completed')
-})
+  return adminStore.allGames.filter((game) => game.status === "completed");
+});
 
 const filteredUsers = computed(() => {
   if (!userSearchQuery.value) {
-    return adminStore.allUsers
+    return adminStore.allUsers;
   }
 
-  const query = userSearchQuery.value.toLowerCase()
-  return adminStore.allUsers.filter(user =>
-    user.name?.toLowerCase().includes(query) ||
-    user.email?.toLowerCase().includes(query) ||
-    user.position?.toLowerCase().includes(query)
-  )
-})
+  const query = userSearchQuery.value.toLowerCase();
+  return adminStore.allUsers.filter(
+    (user) =>
+      user.name?.toLowerCase().includes(query) ||
+      user.email?.toLowerCase().includes(query) ||
+      user.position?.toLowerCase().includes(query)
+  );
+});
 
 watch(selectedTab, (newTab) => {
-  if (newTab === 'users' && adminStore.allUsers.length === 0) {
-    loadUsers()
+  if (newTab === "users" && adminStore.allUsers.length === 0) {
+    loadUsers();
   }
-})
+});
 
 const loadGames = async () => {
-  const result = await adminStore.loadAllGames()
+  const result = await adminStore.loadAllGames();
   if (!result.success) {
     const toast = await toastController.create({
-      message: 'Failed to load games',
+      message: "Failed to load games",
       duration: 2000,
-      color: 'danger'
-    })
-    await toast.present()
+      color: "danger",
+    });
+    await toast.present();
   }
-}
+};
 
 const loadUsers = async () => {
-  const result = await adminStore.loadAllUsers()
+  const result = await adminStore.loadAllUsers();
   if (!result.success) {
     const toast = await toastController.create({
-      message: 'Failed to load users',
+      message: "Failed to load users",
       duration: 2000,
-      color: 'danger'
-    })
-    await toast.present()
+      color: "danger",
+    });
+    await toast.present();
   }
-}
+};
 
 const moveToPlayers = async (gameId, playerUid) => {
-  const game = adminStore.allGames.find(g => g.id === gameId)
-  const player = game?.waitlist?.find(p => p.uid === playerUid)
+  const game = adminStore.allGames.find((g) => g.id === gameId);
+  const player = game?.waitlist?.find((p) => p.uid === playerUid);
 
-  if (!player) return
+  if (!player) return;
 
   const alert = await alertController.create({
-    header: 'Move Player to Active Roster',
+    header: "Move Player to Active Roster",
     message: `Are you sure you want to move ${player.name} from the waitlist to the active roster?`,
     buttons: [
       {
-        text: 'Cancel',
-        role: 'cancel'
+        text: "Cancel",
+        role: "cancel",
       },
       {
-        text: 'Move Player',
-        role: 'confirm',
+        text: "Move Player",
+        role: "confirm",
         handler: async () => {
-          const result = await adminStore.movePlayerFromWaitlist(gameId, playerUid)
+          const result = await adminStore.movePlayerFromWaitlist(
+            gameId,
+            playerUid
+          );
 
           const toast = await toastController.create({
-            message: result.success ? 'Player moved to active roster!' : result.error,
+            message: result.success
+              ? "Player moved to active roster!"
+              : result.error,
             duration: 2000,
-            color: result.success ? 'success' : 'danger'
-          })
-          await toast.present()
+            color: result.success ? "success" : "danger",
+          });
+          await toast.present();
 
           if (result.success) {
-            await loadGames()
+            await loadGames();
           }
-        }
-      }
-    ]
-  })
+        },
+      },
+    ],
+  });
 
-  await alert.present()
-}
+  await alert.present();
+};
 
 const removePlayer = async (gameId, playerUid, fromWaitlist) => {
-  const game = adminStore.allGames.find(g => g.id === gameId)
+  const game = adminStore.allGames.find((g) => g.id === gameId);
   const player = fromWaitlist
-    ? game?.waitlist?.find(p => p.uid === playerUid)
-    : game?.players?.find(p => p.uid === playerUid)
+    ? game?.waitlist?.find((p) => p.uid === playerUid)
+    : game?.players?.find((p) => p.uid === playerUid);
 
-  if (!player) return
+  if (!player) return;
 
-  const location = fromWaitlist ? 'waitlist' : 'active roster'
+  const location = fromWaitlist ? "waitlist" : "active roster";
 
   const alert = await alertController.create({
-    header: 'Remove Player',
+    header: "Remove Player",
     message: `Are you sure you want to remove ${player.name} from the ${location}?`,
     buttons: [
       {
-        text: 'Cancel',
-        role: 'cancel'
+        text: "Cancel",
+        role: "cancel",
       },
       {
-        text: 'Remove',
-        role: 'confirm',
-        cssClass: 'danger-button',
+        text: "Remove",
+        role: "confirm",
+        cssClass: "danger-button",
         handler: async () => {
-          const result = await adminStore.removePlayerFromGame(gameId, playerUid, fromWaitlist)
+          const result = await adminStore.removePlayerFromGame(
+            gameId,
+            playerUid,
+            fromWaitlist
+          );
 
           const toast = await toastController.create({
-            message: result.success ? 'Player removed!' : result.error,
+            message: result.success ? "Player removed!" : result.error,
             duration: 2000,
-            color: result.success ? 'success' : 'danger'
-          })
-          await toast.present()
+            color: result.success ? "success" : "danger",
+          });
+          await toast.present();
 
           if (result.success) {
-            await loadGames()
+            await loadGames();
           }
-        }
-      }
-    ]
-  })
+        },
+      },
+    ],
+  });
 
-  await alert.present()
-}
+  await alert.present();
+};
 
 const markAsPlayed = async (gameId) => {
-  const result = await adminStore.markGameAsPlayed(gameId)
+  const result = await adminStore.markGameAsPlayed(gameId);
 
   const toast = await toastController.create({
-    message: result.success ? 'Game marked as played and stats updated!' : result.error,
+    message: result.success
+      ? "Game marked as played and stats updated!"
+      : result.error,
     duration: 2000,
-    color: result.success ? 'success' : 'danger'
-  })
-  await toast.present()
+    color: result.success ? "success" : "danger",
+  });
+  await toast.present();
 
   if (result.success) {
-    await loadGames()
+    await loadGames();
   }
-}
+};
 
 const formatDate = (dateString) => {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-}
+  if (!dateString) return "";
+  const [year, month, day] = dateString.split("T")[0].split("-");
+  const date = new Date(year, month - 1, day);
+  return date.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
 
 const formatTime = (time) => {
-  if (!time) return ''
-  const [hours, minutes] = time.split(':')
-  const hour = parseInt(hours)
-  const ampm = hour >= 12 ? 'PM' : 'AM'
-  const displayHour = hour > 12 ? hour - 12 : hour
-  return `${displayHour}:${minutes} ${ampm}`
-}
+  if (!time) return "";
+  const [hours, minutes] = time.split(":");
+  const hour = parseInt(hours);
+  const ampm = hour >= 12 ? "PM" : "AM";
+  const displayHour = hour > 12 ? hour - 12 : hour;
+  return `${displayHour}:${minutes} ${ampm}`;
+};
 </script>
 
 <style scoped>

@@ -99,7 +99,7 @@
                 </ion-button>
               </div>
 
-              <TeamRoster v-if="balancedTeams" :darkTeam="balancedTeams.darkTeam" :lightTeam="balancedTeams.lightTeam" />
+              <TeamRoster v-if="balancedTeams" :darkTeam="balancedTeams.darkTeam" :lightTeam="balancedTeams.lightTeam" :isAdmin="authStore.isAdmin" />
 
               <div class="waitlist-section">
                 <h3>Waitlist ({{ gameStore.currentGame.waitlist?.length || 0 }})</h3>
@@ -107,7 +107,7 @@
                   <ion-item v-for="(player, index) in gameStore.currentGame.waitlist" :key="player.uid">
                     <div slot="start" class="waitlist-number">{{ index + 1 }}</div>
                     <ion-label>
-                      <p><span class="player-name">{{ player.name }}</span> - {{ player.position }} - Skill Level {{ player.skillLevel || 3 }}</p>
+                      <p><span class="player-name">{{ player.name }}</span> - {{ player.position }}<span v-if="authStore.isAdmin"> - Skill Level {{ player.skillLevel || 3 }}</span></p>
                     </ion-label>
                     <div slot="end" class="waitlist-time">{{ formatCheckInTime(player.checkedInAt) }}</div>
                   </ion-item>

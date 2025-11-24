@@ -363,7 +363,8 @@ const autoBalanceTeams = async () => {
 
 const formatDate = (dateString) => {
   if (!dateString) return ''
-  const date = new Date(dateString)
+  const [year, month, day] = dateString.split('T')[0].split('-')
+  const date = new Date(year, month - 1, day)
   return date.toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',

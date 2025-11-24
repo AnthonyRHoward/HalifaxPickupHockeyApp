@@ -3,7 +3,7 @@
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button default-href="/home"></ion-back-button>
+          <ion-back-button default-href="/"></ion-back-button>
         </ion-buttons>
         <ion-title>Profile</ion-title>
         <ion-buttons slot="end">
@@ -340,7 +340,7 @@ const handleLogout = async () => {
       color: "success",
     });
     await toast.present();
-    router.push("/home");
+    router.push("/");
   }
 };
 

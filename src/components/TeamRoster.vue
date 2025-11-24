@@ -6,7 +6,7 @@
         <ion-item>
           <ion-label>
             <p v-if="darkTeam.goalie">
-              <span class="position-label">Goalie:</span> {{ darkTeam.goalie.name }} (Skill: {{ darkTeam.goalie.skillLevel || 3 }})
+              <span class="position-label">Goalie:</span> {{ darkTeam.goalie.name }}<span v-if="isAdmin"> (Skill: {{ darkTeam.goalie.skillLevel || 3 }})</span>
             </p>
             <p v-else><span class="position-label">Goalie:</span> <span class="empty-slot">-</span></p>
           </ion-label>
@@ -15,7 +15,7 @@
         <ion-item v-for="(forward, index) in 3" :key="'dark-f-' + index">
           <ion-label>
             <p v-if="darkTeam.forwards[index]">
-              <span class="position-label">F:</span> {{ darkTeam.forwards[index].name }} (Skill: {{ darkTeam.forwards[index].skillLevel || 3 }})
+              <span class="position-label">F:</span> {{ darkTeam.forwards[index].name }}<span v-if="isAdmin"> (Skill: {{ darkTeam.forwards[index].skillLevel || 3 }})</span>
             </p>
             <p v-else><span class="position-label">F:</span> <span class="empty-slot">-</span></p>
           </ion-label>
@@ -24,13 +24,13 @@
         <ion-item v-for="(defense, index) in 2" :key="'dark-d-' + index">
           <ion-label>
             <p v-if="darkTeam.defense[index]">
-              <span class="position-label">D:</span> {{ darkTeam.defense[index].name }} (Skill: {{ darkTeam.defense[index].skillLevel || 3 }})
+              <span class="position-label">D:</span> {{ darkTeam.defense[index].name }}<span v-if="isAdmin"> (Skill: {{ darkTeam.defense[index].skillLevel || 3 }})</span>
             </p>
             <p v-else><span class="position-label">D:</span> <span class="empty-slot">-</span></p>
           </ion-label>
         </ion-item>
       </ion-list>
-      <div class="team-stats">
+      <div class="team-stats" v-if="isAdmin">
         <ion-badge color="dark">
           Avg Skill: {{ calculateAvgSkill(darkTeam).toFixed(1) }}
         </ion-badge>
@@ -43,7 +43,7 @@
         <ion-item>
           <ion-label>
             <p v-if="lightTeam.goalie">
-              <span class="position-label">Goalie:</span> {{ lightTeam.goalie.name }} (Skill: {{ lightTeam.goalie.skillLevel || 3 }})
+              <span class="position-label">Goalie:</span> {{ lightTeam.goalie.name }}<span v-if="isAdmin"> (Skill: {{ lightTeam.goalie.skillLevel || 3 }})</span>
             </p>
             <p v-else><span class="position-label">Goalie:</span> <span class="empty-slot">-</span></p>
           </ion-label>
@@ -52,7 +52,7 @@
         <ion-item v-for="(forward, index) in 3" :key="'light-f-' + index">
           <ion-label>
             <p v-if="lightTeam.forwards[index]">
-              <span class="position-label">F:</span> {{ lightTeam.forwards[index].name }} (Skill: {{ lightTeam.forwards[index].skillLevel || 3 }})
+              <span class="position-label">F:</span> {{ lightTeam.forwards[index].name }}<span v-if="isAdmin"> (Skill: {{ lightTeam.forwards[index].skillLevel || 3 }})</span>
             </p>
             <p v-else><span class="position-label">F:</span> <span class="empty-slot">-</span></p>
           </ion-label>
@@ -61,13 +61,13 @@
         <ion-item v-for="(defense, index) in 2" :key="'light-d-' + index">
           <ion-label>
             <p v-if="lightTeam.defense[index]">
-              <span class="position-label">D:</span> {{ lightTeam.defense[index].name }} (Skill: {{ lightTeam.defense[index].skillLevel || 3 }})
+              <span class="position-label">D:</span> {{ lightTeam.defense[index].name }}<span v-if="isAdmin"> (Skill: {{ lightTeam.defense[index].skillLevel || 3 }})</span>
             </p>
             <p v-else><span class="position-label">D:</span> <span class="empty-slot">-</span></p>
           </ion-label>
         </ion-item>
       </ion-list>
-      <div class="team-stats">
+      <div class="team-stats" v-if="isAdmin">
         <ion-badge color="dark">
           Avg Skill: {{ calculateAvgSkill(lightTeam).toFixed(1) }}
         </ion-badge>
@@ -94,6 +94,10 @@ const props = defineProps({
     type: Object,
     required: true,
     default: () => ({ goalie: null, forwards: [], defense: [] })
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false
   }
 })
 
