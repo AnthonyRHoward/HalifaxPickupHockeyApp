@@ -10,27 +10,27 @@
         <div class="menu-top">
           <ion-list>
             <ion-item button @click="navigateTo('/')" lines="none">
-              <ion-icon slot="start" name="home-outline"></ion-icon>
+              <ion-icon slot="start" :icon="homeOutline"></ion-icon>
               <ion-label>Home</ion-label>
             </ion-item>
 
             <ion-item button @click="navigateTo('/about')" lines="none">
-              <ion-icon slot="start" name="information-circle-outline"></ion-icon>
+              <ion-icon slot="start" :icon="informationCircleOutline"></ion-icon>
               <ion-label>About</ion-label>
             </ion-item>
 
             <ion-item v-if="authStore.isAdmin" button @click="navigateTo('/admin')" lines="none">
-              <ion-icon slot="start" name="settings"></ion-icon>
+              <ion-icon slot="start" :icon="settings"></ion-icon>
               <ion-label>Admin</ion-label>
             </ion-item>
 
             <ion-item v-if="!authStore.isAuthenticated" button @click="navigateTo('/login')" lines="none">
-              <ion-icon slot="start" name="log-in-outline"></ion-icon>
+              <ion-icon slot="start" :icon="logInOutline"></ion-icon>
               <ion-label>Login</ion-label>
             </ion-item>
 
             <ion-item v-else button @click="navigateTo('/profile')" lines="none">
-              <ion-icon slot="start" name="person-outline"></ion-icon>
+              <ion-icon slot="start" :icon="personOutline"></ion-icon>
               <ion-label>Profile</ion-label>
             </ion-item>
           </ion-list>
@@ -39,7 +39,7 @@
         <div v-if="authStore.isAuthenticated" class="menu-bottom">
           <ion-list>
             <ion-item button @click="handleLogout" lines="none" color="danger">
-              <ion-icon slot="start" name="log-out-outline"></ion-icon>
+              <ion-icon slot="start" :icon="logOutOutline"></ion-icon>
               <ion-label>Logout</ion-label>
             </ion-item>
           </ion-list>
@@ -67,6 +67,14 @@ import {
   toastController,
   menuController
 } from '@ionic/vue'
+import {
+  homeOutline,
+  informationCircleOutline,
+  settings,
+  logInOutline,
+  personOutline,
+  logOutOutline
+} from 'ionicons/icons'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 

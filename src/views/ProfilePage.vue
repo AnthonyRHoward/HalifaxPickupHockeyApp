@@ -274,14 +274,6 @@
         </ion-card>
 
         <GameHistory :gameHistory="authStore.userProfile.gameHistory || []" />
-
-        <ion-button
-          expand="block"
-          color="primary"
-          @click="router.push('/home')"
-        >
-          Back to Home
-        </ion-button>
       </div>
     </ion-content>
   </ion-page>
