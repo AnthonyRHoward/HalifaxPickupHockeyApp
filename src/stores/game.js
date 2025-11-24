@@ -137,7 +137,7 @@ export const useGameStore = defineStore('game', () => {
         uid: authStore.user.uid,
         name: authStore.userProfile.name,
         position: authStore.userProfile.position,
-        skillLevel: authStore.userProfile.skillLevel || 3,
+        skillLevel: authStore.userProfile.skillLevel || 2,
         checkedInAt: new Date().toISOString()
       }
 
@@ -237,7 +237,7 @@ export const useGameStore = defineStore('game', () => {
     let forwards = players.filter(p => p.position === 'Forward')
     let defense = players.filter(p => p.position === 'Defense')
 
-    const sortBySkill = (a, b) => (b.skillLevel || 3) - (a.skillLevel || 3)
+    const sortBySkill = (a, b) => (b.skillLevel || 2) - (a.skillLevel || 2)
 
     goalies.sort(sortBySkill)
     forwards.sort(sortBySkill)
@@ -277,20 +277,20 @@ export const useGameStore = defineStore('game', () => {
     forwards.forEach((player) => {
       if (darkSkill <= lightSkill) {
         darkTeam.forwards.push(player)
-        darkSkill += player.skillLevel || 3
+        darkSkill += player.skillLevel || 2
       } else {
         lightTeam.forwards.push(player)
-        lightSkill += player.skillLevel || 3
+        lightSkill += player.skillLevel || 2
       }
     })
 
     defense.forEach((player) => {
       if (darkSkill <= lightSkill) {
         darkTeam.defense.push(player)
-        darkSkill += player.skillLevel || 3
+        darkSkill += player.skillLevel || 2
       } else {
         lightTeam.defense.push(player)
-        lightSkill += player.skillLevel || 3
+        lightSkill += player.skillLevel || 2
       }
     })
 

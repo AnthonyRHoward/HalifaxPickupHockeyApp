@@ -37,7 +37,7 @@
             Refresh Games
           </ion-button>
 
-          <ion-card v-for="game in adminStore.allGames" :key="game.id">
+          <ion-card v-for="game in activeGames" :key="game.id">
             <ion-card-header>
               <ion-card-title>{{ formatDate(game.date) }}</ion-card-title>
               <ion-card-subtitle
@@ -140,11 +140,11 @@
           </ion-card>
 
           <div
-            v-if="adminStore.allGames.length === 0 && !adminStore.loading"
+            v-if="activeGames.length === 0 && !adminStore.loading"
             class="empty-state"
           >
             <ion-text color="medium">
-              <p>No games found. Click "Refresh Games" to load.</p>
+              <p>No active games found. Click "Refresh Games" to load.</p>
             </ion-text>
           </div>
         </div>
@@ -176,7 +176,7 @@
                 <h2>{{ user.name }}</h2>
                 <p>
                   {{ user.email }} - {{ user.position }} - Level
-                  {{ user.skillLevel || 3 }}
+                  {{ user.skillLevel || 2 }}
                 </p>
               </ion-label>
               <ion-badge
@@ -316,6 +316,10 @@ const userSearchQuery = ref("");
 
 onMounted(() => {
   loadGames();
+});
+
+const activeGames = computed(() => {
+  return adminStore.allGames.filter((game) => game.status !== "completed");
 });
 
 const completedGames = computed(() => {

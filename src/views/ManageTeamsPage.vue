@@ -40,7 +40,7 @@
                   >
                     <ion-label>
                       <h2>{{ index + 1 }}. {{ player.name }}</h2>
-                      <p>{{ player.position }} - Level {{ player.skillLevel || 3 }}</p>
+                      <p>{{ player.position }} - Level {{ player.skillLevel || 2 }}</p>
                       <p class="check-in-time">{{ formatCheckInTime(player.checkedInAt) }}</p>
                     </ion-label>
                   </ion-item>
@@ -78,7 +78,7 @@
                   >
                     <ion-label>
                       <h2>{{ player.name }}</h2>
-                      <p>{{ player.position }} - Level {{ player.skillLevel || 3 }}</p>
+                      <p>{{ player.position }} - Level {{ player.skillLevel || 2 }}</p>
                     </ion-label>
                   </ion-item>
                 </ion-list>
@@ -115,7 +115,7 @@
                   >
                     <ion-label>
                       <h2>{{ player.name }}</h2>
-                      <p>{{ player.position }} - Level {{ player.skillLevel || 3 }}</p>
+                      <p>{{ player.position }} - Level {{ player.skillLevel || 2 }}</p>
                     </ion-label>
                   </ion-item>
                 </ion-list>
@@ -238,7 +238,7 @@ const lightTeamPlayers = computed(() => {
 
 const getAverageSkill = (players) => {
   if (!players || players.length === 0) return 0
-  const total = players.reduce((sum, player) => sum + (player.skillLevel || 3), 0)
+  const total = players.reduce((sum, player) => sum + (player.skillLevel || 2), 0)
   return total / players.length
 }
 
@@ -282,7 +282,7 @@ const handlePlayerClick = async (player, source) => {
 
   const actionSheet = await actionSheetController.create({
     header: `Move ${player.name}`,
-    subHeader: `${player.position} - Level ${player.skillLevel || 3}`,
+    subHeader: `${player.position} - Level ${player.skillLevel || 2}`,
     buttons
   })
 

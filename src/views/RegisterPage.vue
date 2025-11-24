@@ -71,24 +71,24 @@
 
               <ion-item>
                 <ion-label class="skill-label">
-                  <h2>Level 3</h2>
+                  <h2>Level 2</h2>
                   <p>
                     A good mix of basic skills, decent knowledge of the game,
                     and athletic ability
                   </p>
                 </ion-label>
-                <ion-radio slot="start" :value="3"></ion-radio>
+                <ion-radio slot="start" :value="2"></ion-radio>
               </ion-item>
 
               <ion-item>
                 <ion-label class="skill-label">
-                  <h2>Level 5</h2>
+                  <h2>Level 3</h2>
                   <p>
                     Advanced skills, strong physical shape, and a high
                     understanding of the game
                   </p>
                 </ion-label>
-                <ion-radio slot="start" :value="5"></ion-radio>
+                <ion-radio slot="start" :value="3"></ion-radio>
               </ion-item>
             </ion-radio-group>
           </div>
@@ -150,7 +150,7 @@ const name = ref("");
 const email = ref("");
 const password = ref("");
 const position = ref("Forward");
-const skillLevel = ref(3);
+const skillLevel = ref(2);
 const loading = ref(false);
 
 const handleRegister = async () => {

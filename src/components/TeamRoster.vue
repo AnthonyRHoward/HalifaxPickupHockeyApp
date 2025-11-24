@@ -6,7 +6,7 @@
         <ion-item>
           <ion-label>
             <p v-if="darkTeam.goalie">
-              <span class="position-label">Goalie:</span> {{ darkTeam.goalie.name }}<span v-if="isAdmin"> (Skill: {{ darkTeam.goalie.skillLevel || 3 }})</span>
+              <span class="position-label">Goalie:</span> {{ darkTeam.goalie.name }}<span v-if="isAdmin"> (Skill: {{ darkTeam.goalie.skillLevel || 2 }})</span>
             </p>
             <p v-else><span class="position-label">Goalie:</span> <span class="empty-slot">-</span></p>
           </ion-label>
@@ -15,7 +15,7 @@
         <ion-item v-for="(forward, index) in 3" :key="'dark-f-' + index">
           <ion-label>
             <p v-if="darkTeam.forwards[index]">
-              <span class="position-label">F:</span> {{ darkTeam.forwards[index].name }}<span v-if="isAdmin"> (Skill: {{ darkTeam.forwards[index].skillLevel || 3 }})</span>
+              <span class="position-label">F:</span> {{ darkTeam.forwards[index].name }}<span v-if="isAdmin"> (Skill: {{ darkTeam.forwards[index].skillLevel || 2 }})</span>
             </p>
             <p v-else><span class="position-label">F:</span> <span class="empty-slot">-</span></p>
           </ion-label>
@@ -24,7 +24,7 @@
         <ion-item v-for="(defense, index) in 2" :key="'dark-d-' + index">
           <ion-label>
             <p v-if="darkTeam.defense[index]">
-              <span class="position-label">D:</span> {{ darkTeam.defense[index].name }}<span v-if="isAdmin"> (Skill: {{ darkTeam.defense[index].skillLevel || 3 }})</span>
+              <span class="position-label">D:</span> {{ darkTeam.defense[index].name }}<span v-if="isAdmin"> (Skill: {{ darkTeam.defense[index].skillLevel || 2 }})</span>
             </p>
             <p v-else><span class="position-label">D:</span> <span class="empty-slot">-</span></p>
           </ion-label>
@@ -43,7 +43,7 @@
         <ion-item>
           <ion-label>
             <p v-if="lightTeam.goalie">
-              <span class="position-label">Goalie:</span> {{ lightTeam.goalie.name }}<span v-if="isAdmin"> (Skill: {{ lightTeam.goalie.skillLevel || 3 }})</span>
+              <span class="position-label">Goalie:</span> {{ lightTeam.goalie.name }}<span v-if="isAdmin"> (Skill: {{ lightTeam.goalie.skillLevel || 2 }})</span>
             </p>
             <p v-else><span class="position-label">Goalie:</span> <span class="empty-slot">-</span></p>
           </ion-label>
@@ -52,7 +52,7 @@
         <ion-item v-for="(forward, index) in 3" :key="'light-f-' + index">
           <ion-label>
             <p v-if="lightTeam.forwards[index]">
-              <span class="position-label">F:</span> {{ lightTeam.forwards[index].name }}<span v-if="isAdmin"> (Skill: {{ lightTeam.forwards[index].skillLevel || 3 }})</span>
+              <span class="position-label">F:</span> {{ lightTeam.forwards[index].name }}<span v-if="isAdmin"> (Skill: {{ lightTeam.forwards[index].skillLevel || 2 }})</span>
             </p>
             <p v-else><span class="position-label">F:</span> <span class="empty-slot">-</span></p>
           </ion-label>
@@ -61,7 +61,7 @@
         <ion-item v-for="(defense, index) in 2" :key="'light-d-' + index">
           <ion-label>
             <p v-if="lightTeam.defense[index]">
-              <span class="position-label">D:</span> {{ lightTeam.defense[index].name }}<span v-if="isAdmin"> (Skill: {{ lightTeam.defense[index].skillLevel || 3 }})</span>
+              <span class="position-label">D:</span> {{ lightTeam.defense[index].name }}<span v-if="isAdmin"> (Skill: {{ lightTeam.defense[index].skillLevel || 2 }})</span>
             </p>
             <p v-else><span class="position-label">D:</span> <span class="empty-slot">-</span></p>
           </ion-label>
@@ -110,7 +110,7 @@ const calculateAvgSkill = (team) => {
 
   if (players.length === 0) return 0
 
-  const totalSkill = players.reduce((sum, player) => sum + (player.skillLevel || 3), 0)
+  const totalSkill = players.reduce((sum, player) => sum + (player.skillLevel || 2), 0)
   return totalSkill / players.length
 }
 </script>

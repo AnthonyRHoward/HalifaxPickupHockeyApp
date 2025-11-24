@@ -66,24 +66,24 @@
 
               <ion-item lines="none">
                 <ion-label class="skill-label">
-                  <h2>Level 3</h2>
+                  <h2>Level 2</h2>
                   <p>
                     A good mix of basic skills, decent knowledge of the game,
                     and athletic ability
                   </p>
                 </ion-label>
-                <ion-radio slot="end" :value="3"></ion-radio>
+                <ion-radio slot="end" :value="2"></ion-radio>
               </ion-item>
 
               <ion-item lines="none">
                 <ion-label class="skill-label">
-                  <h2>Level 5</h2>
+                  <h2>Level 3</h2>
                   <p>
                     Advanced skills, strong physical shape, and a high
                     understanding of the game
                   </p>
                 </ion-label>
-                <ion-radio slot="end" :value="5"></ion-radio>
+                <ion-radio slot="end" :value="3"></ion-radio>
               </ion-item>
             </ion-radio-group>
           </ion-card-content>

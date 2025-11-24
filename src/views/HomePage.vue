@@ -107,7 +107,7 @@
                   <ion-item v-for="(player, index) in gameStore.currentGame.waitlist" :key="player.uid">
                     <div slot="start" class="waitlist-number">{{ index + 1 }}</div>
                     <ion-label>
-                      <p><span class="player-name">{{ player.name }}</span> - {{ player.position }}<span v-if="authStore.isAdmin"> - Skill Level {{ player.skillLevel || 3 }}</span></p>
+                      <p><span class="player-name">{{ player.name }}</span> - {{ player.position }}<span v-if="authStore.isAdmin"> - Skill Level {{ player.skillLevel || 2 }}</span></p>
                     </ion-label>
                     <div slot="end" class="waitlist-time">{{ formatCheckInTime(player.checkedInAt) }}</div>
                   </ion-item>

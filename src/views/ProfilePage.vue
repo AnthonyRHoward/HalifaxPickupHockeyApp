@@ -83,24 +83,24 @@
 
                 <ion-item>
                   <ion-label class="skill-label">
-                    <h2>Level 3</h2>
+                    <h2>Level 2</h2>
                     <p>
                       A good mix of basic skills, decent knowledge of the game,
                       and athletic ability
                     </p>
                   </ion-label>
-                  <ion-radio slot="start" :value="3"></ion-radio>
+                  <ion-radio slot="start" :value="2"></ion-radio>
                 </ion-item>
 
                 <ion-item>
                   <ion-label class="skill-label">
-                    <h2>Level 5</h2>
+                    <h2>Level 3</h2>
                     <p>
                       Advanced skills, strong physical shape, and a high
                       understanding of the game
                     </p>
                   </ion-label>
-                  <ion-radio slot="start" :value="5"></ion-radio>
+                  <ion-radio slot="start" :value="3"></ion-radio>
                 </ion-item>
               </ion-radio-group>
             </ion-list>
@@ -312,8 +312,8 @@ const authStore = useAuthStore();
 const getSkillLevelDescription = (level) => {
   const descriptions = {
     1: "Level 1 - Basic skating ability but struggles with backward skating and crossovers",
-    3: "Level 3 - A good mix of basic skills, decent knowledge of the game, and athletic ability",
-    5: "Level 5 - Advanced skills, strong physical shape, and a high understanding of the game",
+    2: "Level 2 - A good mix of basic skills, decent knowledge of the game, and athletic ability",
+    3: "Level 3 - Advanced skills, strong physical shape, and a high understanding of the game",
   };
   return descriptions[level] || "Not set";
 };
