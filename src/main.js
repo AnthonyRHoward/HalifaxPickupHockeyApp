@@ -16,7 +16,6 @@ import '@ionic/vue/css/text-transformation.css'
 import '@ionic/vue/css/flex-utils.css'
 import '@ionic/vue/css/display.css'
 
-/* Dark Mode */
 import '@ionic/vue/css/palettes/dark.always.css'
 
 const pinia = createPinia()
@@ -26,22 +25,15 @@ app.use(pinia)
 app.use(IonicVue)
 app.use(router)
 
-// Global error handler for debugging
 app.config.errorHandler = (err, instance, info) => {
-  console.error('Vue Error:', err)
-  console.error('Error Info:', info)
 }
 
-// Initialize auth before mounting, with error handling
 const authStore = useAuthStore()
 authStore.initAuth()
   .catch(error => {
-    console.error('Auth initialization error:', error)
   })
   .finally(() => {
     router.isReady().then(() => {
-      console.log('Mounting app...')
       app.mount('#app')
-      console.log('App mounted successfully')
     })
   })

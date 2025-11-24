@@ -62,7 +62,6 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
 
-  // Wait for auth to initialize if it's still loading
   if (authStore.loading) {
     await authStore.initAuth()
   }

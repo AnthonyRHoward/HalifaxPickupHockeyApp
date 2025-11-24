@@ -14,9 +14,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 
-// Only initialize Firebase Auth on web platforms
-// On native (iOS/Android), we use @capacitor-firebase/authentication instead
 export const auth = Capacitor.isNativePlatform() ? null : getAuth(app)
 
-// Firestore works on all platforms
 export const db = getFirestore(app)

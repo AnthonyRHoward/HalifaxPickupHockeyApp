@@ -62,7 +62,6 @@ export const useGameStore = defineStore('game', () => {
     const gameId = getTodayGameId()
     if (!gameId) return null
 
-    // Unsubscribe from previous listener if it exists
     if (unsubscribeGame) {
       unsubscribeGame()
     }
@@ -71,11 +70,9 @@ export const useGameStore = defineStore('game', () => {
     try {
       const docRef = doc(db, 'games', gameId)
 
-      // First check if game exists
       const docSnap = await getDoc(docRef)
 
       if (!docSnap.exists()) {
-        // Create new game if it doesn't exist
         const scheduleKey = getTodayGameScheduleKey()
         const schedule = GAME_SCHEDULES[scheduleKey]
 
@@ -92,20 +89,17 @@ export const useGameStore = defineStore('game', () => {
         await setDoc(docRef, newGame)
       }
 
-      // Set up real-time listener
       unsubscribeGame = onSnapshot(docRef, (doc) => {
         if (doc.exists()) {
           currentGame.value = { id: doc.id, ...doc.data() }
         }
         loading.value = false
       }, (error) => {
-        console.error('Error in game snapshot:', error)
         loading.value = false
       })
 
       return currentGame.value
     } catch (error) {
-      console.error('Error loading game:', error)
       loading.value = false
       return null
     }
@@ -157,10 +151,8 @@ export const useGameStore = defineStore('game', () => {
         })
       }
 
-      // No need to reload - real-time listener will update
       return { success: true, isRegular }
     } catch (error) {
-      console.error('Error checking in:', error)
       return { success: false, error: error.message }
     }
   }
@@ -193,10 +185,8 @@ export const useGameStore = defineStore('game', () => {
         })
       }
 
-      // No need to reload - real-time listener will update
       return { success: true }
     } catch (error) {
-      console.error('Error checking out:', error)
       return { success: false, error: error.message }
     }
   }
@@ -219,10 +209,8 @@ export const useGameStore = defineStore('game', () => {
         players: arrayUnion(player)
       })
 
-      // No need to reload - real-time listener will update
       return { success: true }
     } catch (error) {
-      console.error('Error moving from waitlist:', error)
       return { success: false, error: error.message }
     }
   }
@@ -255,29 +243,23 @@ export const useGameStore = defineStore('game', () => {
     forwards.sort(sortBySkill)
     defense.sort(sortBySkill)
 
-    // Ideal roster: 3 forwards and 2 defense per team (6 forwards, 4 defense total)
-    // If we have too many of one position, convert extras to the other position
     const idealForwards = 6
     const idealDefense = 4
 
-    // If we have excess forwards, convert some to defense
     if (forwards.length > idealForwards && defense.length < idealDefense) {
       const excessForwards = forwards.length - idealForwards
       const defenseNeeded = idealDefense - defense.length
       const toConvert = Math.min(excessForwards, defenseNeeded)
 
-      // Take the lowest skilled excess forwards and convert them to defense
       const convertedPlayers = forwards.splice(idealForwards, toConvert)
       defense.push(...convertedPlayers)
       defense.sort(sortBySkill)
     }
-    // If we have excess defense, convert some to forwards
     else if (defense.length > idealDefense && forwards.length < idealForwards) {
       const excessDefense = defense.length - idealDefense
       const forwardsNeeded = idealForwards - forwards.length
       const toConvert = Math.min(excessDefense, forwardsNeeded)
 
-      // Take the lowest skilled excess defense and convert them to forwards
       const convertedPlayers = defense.splice(idealDefense, toConvert)
       forwards.push(...convertedPlayers)
       forwards.sort(sortBySkill)
@@ -292,7 +274,6 @@ export const useGameStore = defineStore('game', () => {
     let darkSkill = darkTeam.goalie?.skillLevel || 0
     let lightSkill = lightTeam.goalie?.skillLevel || 0
 
-    // Distribute forwards - allow more than 3 per team if we have extras
     forwards.forEach((player) => {
       if (darkSkill <= lightSkill) {
         darkTeam.forwards.push(player)
@@ -303,7 +284,6 @@ export const useGameStore = defineStore('game', () => {
       }
     })
 
-    // Distribute defense - allow more than 2 per team if we have extras
     defense.forEach((player) => {
       if (darkSkill <= lightSkill) {
         darkTeam.defense.push(player)

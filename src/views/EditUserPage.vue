@@ -13,7 +13,6 @@
       <div class="edit-user-container" v-if="user">
         <h1>{{ user.name }}</h1>
 
-        <!-- Basic Information Section -->
         <ion-card>
           <ion-card-header>
             <ion-card-title>Basic Information</ion-card-title>
@@ -48,7 +47,6 @@
           </ion-card-content>
         </ion-card>
 
-        <!-- Skill Level Section -->
         <ion-card>
           <ion-card-header>
             <ion-card-title>Skill Level</ion-card-title>
@@ -91,7 +89,6 @@
           </ion-card-content>
         </ion-card>
 
-        <!-- Regular Nights Section -->
         <ion-card>
           <ion-card-header>
             <ion-card-title>Regular Nights</ion-card-title>
@@ -143,7 +140,6 @@
           </ion-card-content>
         </ion-card>
 
-        <!-- Admin Status Section -->
         <ion-card>
           <ion-card-header>
             <ion-card-title>Permissions</ion-card-title>
@@ -159,7 +155,6 @@
           </ion-card-content>
         </ion-card>
 
-        <!-- Skate Pass Section -->
         <ion-card>
           <ion-card-header>
             <ion-card-title>Skate Pass</ion-card-title>
@@ -219,7 +214,6 @@
           </ion-card-content>
         </ion-card>
 
-        <!-- Action Buttons -->
         <div class="button-group">
           <ion-button
             expand="block"
@@ -291,17 +285,14 @@ const user = ref(null);
 onMounted(async () => {
   const userId = route.params.userId;
 
-  // Try to find user in already loaded users
   let foundUser = adminStore.allUsers.find((u) => u.id === userId);
 
-  // If not found, load all users
   if (!foundUser) {
     await adminStore.loadAllUsers();
     foundUser = adminStore.allUsers.find((u) => u.id === userId);
   }
 
   if (foundUser) {
-    // Create a deep copy of the user
     user.value = {
       ...foundUser,
       regulars: { ...foundUser.regulars },
@@ -436,7 +427,6 @@ ion-card-subtitle {
   font-weight: 600;
 }
 
-/* Desktop screens - show cards in grid */
 @media (min-width: 768px) {
   .edit-user-container {
     display: grid;

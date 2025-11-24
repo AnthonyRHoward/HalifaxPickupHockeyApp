@@ -196,16 +196,13 @@ onMounted(async () => {
     return
   }
 
-  // Auto-populate team assignments if they don't exist or if there are unassigned players
   const game = adminStore.selectedGame
   const hasTeamAssignments = game.teamAssignments && (game.teamAssignments.dark || game.teamAssignments.light)
 
   if (game.players && game.players.length > 0) {
     if (!hasTeamAssignments) {
-      // No team assignments yet, create them
       await autoBalanceTeams()
     } else {
-      // Check if there are any players not assigned to teams
       const assignedUids = new Set([
         ...(game.teamAssignments.dark || []).map(p => p.uid),
         ...(game.teamAssignments.light || []).map(p => p.uid)
@@ -214,7 +211,6 @@ onMounted(async () => {
       const hasUnassignedPlayers = game.players.some(p => !assignedUids.has(p.uid))
 
       if (hasUnassignedPlayers) {
-        // Re-balance to include the new players
         await autoBalanceTeams()
       }
     }
@@ -253,11 +249,10 @@ const handleDragStart = (event, player, source) => {
 }
 
 const handlePlayerClick = async (player, source) => {
-  if (!isMobile) return // Only handle clicks on mobile
+  if (!isMobile) return
 
   const buttons = []
 
-  // Add buttons based on current location
   if (source !== 'waitlist') {
     buttons.push({
       text: 'Move to Waitlist',
@@ -295,32 +290,22 @@ const handlePlayerClick = async (player, source) => {
 }
 
 const movePlayer = async (player, source, target) => {
-  // Get current team assignments
   const currentAssignments = { ...teamAssignments.value }
   if (!currentAssignments.dark) currentAssignments.dark = []
   if (!currentAssignments.light) currentAssignments.light = []
 
-  // Handle moving FROM waitlist TO team
   if (source === 'waitlist' && (target === 'dark' || target === 'light')) {
-    // Move from waitlist to players first
     await adminStore.movePlayerToTeam(adminStore.selectedGame.id, player, 'waitlist', 'players')
-    // Then assign to team
     currentAssignments[target].push(player)
     await adminStore.updateTeamAssignments(adminStore.selectedGame.id, currentAssignments)
   }
-  // Handle moving FROM team TO waitlist
   else if ((source === 'dark' || source === 'light') && target === 'waitlist') {
-    // Remove from team assignment
     currentAssignments[source] = currentAssignments[source].filter(p => p.uid !== player.uid)
     await adminStore.updateTeamAssignments(adminStore.selectedGame.id, currentAssignments)
-    // Move from players to waitlist
     await adminStore.movePlayerToTeam(adminStore.selectedGame.id, player, 'players', 'waitlist')
   }
-  // Handle moving between teams (dark <-> light)
   else if ((source === 'dark' || source === 'light') && (target === 'dark' || target === 'light')) {
-    // Remove from source team
     currentAssignments[source] = currentAssignments[source].filter(p => p.uid !== player.uid)
-    // Add to target team
     currentAssignments[target].push(player)
     await adminStore.updateTeamAssignments(adminStore.selectedGame.id, currentAssignments)
   }
@@ -358,7 +343,6 @@ const autoBalanceTeams = async () => {
     light: []
   }
 
-  // Combine all players from balanced teams
   if (balanced.darkTeam.goalie) newTeamAssignments.dark.push(balanced.darkTeam.goalie)
   newTeamAssignments.dark.push(...balanced.darkTeam.forwards)
   newTeamAssignments.dark.push(...balanced.darkTeam.defense)
@@ -504,7 +488,6 @@ h1 {
   border-left: 4px solid #999;
 }
 
-/* Tablet and larger screens */
 @media (min-width: 768px) {
   .teams-layout {
     grid-template-columns: 1fr 1fr;
@@ -515,7 +498,6 @@ h1 {
   }
 }
 
-/* Desktop screens */
 @media (min-width: 1200px) {
   .teams-layout {
     grid-template-columns: 1fr 1fr 1fr;

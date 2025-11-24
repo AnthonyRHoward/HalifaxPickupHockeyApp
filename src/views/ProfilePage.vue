@@ -380,7 +380,6 @@ h1 {
   font-size: 0.85rem;
 }
 
-/* Desktop screens - show cards in grid */
 @media (min-width: 768px) {
   .profile-container {
     display: grid;
@@ -388,29 +387,22 @@ h1 {
     gap: 1rem;
   }
 
-  /* Title - full width */
   .profile-container > h1 {
     grid-column: 1 / -1;
   }
 
-  /* Player Info and Edit Skill Level - side by side (cards 2 & 3) */
-
-  /* Skate Pass - full width (card 4) */
   .profile-container > :nth-child(4) {
     grid-column: 1 / -1;
   }
 
-  /* Regular Nights - full width (card 5) */
   .profile-container > :nth-child(5) {
     grid-column: 1 / -1;
   }
 
-  /* Game History - full width (card 6) */
   .profile-container > :nth-child(6) {
     grid-column: 1 / -1;
   }
 
-  /* Back button - full width */
   .profile-container > ion-button {
     grid-column: 1 / -1;
   }

@@ -1,24 +1,46 @@
 # Halifax Pickup Hockey
 
-A cross-platform application for managing Halifax Pickup Hockey league check-ins and player management.
+A cross-platform application for managing Halifax Pickup Hockey league check-ins, team assignments, and player management.
 
 ## Features
 
-- User authentication with Firebase Auth
-- Player profiles with position and regular night preferences
-- Game check-in/check-out functionality
+### Player Features
+- User authentication with Firebase Auth (Email/Password)
+- Player profiles with position, skill level, and regular night preferences
+- Game check-in/check-out functionality with time restrictions (8 AM - 6 PM)
 - Automatic waitlist management for non-regular players
-- Time-based check-in restrictions (8 AM - 6 PM)
-- Real-time player lists and waitlist
+- Real-time team rosters with balanced skill levels
+- Live waitlist with check-in times and order numbers
+- Skate pass management (5-game, 10-game, and full-season passes)
+- Next game date display when no game is scheduled
+
+### Admin Features
+- Comprehensive admin dashboard with Games, Users, and History tabs
+- Real-time game management with live player lists
+- Drag-and-drop team assignment (desktop) and tap-to-move (mobile)
+- Auto-balance teams by skill level and position
+- Move players between waitlist and active roster
+- Remove players from games with confirmation dialogs
+- Mark games as completed and automatically update player statistics
+- User management with search functionality
+- Edit user profiles including regulars, admin status, and skate passes
+- View game history and completed games
+
+### Platform Support
 - Responsive design for iOS, Android, and Desktop
+- Native mobile interactions with action sheets
+- Touch-friendly interfaces for all mobile operations
+- Cross-platform authentication with Capacitor Firebase
 
 ## Tech Stack
 
-- Vue 3
-- Ionic Framework
-- Firebase (Auth + Firestore)
-- Vite
-- Pinia (State Management)
+- Vue 3 (Composition API)
+- Ionic Framework 8
+- Firebase Authentication
+- Cloud Firestore (real-time database)
+- Capacitor 7 (iOS/Android)
+- Vite (build tool)
+- Pinia (state management)
 
 ## Game Schedule
 
@@ -35,6 +57,8 @@ A cross-platform application for managing Halifax Pickup Hockey league check-ins
 - Node.js (v18 or higher)
 - npm or yarn
 - Firebase project
+- Xcode (for iOS development)
+- Android Studio (for Android development)
 
 ### Installation
 
@@ -95,22 +119,26 @@ npm run build
 
 ### Mobile Development
 
-To build for iOS/Android, you'll need to add Capacitor:
+Build and sync to iOS:
 
 ```bash
-npm install @capacitor/cli @capacitor/core
-npx cap init
-npx cap add ios
-npx cap add android
+npm run ios
 ```
 
-Then build and sync:
+Or manually:
 
 ```bash
 npm run build
-npx cap sync
-npx cap open ios    # For iOS
-npx cap open android # For Android
+npx cap sync ios
+npx cap open ios
+```
+
+For Android:
+
+```bash
+npm run build
+npx cap sync android
+npx cap open android
 ```
 
 ## Data Models
@@ -122,6 +150,7 @@ npx cap open android # For Android
   email: string,
   name: string,
   position: 'Forward' | 'Defense' | 'Goalie',
+  skillLevel: 1 | 3 | 5,
   regulars: {
     monday_11pm_forum: boolean,
     tuesday_1030pm_forum: boolean,
@@ -130,6 +159,11 @@ npx cap open android # For Android
     saturday_1030pm_forum: boolean
   },
   gamesPlayed: number,
+  isAdmin: boolean,
+  gameHistory: array,
+  passType: null | '5-game' | '10-game' | 'full-season',
+  passGamesRemaining: number,
+  passStartDate: string (ISO date),
   createdAt: string (ISO date)
 }
 ```
@@ -146,28 +180,69 @@ npx cap open android # For Android
     uid: string,
     name: string,
     position: string,
+    skillLevel: number,
     checkedInAt: string (ISO date)
   }],
   waitlist: [{
     uid: string,
     name: string,
     position: string,
+    skillLevel: number,
     checkedInAt: string (ISO date)
   }],
+  teamAssignments: {
+    dark: array,
+    light: array
+  },
+  status: 'active' | 'completed',
+  completedAt: string (ISO date),
   createdAt: string (ISO date)
 }
 ```
+
+## Skill Levels
+
+- **Level 1**: Basic skating ability but struggles with backward skating and crossovers
+- **Level 3**: A good mix of basic skills, decent knowledge of the game, and athletic ability
+- **Level 5**: Advanced skills, strong physical shape, and a high understanding of the game
 
 ## Security Features
 
 - Authentication required for check-in/check-out
 - Users can only modify their own profile
-- Users can only check themselves in/out (prevents others from checking you out)
-- Time-based restrictions for check-ins
+- Users can only check themselves in/out
+- Admin-only routes protected by route guards
+- Time-based restrictions for check-ins (8 AM - 6 PM)
 - Firestore security rules enforce data access controls
+- Confirmation dialogs for critical admin actions
+
+## User Interface Features
+
+- Dark mode theme optimized for hockey arenas
+- Compact, information-dense layouts
+- Primary color highlights for important information
+- Real-time updates without page refreshes
+- Inline formatting for efficient space usage
+- Mobile-optimized touch interactions
+- Desktop drag-and-drop functionality
+- Responsive grid layouts for admin panels
 
 ## Future Enhancements
 
-- Push notifications for game reminders at 8:00 a.m. every morning, as well as 6:00 pm to advise that the skate checkin as closed for users that are checked in on waitlist, or the roster. Also, if the user gets moved from the waitlist to a team, it should notify them.
-- Player statistics and analytics
-- Payment integration
+- Push notifications for:
+  - Game reminders at 8:00 AM
+  - Check-in closing at 6:00 PM for checked-in players
+  - Waitlist to roster promotions
+- Player statistics and analytics dashboard
+- Payment integration for skate passes
+- Email notifications for game updates
+- Historical performance tracking
+- Team formation history
+
+## License
+
+Proprietary - All rights reserved
+
+## Contact
+
+For questions or support, email: halifaxpickuphockey@gmail.com

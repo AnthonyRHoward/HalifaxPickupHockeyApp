@@ -166,7 +166,6 @@ ion-label p {
   color: #ffffff;
 }
 
-/* Tablet and larger screens - display teams side by side */
 @media (min-width: 768px) {
   .team-roster {
     flex-direction: row;

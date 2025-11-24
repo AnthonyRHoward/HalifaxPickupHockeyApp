@@ -60,8 +60,6 @@
 
           <!-- Game Section -->
           <div class="game-section">
-            
-
             <div v-if="gameStore.currentGame">
               <h2 class="section-title">{{ getTodayGameTitle() }}</h2>
               <p class="game-info">{{ gameStore.currentGame.venue }} - {{ formatTime(gameStore.currentGame.time) }}</p>
@@ -169,16 +167,13 @@ const balancedTeams = computed(() => {
 })
 
 const nextGameDate = computed(() => {
-  // Game days: Monday (1), Tuesday (2), Thursday (4), Friday (5), Saturday (6)
   const gameDays = [1, 2, 4, 5, 6]
   const today = new Date()
   const currentDay = today.getDay()
 
-  // Find the next game day
   let nextDay = null
   let daysUntilNext = 0
 
-  // First, check if there's a game day later this week
   for (let i = 1; i <= 7; i++) {
     const checkDay = (currentDay + i) % 7
     if (gameDays.includes(checkDay)) {
@@ -190,11 +185,9 @@ const nextGameDate = computed(() => {
 
   if (nextDay === null) return null
 
-  // Calculate the date of the next game
   const nextDate = new Date(today)
   nextDate.setDate(today.getDate() + daysUntilNext)
 
-  // Format the date
   const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
   const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
@@ -203,7 +196,6 @@ const nextGameDate = computed(() => {
   const date = nextDate.getDate()
   const year = nextDate.getFullYear()
 
-  // Add ordinal suffix (st, nd, rd, th)
   const getOrdinalSuffix = (n) => {
     const s = ['th', 'st', 'nd', 'rd']
     const v = n % 100
@@ -306,8 +298,6 @@ h1 {
   padding: 1rem;
 }
 
-/* Mobile-first: h1 and info centered */
-/* On desktop, when inside game-section, keep centered but with better spacing */
 @media (min-width: 768px) {
   .game-section h1 {
     text-align: left;
@@ -444,7 +434,6 @@ h1 {
   white-space: nowrap;
 }
 
-/* Tablet and larger screens */
 @media (min-width: 768px) {
   .cards-layout {
     flex-direction: row;
@@ -464,7 +453,6 @@ h1 {
   }
 }
 
-/* Desktop screens */
 @media (min-width: 1200px) {
   .schedule-section {
     flex: 0 0 350px;

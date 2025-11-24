@@ -37,7 +37,6 @@ export const useAdminStore = defineStore('admin', () => {
 
       return { success: true }
     } catch (error) {
-      console.error('Error loading games:', error)
       return { success: false, error: error.message }
     } finally {
       loading.value = false
@@ -57,7 +56,6 @@ export const useAdminStore = defineStore('admin', () => {
 
       return { success: true }
     } catch (error) {
-      console.error('Error loading users:', error)
       return { success: false, error: error.message }
     } finally {
       loading.value = false
@@ -65,7 +63,6 @@ export const useAdminStore = defineStore('admin', () => {
   }
 
   const loadGameById = async (gameId) => {
-    // Unsubscribe from previous listener if it exists
     if (unsubscribeGame) {
       unsubscribeGame()
     }
@@ -74,7 +71,6 @@ export const useAdminStore = defineStore('admin', () => {
     try {
       const docRef = doc(db, 'games', gameId)
 
-      // First check if game exists
       const docSnap = await getDoc(docRef)
 
       if (!docSnap.exists()) {
@@ -82,20 +78,17 @@ export const useAdminStore = defineStore('admin', () => {
         return { success: false, error: 'Game not found' }
       }
 
-      // Set up real-time listener
       unsubscribeGame = onSnapshot(docRef, (doc) => {
         if (doc.exists()) {
           selectedGame.value = { id: doc.id, ...doc.data() }
         }
         loading.value = false
       }, (error) => {
-        console.error('Error in game snapshot:', error)
         loading.value = false
       })
 
       return { success: true }
     } catch (error) {
-      console.error('Error loading game:', error)
       loading.value = false
       return { success: false, error: error.message }
     }
@@ -129,10 +122,8 @@ export const useAdminStore = defineStore('admin', () => {
         players: arrayUnion(player)
       })
 
-      // No need to reload - real-time listener will update
       return { success: true }
     } catch (error) {
-      console.error('Error moving player from waitlist:', error)
       return { success: false, error: error.message }
     }
   }
@@ -159,10 +150,8 @@ export const useAdminStore = defineStore('admin', () => {
         [updateField]: arrayRemove(player)
       })
 
-      // No need to reload - real-time listener will update
       return { success: true }
     } catch (error) {
-      console.error('Error removing player:', error)
       return { success: false, error: error.message }
     }
   }
@@ -177,7 +166,6 @@ export const useAdminStore = defineStore('admin', () => {
       await loadAllUsers()
       return { success: true }
     } catch (error) {
-      console.error('Error toggling admin status:', error)
       return { success: false, error: error.message }
     }
   }
@@ -204,14 +192,12 @@ export const useAdminStore = defineStore('admin', () => {
             gamesPlayed: increment(1)
           }
 
-          // Decrement pass games if user has a non-full-season pass
           if (userData.passType && userData.passType !== 'full-season') {
             if (userData.passGamesRemaining > 0) {
               updates.passGamesRemaining = increment(-1)
             }
           }
 
-          // Add game to player's game history
           const gameHistoryEntry = {
             gameId: gameId,
             date: game.date,
@@ -231,10 +217,8 @@ export const useAdminStore = defineStore('admin', () => {
         completedAt: new Date().toISOString()
       })
 
-      // No need to reload - real-time listener will update
       return { success: true }
     } catch (error) {
-      console.error('Error marking game as played:', error)
       return { success: false, error: error.message }
     }
   }
@@ -249,7 +233,6 @@ export const useAdminStore = defineStore('admin', () => {
       await loadAllUsers()
       return { success: true }
     } catch (error) {
-      console.error('Error updating user regulars:', error)
       return { success: false, error: error.message }
     }
   }
@@ -262,7 +245,6 @@ export const useAdminStore = defineStore('admin', () => {
       await loadAllUsers()
       return { success: true }
     } catch (error) {
-      console.error('Error updating user:', error)
       return { success: false, error: error.message }
     }
   }
@@ -274,10 +256,8 @@ export const useAdminStore = defineStore('admin', () => {
         teamAssignments: teamAssignments
       })
 
-      // No need to reload - real-time listener will update
       return { success: true }
     } catch (error) {
-      console.error('Error updating team assignments:', error)
       return { success: false, error: error.message }
     }
   }
@@ -293,7 +273,6 @@ export const useAdminStore = defineStore('admin', () => {
 
       const game = docSnap.data()
 
-      // Remove from source list
       let updates = {}
       if (fromList === 'players') {
         const playerData = game.players?.find(p => p.uid === player.uid)
@@ -309,7 +288,6 @@ export const useAdminStore = defineStore('admin', () => {
 
       await updateDoc(docRef, updates)
 
-      // Add to destination list
       updates = {}
       if (toList === 'players') {
         updates.players = arrayUnion(player)
@@ -318,10 +296,8 @@ export const useAdminStore = defineStore('admin', () => {
       }
 
       await updateDoc(docRef, updates)
-      // No need to reload - real-time listener will update
       return { success: true }
     } catch (error) {
-      console.error('Error moving player to team:', error)
       return { success: false, error: error.message }
     }
   }

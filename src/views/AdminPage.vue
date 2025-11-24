@@ -273,7 +273,6 @@ const filteredUsers = computed(() => {
   )
 })
 
-// Auto-load users when switching to users tab
 watch(selectedTab, (newTab) => {
   if (newTab === 'users' && adminStore.allUsers.length === 0) {
     loadUsers()
@@ -537,7 +536,6 @@ h2 {
   padding: 0;
 }
 
-/* Tablet and larger screens - show cards in grid (for games and history tabs) */
 @media (min-width: 768px) {
   .tab-content:not(.users-tab) {
     display: grid;
@@ -554,7 +552,6 @@ h2 {
   }
 }
 
-/* Desktop screens - allow up to 2 columns (for games and history tabs) */
 @media (min-width: 1200px) {
   .tab-content:not(.users-tab) {
     grid-template-columns: repeat(2, 1fr);
