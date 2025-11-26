@@ -251,6 +251,15 @@
                   <ion-icon :icon="createOutline" slot="start"></ion-icon>
                   Edit
                 </ion-button>
+                <ion-button
+                  fill="outline"
+                  size="small"
+                  color="danger"
+                  @click="deleteSchedule(schedule)"
+                >
+                  <ion-icon :icon="trashOutline" slot="start"></ion-icon>
+                  Delete
+                </ion-button>
               </div>
             </ion-card-content>
           </ion-card>
@@ -403,6 +412,7 @@ import {
   checkmarkCircleOutline,
   createOutline,
   peopleOutline,
+  trashOutline,
 } from "ionicons/icons";
 import { ref, computed, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
@@ -559,6 +569,38 @@ const formatDisplayTime = (time) => {
   const ampm = hour >= 12 ? "PM" : "AM";
   const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
   return `${displayHour}:${minutes} ${ampm}`;
+};
+
+const deleteSchedule = async (schedule) => {
+  const alert = await alertController.create({
+    header: "Delete Schedule",
+    message: `Are you sure you want to delete the ${schedule.dayName} ${schedule.displayTime} schedule at ${schedule.venue}? This cannot be undone.`,
+    buttons: [
+      {
+        text: "Cancel",
+        role: "cancel",
+      },
+      {
+        text: "Delete",
+        role: "destructive",
+        cssClass: "danger-button",
+        handler: async () => {
+          const result = await adminStore.deleteGameSchedule(schedule.id);
+
+          const toast = await toastController.create({
+            message: result.success
+              ? "Schedule deleted!"
+              : "Failed to delete schedule",
+            duration: 2000,
+            color: result.success ? "success" : "danger",
+          });
+          await toast.present();
+        },
+      },
+    ],
+  });
+
+  await alert.present();
 };
 
 const addNewSchedule = async () => {
