@@ -3,15 +3,30 @@
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button default-href="/"></ion-back-button>
+          <ion-back-button :default-href="`/${cityId}`"></ion-back-button>
         </ion-buttons>
-        <ion-title>Admin Panel</ion-title>
+        <ion-title
+          >{{ cityStore.currentCity?.name || "Admin" }} Admin</ion-title
+        >
+        <ion-buttons slot="end">
+          <ion-button @click="router.push('/')" title="Switch City">
+            <ion-icon :icon="swapHorizontalOutline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
       </ion-toolbar>
     </ion-header>
 
     <ion-content class="ion-padding">
       <div class="admin-container">
-        <h1>Admin Dashboard</h1>
+        <h1>{{ cityStore.currentCity?.displayName || "Admin" }} Dashboard</h1>
+        <p class="admin-badge" v-if="authStore.isSuperAdmin">
+          <ion-badge color="primary">Super Admin</ion-badge>
+        </p>
+        <p class="admin-badge" v-else>
+          <ion-badge color="secondary"
+            >{{ cityStore.currentCity?.name }} Admin</ion-badge
+          >
+        </p>
 
         <ion-segment v-model="selectedTab">
           <ion-segment-button value="games">
@@ -124,7 +139,7 @@
                 expand="block"
                 color="primary"
                 class="ion-margin-top"
-                @click="router.push(`/admin/manage-teams/${game.id}`)"
+                @click="router.push(`/${cityId}/admin/manage-teams/${game.id}`)"
               >
                 <ion-icon :icon="peopleOutline" slot="start"></ion-icon>
                 Manage Teams
@@ -164,14 +179,14 @@
             ></ion-searchbar>
           </div>
 
-          <ion-button
+          <!-- <ion-button
             @click="loadUsers"
             expand="block"
             class="ion-margin-bottom"
           >
             <ion-icon :icon="refreshOutline" slot="start"></ion-icon>
             Refresh Users
-          </ion-button>
+          </ion-button> -->
 
           <ion-list>
             <ion-item v-for="user in filteredUsers" :key="user.id">
@@ -182,16 +197,13 @@
                   {{ user.skillLevel || 2 }}
                 </p>
               </ion-label>
-              <ion-badge
-                slot="end"
-                :color="user.isAdmin ? 'primary' : 'medium'"
-              >
-                {{ user.isAdmin ? "Admin" : "User" }}
+              <ion-badge slot="end" :color="getUserAdminBadgeColor(user)">
+                {{ getUserAdminLabel(user) }}
               </ion-badge>
               <ion-button
                 slot="end"
                 fill="clear"
-                @click="router.push(`/admin/edit-user/${user.id}`)"
+                @click="router.push(`/${cityId}/admin/edit-user/${user.id}`)"
               >
                 <ion-icon :icon="createOutline"></ion-icon>
               </ion-button>
@@ -211,8 +223,13 @@
           </div>
         </div>
 
-        <div v-if="selectedTab === 'schedules'" class="tab-content schedules-tab">
-          <h2>Game Schedules</h2>
+        <div
+          v-if="selectedTab === 'schedules'"
+          class="tab-content schedules-tab"
+        >
+          <h2>
+            Game Schedules for {{ cityStore.currentCity?.name || "This City" }}
+          </h2>
 
           <ion-button
             @click="loadSchedules"
@@ -223,15 +240,21 @@
             Refresh Schedules
           </ion-button>
 
-          <ion-card v-for="schedule in adminStore.gameSchedules" :key="schedule.id">
+          <ion-card
+            v-for="schedule in adminStore.gameSchedules"
+            :key="schedule.id"
+          >
             <ion-card-header>
-              <ion-card-title>{{ schedule.dayName }} {{ schedule.displayTime }}</ion-card-title>
+              <ion-card-title
+                >{{ schedule.dayName }}
+                {{ schedule.displayTime }}</ion-card-title
+              >
               <ion-card-subtitle>{{ schedule.venue }}</ion-card-subtitle>
             </ion-card-header>
             <ion-card-content>
               <div class="schedule-details">
                 <ion-badge :color="schedule.isActive ? 'success' : 'medium'">
-                  {{ schedule.isActive ? 'Active' : 'Inactive' }}
+                  {{ schedule.isActive ? "Active" : "Inactive" }}
                 </ion-badge>
               </div>
 
@@ -241,7 +264,7 @@
                   size="small"
                   @click="toggleScheduleStatus(schedule)"
                 >
-                  {{ schedule.isActive ? 'Deactivate' : 'Activate' }}
+                  {{ schedule.isActive ? "Deactivate" : "Activate" }}
                 </ion-button>
                 <ion-button
                   fill="outline"
@@ -269,7 +292,7 @@
             class="empty-state"
           >
             <ion-text color="medium">
-              <p>No schedules found. Click "Refresh Schedules" to load.</p>
+              <p>No schedules found for this city. Add one below!</p>
             </ion-text>
           </div>
 
@@ -292,13 +315,21 @@
               </ion-item>
 
               <ion-item>
-                <ion-label position="floating">Time (24h format, e.g. 22:30)</ion-label>
-                <ion-input v-model="newSchedule.time" placeholder="22:30"></ion-input>
+                <ion-label position="floating"
+                  >Time (24h format, e.g. 22:30)</ion-label
+                >
+                <ion-input
+                  v-model="newSchedule.time"
+                  placeholder="22:30"
+                ></ion-input>
               </ion-item>
 
               <ion-item>
                 <ion-label position="floating">Venue</ion-label>
-                <ion-input v-model="newSchedule.venue" placeholder="Forum"></ion-input>
+                <ion-input
+                  v-model="newSchedule.venue"
+                  placeholder="Forum"
+                ></ion-input>
               </ion-item>
 
               <ion-button
@@ -316,14 +347,14 @@
         <div v-if="selectedTab === 'history'" class="tab-content">
           <h2>Game History</h2>
 
-          <ion-button
+          <!-- <ion-button
             @click="loadGames"
             expand="block"
             class="ion-margin-bottom"
           >
             <ion-icon :icon="refreshOutline" slot="start"></ion-icon>
             Refresh History
-          </ion-button>
+          </ion-button> -->
 
           <ion-card v-for="game in completedGames" :key="game.id">
             <ion-card-header>
@@ -413,13 +444,20 @@ import {
   createOutline,
   peopleOutline,
   trashOutline,
+  swapHorizontalOutline,
 } from "ionicons/icons";
-import { ref, computed, onMounted, watch } from "vue";
-import { useRouter } from "vue-router";
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { useAdminStore } from "@/stores/admin";
+import { useAuthStore } from "@/stores/auth";
+import { useCityStore } from "@/stores/city";
 
 const router = useRouter();
+const route = useRoute();
 const adminStore = useAdminStore();
+const authStore = useAuthStore();
+const cityStore = useCityStore();
+
 const selectedTab = ref("games");
 const userSearchQuery = ref("");
 const newSchedule = ref({
@@ -428,8 +466,19 @@ const newSchedule = ref({
   venue: "",
 });
 
-onMounted(() => {
+// Get city ID from route params
+const cityId = computed(() => route.params.cityId);
+
+onMounted(async () => {
+  if (cityId.value) {
+    await cityStore.setCurrentCity(cityId.value);
+    adminStore.setCurrentCity(cityId.value);
+  }
   loadGames();
+});
+
+onUnmounted(() => {
+  // Cleanup if needed
 });
 
 const activeGames = computed(() => {
@@ -454,6 +503,23 @@ const filteredUsers = computed(() => {
   );
 });
 
+// Get user's admin status label for current city
+const getUserAdminLabel = (user) => {
+  if (user.isSuperAdmin) return "Super Admin";
+  if (user.cityData?.[cityId.value]?.isAdmin)
+    return `${cityStore.currentCity?.name || "City"} Admin`;
+  if (user.isAdmin) return "Admin (Legacy)";
+  return "User";
+};
+
+// Get user's admin badge color
+const getUserAdminBadgeColor = (user) => {
+  if (user.isSuperAdmin) return "primary";
+  if (user.cityData?.[cityId.value]?.isAdmin) return "secondary";
+  if (user.isAdmin) return "tertiary";
+  return "medium";
+};
+
 watch(selectedTab, (newTab) => {
   if (newTab === "users" && adminStore.allUsers.length === 0) {
     loadUsers();
@@ -464,7 +530,7 @@ watch(selectedTab, (newTab) => {
 });
 
 const loadGames = async () => {
-  const result = await adminStore.loadAllGames();
+  const result = await adminStore.loadAllGames(cityId.value);
   if (!result.success) {
     const toast = await toastController.create({
       message: "Failed to load games",
@@ -488,7 +554,7 @@ const loadUsers = async () => {
 };
 
 const loadSchedules = async () => {
-  const result = await adminStore.loadGameSchedules();
+  const result = await adminStore.loadGameSchedules(cityId.value);
   if (!result.success) {
     const toast = await toastController.create({
       message: "Failed to load schedules",
@@ -626,7 +692,7 @@ const addNewSchedule = async () => {
     order: newSchedule.value.dayOfWeek,
   };
 
-  const result = await adminStore.addGameSchedule(scheduleData);
+  const result = await adminStore.addGameSchedule(scheduleData, cityId.value);
 
   const toast = await toastController.create({
     message: result.success ? "Schedule added!" : "Failed to add schedule",
@@ -781,6 +847,11 @@ const formatTime = (time) => {
 }
 
 h1 {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.admin-badge {
   text-align: center;
   margin-bottom: 1.5rem;
 }

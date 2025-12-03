@@ -3,7 +3,7 @@
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button default-href="/admin"></ion-back-button>
+          <ion-back-button :default-href="`/${cityId}/admin`"></ion-back-button>
         </ion-buttons>
         <ion-title>Manage Teams</ion-title>
       </ion-toolbar>
@@ -177,6 +177,9 @@ const router = useRouter()
 const adminStore = useAdminStore()
 const gameStore = useGameStore()
 
+// Get city ID from route params
+const cityId = computed(() => route.params.cityId)
+
 const draggedPlayer = ref(null)
 const dragSource = ref(null)
 const isMobile = Capacitor.isNativePlatform()
@@ -192,7 +195,7 @@ onMounted(async () => {
       color: 'danger'
     })
     await toast.present()
-    router.push('/admin')
+    router.push(`/${cityId.value}/admin`)
     return
   }
 

@@ -20,7 +20,122 @@ export const useAuthStore = defineStore('auth', () => {
   let unsubscribeProfile = null
 
   const isAuthenticated = computed(() => !!user.value)
-  const isAdmin = computed(() => userProfile.value?.isAdmin || false)
+
+  // Legacy isAdmin - checks if user is admin in any city or super-admin
+  const isAdmin = computed(() => {
+    if (!userProfile.value) return false
+    // Check for super admin
+    if (userProfile.value.isSuperAdmin) return true
+    // Check for legacy isAdmin field
+    if (userProfile.value.isAdmin) return true
+    // Check for city admin in any city
+    if (userProfile.value.cityData) {
+      return Object.values(userProfile.value.cityData).some(cd => cd.isAdmin)
+    }
+    return false
+  })
+
+  // Super admin can manage all cities
+  const isSuperAdmin = computed(() => {
+    return userProfile.value?.isSuperAdmin || false
+  })
+
+  // Check if user is admin for a specific city
+  const isCityAdmin = (cityId) => {
+    if (!userProfile.value) return false
+    if (userProfile.value.isSuperAdmin) return true
+    if (!cityId) return false
+    return userProfile.value.cityData?.[cityId]?.isAdmin || false
+  }
+
+  // Get user's data for a specific city
+  const getCityData = (cityId) => {
+    if (!userProfile.value || !cityId) return null
+
+    // First try new cityData structure
+    if (userProfile.value.cityData?.[cityId]) {
+      return userProfile.value.cityData[cityId]
+    }
+
+    // Fall back to legacy structure (for backward compatibility during migration)
+    if (cityId === 'halifax' && userProfile.value.regulars) {
+      return {
+        isAdmin: userProfile.value.isAdmin || false,
+        regulars: userProfile.value.regulars,
+        gamesPlayed: userProfile.value.gamesPlayed || 0,
+        passType: userProfile.value.passType,
+        passGamesRemaining: userProfile.value.passGamesRemaining || 0,
+        passStartDate: userProfile.value.passStartDate
+      }
+    }
+
+    return null
+  }
+
+  // Check if user is a regular for a specific schedule
+  const isRegularForSchedule = (scheduleKey, cityId) => {
+    if (!userProfile.value || !scheduleKey) return false
+
+    // Try new cityData structure first
+    if (userProfile.value.cityData?.[cityId]?.regulars) {
+      return userProfile.value.cityData[cityId].regulars[scheduleKey] || false
+    }
+
+    // Fall back to legacy regulars field
+    if (userProfile.value.regulars) {
+      return userProfile.value.regulars[scheduleKey] || false
+    }
+
+    return false
+  }
+
+  // Get user's regulars for a specific city
+  const getCityRegulars = (cityId) => {
+    if (!userProfile.value || !cityId) return {}
+
+    if (userProfile.value.cityData?.[cityId]?.regulars) {
+      return userProfile.value.cityData[cityId].regulars
+    }
+
+    // Fall back for legacy data
+    if (cityId === 'halifax' && userProfile.value.regulars) {
+      return userProfile.value.regulars
+    }
+
+    return {}
+  }
+
+  // Get games played for a specific city
+  const getCityGamesPlayed = (cityId) => {
+    if (!userProfile.value || !cityId) return 0
+
+    if (userProfile.value.cityData?.[cityId]) {
+      return userProfile.value.cityData[cityId].gamesPlayed || 0
+    }
+
+    // Fall back for legacy data
+    if (cityId === 'halifax') {
+      return userProfile.value.gamesPlayed || 0
+    }
+
+    return 0
+  }
+
+  // Get pass info (global - usable across all cities)
+  const getPassInfo = () => {
+    if (!userProfile.value) {
+      return { passType: null, passGamesRemaining: 0, passStartDate: null }
+    }
+
+    return {
+      passType: userProfile.value.passType || null,
+      passGamesRemaining: userProfile.value.passGamesRemaining || 0,
+      passStartDate: userProfile.value.passStartDate || null
+    }
+  }
+
+  // Alias for backward compatibility
+  const getCityPassInfo = () => getPassInfo()
 
   const initAuth = async () => {
     if (isNative) {
@@ -119,28 +234,37 @@ export const useAuthStore = defineStore('auth', () => {
 
       user.value = result.user
 
+      // Get the city from userData or default to halifax
+      const cityId = userData.cityId || 'halifax'
+
+      // Create profile data with city-scoped fields and global pass
       const profileData = {
         email: email,
         name: userData.name,
         position: userData.position || 'Forward',
         skillLevel: userData.skillLevel || 2,
-        regulars: userData.regulars || {
-          'sunday_1030pm_forum': false,
-          'monday_11pm_forum': false,
-          'tuesday_1030pm_forum': false,
-          'wednesday_1030pm_forum': false,
-          'thursday_1030pm_civic': false,
-          'friday_1030pm_forum': false,
-          'saturday_1030pm_forum': false
-        },
-        gamesPlayed: 0,
-        isAdmin: false,
-        gameHistory: [],
+        defaultCityId: cityId,
+        isSuperAdmin: false,
+        // Global pass info (usable across all cities)
         passType: null,
         passGamesRemaining: 0,
         passStartDate: null,
+        // City-specific data (regulars, gamesPlayed, admin status)
+        cityData: {
+          [cityId]: {
+            isAdmin: false,
+            regulars: {},
+            gamesPlayed: 0
+          }
+        },
+        gameHistory: [],
         createdAt: new Date().toISOString()
       }
+
+      // Legacy fields for backward compatibility
+      profileData.isAdmin = false
+      profileData.regulars = {}
+      profileData.gamesPlayed = 0
 
       await setDoc(doc(db, 'users', result.user.uid), profileData)
       userProfile.value = { id: result.user.uid, ...profileData }
@@ -177,17 +301,45 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  // Update city-specific data for user
+  const updateCityData = async (cityId, cityUpdates) => {
+    if (!user.value || !cityId) {
+      return { success: false, error: 'Invalid user or city' }
+    }
+
+    try {
+      const docRef = doc(db, 'users', user.value.uid)
+      await setDoc(docRef, {
+        cityData: {
+          [cityId]: cityUpdates
+        }
+      }, { merge: true })
+      return { success: true }
+    } catch (error) {
+      return { success: false, error: error.message }
+    }
+  }
+
   return {
     user,
     userProfile,
     loading,
     isAuthenticated,
     isAdmin,
+    isSuperAdmin,
+    isCityAdmin,
+    getCityData,
+    isRegularForSchedule,
+    getCityRegulars,
+    getCityGamesPlayed,
+    getPassInfo,
+    getCityPassInfo, // Alias for backward compatibility
     initAuth,
     login,
     register,
     logout,
     updateUserProfile,
+    updateCityData,
     loadUserProfile,
     stopProfileListener
   }

@@ -15,7 +15,7 @@
 
         <form @submit.prevent="handleRegister">
           <ion-item>
-            <ion-label position="floating">Name</ion-label>
+            <ion-label position="floating">First and Last Name</ion-label>
             <ion-input
               v-model="name"
               type="text"
@@ -25,7 +25,7 @@
           </ion-item>
 
           <ion-item>
-            <ion-label position="floating">Email</ion-label>
+            <ion-label position="floating">Email Address</ion-label>
             <ion-input
               v-model="email"
               type="email"
@@ -42,6 +42,19 @@
               required
               autocomplete="new-password"
             ></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating">Home City</ion-label>
+            <ion-select v-model="selectedCityId" interface="popover">
+              <ion-select-option
+                v-for="city in cityStore.activeCities"
+                :key="city.id"
+                :value="city.id"
+              >
+                {{ city.displayName }}
+              </ion-select-option>
+            </ion-select>
           </ion-item>
 
           <ion-item>
@@ -97,7 +110,7 @@
             type="submit"
             expand="block"
             class="ion-margin-top"
-            :disabled="loading"
+            :disabled="loading || !selectedCityId"
           >
             <ion-spinner v-if="loading" />
             <span v-else>Register</span>
@@ -135,23 +148,40 @@ import {
   IonRadio,
   IonRadioGroup,
   IonText,
-  IonNote,
   IonSpinner,
   toastController,
 } from "@ionic/vue";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+import { useCityStore } from "@/stores/city";
 
 const router = useRouter();
 const authStore = useAuthStore();
+const cityStore = useCityStore();
 
 const name = ref("");
 const email = ref("");
 const password = ref("");
+const selectedCityId = ref("");
 const position = ref("Forward");
 const skillLevel = ref(2);
 const loading = ref(false);
+
+onMounted(async () => {
+  // Load cities if not already loaded
+  if (!cityStore.citiesLoaded) {
+    await cityStore.loadCities();
+  }
+
+  // Default to first active city or last visited city
+  const lastCityId = cityStore.getLastCityId();
+  if (lastCityId && cityStore.getCityById(lastCityId)) {
+    selectedCityId.value = lastCityId;
+  } else if (cityStore.activeCities.length > 0) {
+    selectedCityId.value = cityStore.activeCities[0].id;
+  }
+});
 
 const handleRegister = async () => {
   if (password.value.length < 6) {
@@ -164,11 +194,22 @@ const handleRegister = async () => {
     return;
   }
 
+  if (!selectedCityId.value) {
+    const toast = await toastController.create({
+      message: "Please select a home city",
+      duration: 3000,
+      color: "danger",
+    });
+    await toast.present();
+    return;
+  }
+
   loading.value = true;
   const result = await authStore.register(email.value, password.value, {
     name: name.value,
     position: position.value,
     skillLevel: skillLevel.value,
+    cityId: selectedCityId.value,
   });
   loading.value = false;
 
@@ -179,7 +220,8 @@ const handleRegister = async () => {
       color: "success",
     });
     await toast.present();
-    router.push("/");
+    // Navigate to the selected city's home page
+    router.push(`/${selectedCityId.value}`);
   } else {
     const toast = await toastController.create({
       message: result.error || "Registration failed",

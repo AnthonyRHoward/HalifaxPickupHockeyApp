@@ -6,9 +6,23 @@
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <div class="header-content">
-          <img src="/Halifax-Pickup-Hockey.png" alt="Halifax Pickup Hockey Logo" class="header-logo" />
-          <ion-title>Halifax Pickup Hockey</ion-title>
+          <img
+            v-if="cityStore.currentCityLogo"
+            :src="cityStore.currentCityLogo"
+            :alt="`${cityStore.currentCity?.name} Logo`"
+            class="header-logo"
+            @error="handleLogoError"
+          />
+          <ion-title>{{ cityStore.currentCityDisplayName }}</ion-title>
         </div>
+        <ion-buttons slot="end">
+          <ion-button @click="router.push('/')" title="Switch City">
+            <ion-icon :icon="swapHorizontalOutline"></ion-icon>
+          </ion-button>
+          <ion-button v-if="authStore.isAuthenticated" @click="router.push(`/${cityId}/profile`)" title="Profile">
+            <ion-icon :icon="personCircleOutline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
       </ion-toolbar>
     </ion-header>
 
@@ -17,13 +31,13 @@
         <div class="cards-layout">
           <!-- Weekly Schedule -->
           <div class="schedule-section">
-            <h1>Welcome to Halifax Pickup Hockey</h1>
+            <h1>Welcome to {{ cityStore.currentCityDisplayName }}</h1>
 
             <div class="info-section">
               <ion-text color="medium">
                 <p>
-                  <strong>NEW TO US?</strong> Email: <a href="mailto:halifaxpickuphockey@gmail.com">halifaxpickuphockey@gmail.com</a> for more info!
-                  <br></br><br></br>
+                  <strong>NEW TO US?</strong> Email: <a :href="`mailto:${cityStore.currentCityEmail}`">{{ cityStore.currentCityEmail }}</a> for more info!
+                  <br><br>
                   Check in begins at 8:00am for each skate, and is closed at 6:00pm, at which time we attempt to confirm spares.
                 </p>
               </ion-text>
@@ -33,6 +47,11 @@
               <ion-item v-for="schedule in sortedSchedules" :key="schedule.key">
                 <ion-label>
                   <p><span class="day-name">{{ schedule.dayName }}</span> - {{ formatTime(schedule.time) }} - {{ schedule.venue }}</p>
+                </ion-label>
+              </ion-item>
+              <ion-item v-if="sortedSchedules.length === 0">
+                <ion-label color="medium">
+                  <p>No schedules available</p>
                 </ion-label>
               </ion-item>
             </ion-list>
@@ -52,7 +71,7 @@
 
               <div v-else-if="!gameStore.isCheckInAllowed()" class="time-restriction">
                 <ion-text color="danger">
-                  <p> Check-in is only available between 8:00 AM and 6:00 PM. <br></br><br></br> The
+                  <p> Check-in is only available between 8:00 AM and 6:00 PM. <br><br> The
                   check-in system will appear between that timeframe.</p>
                 </ion-text>
               </div>
@@ -81,7 +100,7 @@
               </div>
 
               <div v-if="gameStore.isCheckInAllowed()">
-                <TeamRoster v-if="balancedTeams" :darkTeam="balancedTeams.darkTeam" :lightTeam="balancedTeams.lightTeam" :isAdmin="authStore.isAdmin" />
+                <TeamRoster v-if="balancedTeams" :darkTeam="balancedTeams.darkTeam" :lightTeam="balancedTeams.lightTeam" :isAdmin="isCurrentCityAdmin" />
 
                 <div class="waitlist-section">
                   <h3>Waitlist ({{ gameStore.currentGame.waitlist?.length || 0 }})</h3>
@@ -89,7 +108,7 @@
                     <ion-item v-for="(player, index) in gameStore.currentGame.waitlist" :key="player.uid">
                       <div slot="start" class="waitlist-number">{{ index + 1 }}</div>
                       <ion-label>
-                        <p><span class="player-name">{{ player.name }}</span> - {{ player.position }}<span v-if="authStore.isAdmin"> - Skill Level {{ player.skillLevel || 2 }}</span></p>
+                        <p><span class="player-name">{{ player.name }}</span> - {{ player.position }}<span v-if="isCurrentCityAdmin"> - Skill Level {{ player.skillLevel || 2 }}</span></p>
                       </ion-label>
                       <div slot="end" class="waitlist-time">{{ formatCheckInTime(player.checkedInAt) }}</div>
                     </ion-item>
@@ -129,18 +148,31 @@ import {
   IonText,
   IonSpinner,
   IonMenuButton,
+  IonIcon,
   toastController
 } from '@ionic/vue'
-import { onMounted, onUnmounted, ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { swapHorizontalOutline, personCircleOutline } from 'ionicons/icons'
+import { onMounted, onUnmounted, ref, computed, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useGameStore } from '@/stores/game'
+import { useCityStore } from '@/stores/city'
 import TeamRoster from '@/components/TeamRoster.vue'
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
 const gameStore = useGameStore()
+const cityStore = useCityStore()
 const loading = ref(false)
+
+// Get city ID from route params
+const cityId = computed(() => route.params.cityId)
+
+// Check if current user is admin for this city
+const isCurrentCityAdmin = computed(() => {
+  return authStore.isCityAdmin(cityId.value)
+})
 
 const balancedTeams = computed(() => {
   if (!gameStore.currentGame || !gameStore.currentGame.players) {
@@ -168,6 +200,8 @@ const nextGameDate = computed(() => {
   // Get active game days from the dynamic schedules
   const schedules = gameStore.gameSchedules
   const gameDays = Object.values(schedules).map(s => s.day)
+
+  if (gameDays.length === 0) return null
 
   const today = new Date()
   const currentDay = today.getDay()
@@ -206,9 +240,34 @@ const nextGameDate = computed(() => {
   return `${dayName}, ${monthName} ${date}${getOrdinalSuffix(date)}, ${year}`
 })
 
+// Initialize when city changes
+const initializeForCity = async (newCityId) => {
+  if (!newCityId) return
+
+  // Clean up previous listeners
+  gameStore.stopSchedulesListener()
+  gameStore.stopGameListener()
+
+  // Set city context
+  await cityStore.setCurrentCity(newCityId)
+  gameStore.setCurrentCity(newCityId)
+
+  // Subscribe to schedules for this city
+  await gameStore.subscribeToSchedules(newCityId)
+
+  // Load today's game for this city
+  await gameStore.loadTodayGame(newCityId)
+}
+
 onMounted(async () => {
-  await gameStore.subscribeToSchedules()
-  await gameStore.loadTodayGame()
+  await initializeForCity(cityId.value)
+})
+
+// Watch for city changes in route
+watch(cityId, async (newCityId, oldCityId) => {
+  if (newCityId && newCityId !== oldCityId) {
+    await initializeForCity(newCityId)
+  }
 })
 
 onUnmounted(() => {
@@ -223,6 +282,7 @@ const getTodayGameTitle = () => {
 }
 
 const formatTime = (time) => {
+  if (!time) return ''
   const [hours, minutes] = time.split(':')
   const hour = parseInt(hours)
   const ampm = hour >= 12 ? 'PM' : 'AM'
@@ -242,7 +302,7 @@ const formatCheckInTime = (timestamp) => {
 
 const handleCheckIn = async () => {
   loading.value = true
-  const result = await gameStore.checkIn()
+  const result = await gameStore.checkIn(cityId.value)
   loading.value = false
 
   const toast = await toastController.create({
@@ -259,7 +319,7 @@ const handleCheckIn = async () => {
 
 const handleCheckOut = async () => {
   loading.value = true
-  const result = await gameStore.checkOut()
+  const result = await gameStore.checkOut(cityId.value)
   loading.value = false
 
   const toast = await toastController.create({
@@ -268,6 +328,10 @@ const handleCheckOut = async () => {
     color: result.success ? 'success' : 'danger'
   })
   await toast.present()
+}
+
+const handleLogoError = (event) => {
+  event.target.style.display = 'none'
 }
 </script>
 

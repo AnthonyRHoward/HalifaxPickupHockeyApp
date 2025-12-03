@@ -3,23 +3,23 @@
     <ion-menu content-id="main-content" type="overlay">
       <ion-header>
         <ion-toolbar>
-          <ion-title>Menu</ion-title>
+          <ion-title>{{ cityStore.currentCity ? cityStore.currentCityDisplayName : 'Nova Adult Hockey' }}</ion-title>
         </ion-toolbar>
       </ion-header>
       <ion-content class="menu-content">
         <div class="menu-top">
           <ion-list>
-            <ion-item button @click="navigateTo('/')" lines="none">
+            <ion-item button @click="navigateTo(cityHomePath)" lines="none">
               <ion-icon slot="start" :icon="homeOutline"></ion-icon>
               <ion-label>Home</ion-label>
             </ion-item>
 
-            <ion-item button @click="navigateTo('/about')" lines="none">
+            <ion-item button @click="navigateTo(aboutPath)" lines="none">
               <ion-icon slot="start" :icon="informationCircleOutline"></ion-icon>
               <ion-label>About</ion-label>
             </ion-item>
 
-            <ion-item v-if="authStore.isAdmin" button @click="navigateTo('/admin')" lines="none">
+            <ion-item v-if="isCurrentCityAdmin" button @click="navigateTo(adminPath)" lines="none">
               <ion-icon slot="start" :icon="settings"></ion-icon>
               <ion-label>Admin</ion-label>
             </ion-item>
@@ -28,22 +28,30 @@
               <ion-icon slot="start" :icon="logInOutline"></ion-icon>
               <ion-label>Login</ion-label>
             </ion-item>
-
-            <ion-item v-else button @click="navigateTo('/profile')" lines="none">
-              <ion-icon slot="start" :icon="personOutline"></ion-icon>
-              <ion-label>Profile</ion-label>
-            </ion-item>
           </ion-list>
+
+          <!-- City Switcher Section -->
+          <div v-if="cityStore.activeCities.length > 1" class="city-switcher">
+            <ion-list-header>
+              <ion-label>Switch City</ion-label>
+            </ion-list-header>
+            <ion-list>
+              <ion-item
+                v-for="city in cityStore.activeCities"
+                :key="city.id"
+                button
+                @click="switchCity(city.id)"
+                lines="none"
+                :class="{ 'selected-city': city.id === cityStore.currentCityId }"
+              >
+                <ion-icon slot="start" :icon="locationOutline"></ion-icon>
+                <ion-label>{{ city.name }}</ion-label>
+                <ion-icon v-if="city.id === cityStore.currentCityId" slot="end" :icon="checkmarkOutline" color="success"></ion-icon>
+              </ion-item>
+            </ion-list>
+          </div>
         </div>
 
-        <div v-if="authStore.isAuthenticated" class="menu-bottom">
-          <ion-list>
-            <ion-item button @click="handleLogout" lines="none" color="danger">
-              <ion-icon slot="start" :icon="logOutOutline"></ion-icon>
-              <ion-label>Logout</ion-label>
-            </ion-item>
-          </ion-list>
-        </div>
       </ion-content>
     </ion-menu>
 
@@ -61,10 +69,10 @@ import {
   IonTitle,
   IonContent,
   IonList,
+  IonListHeader,
   IonItem,
   IonLabel,
   IonIcon,
-  toastController,
   menuController
 } from '@ionic/vue'
 import {
@@ -72,34 +80,56 @@ import {
   informationCircleOutline,
   settings,
   logInOutline,
-  personOutline,
-  logOutOutline
+  locationOutline,
+  checkmarkOutline
 } from 'ionicons/icons'
-import { useRouter } from 'vue-router'
+import { computed, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useCityStore } from '@/stores/city'
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
+const cityStore = useCityStore()
+
+// Subscribe to cities on app mount for real-time updates
+onMounted(() => {
+  cityStore.subscribeToCities()
+})
+
+// Get current city from route or store
+const currentCityId = computed(() => {
+  return route.params.cityId || cityStore.currentCityId
+})
+
+// Compute city-scoped paths
+const cityHomePath = computed(() => {
+  return currentCityId.value ? `/${currentCityId.value}` : '/'
+})
+
+const aboutPath = computed(() => {
+  return currentCityId.value ? `/${currentCityId.value}/about` : '/'
+})
+
+const adminPath = computed(() => {
+  return currentCityId.value ? `/${currentCityId.value}/admin` : '/'
+})
+
+// Check if current user is admin for current city
+const isCurrentCityAdmin = computed(() => {
+  return authStore.isCityAdmin(currentCityId.value)
+})
 
 const navigateTo = async (path) => {
   await menuController.close()
   router.push(path)
 }
 
-const handleLogout = async () => {
+const switchCity = async (cityId) => {
   await menuController.close()
-  const result = await authStore.logout()
-
-  const toast = await toastController.create({
-    message: result.success ? 'Logged out successfully!' : 'Logout failed',
-    duration: 2000,
-    color: result.success ? 'success' : 'danger'
-  })
-  await toast.present()
-
-  if (result.success) {
-    router.push('/')
-  }
+  await cityStore.setCurrentCity(cityId)
+  router.push(`/${cityId}`)
 }
 </script>
 
@@ -184,12 +214,6 @@ ion-menu .menu-top {
   overflow-y: auto;
 }
 
-ion-menu .menu-bottom {
-  margin-top: auto;
-  border-top: 1px solid var(--ion-color-light);
-  padding-top: 0.5rem;
-}
-
 ion-menu ion-list {
   padding: 1rem 0;
 }
@@ -209,5 +233,27 @@ ion-menu ion-icon {
 ion-menu-button {
   color: white !important;
   --color: white !important;
+}
+
+/* City switcher styles */
+ion-menu .city-switcher {
+  border-top: 1px solid var(--ion-color-light);
+  margin-top: 1rem;
+  padding-top: 0.5rem;
+}
+
+ion-menu .city-switcher ion-list-header {
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+  padding-left: 1rem;
+  margin-bottom: 0;
+}
+
+ion-menu .city-switcher ion-item {
+  font-size: 1rem;
+}
+
+ion-menu .city-switcher .selected-city {
+  --background: var(--ion-color-primary-shade);
 }
 </style>

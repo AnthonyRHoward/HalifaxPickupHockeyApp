@@ -17,6 +17,7 @@ import {
   increment
 } from 'firebase/firestore'
 import { db } from '@/config/firebase'
+import { useCityStore } from './city'
 
 export const useAdminStore = defineStore('admin', () => {
   const allGames = ref([])
@@ -24,12 +25,24 @@ export const useAdminStore = defineStore('admin', () => {
   const gameSchedules = ref([])
   const selectedGame = ref(null)
   const loading = ref(false)
+  const currentCityId = ref(null)
   let unsubscribeGame = null
 
-  const loadGameSchedules = async () => {
+  // Load game schedules for a specific city
+  const loadGameSchedules = async (cityId) => {
+    const city = cityId || currentCityId.value || useCityStore().currentCityId
+    currentCityId.value = city
+
     try {
       const schedulesRef = collection(db, 'gameSchedules')
-      const q = query(schedulesRef, orderBy('order', 'asc'))
+      let q
+
+      if (city) {
+        q = query(schedulesRef, where('cityId', '==', city), orderBy('order', 'asc'))
+      } else {
+        q = query(schedulesRef, orderBy('order', 'asc'))
+      }
+
       const querySnapshot = await getDocs(q)
 
       gameSchedules.value = querySnapshot.docs.map(doc => ({
@@ -39,6 +52,7 @@ export const useAdminStore = defineStore('admin', () => {
 
       return { success: true }
     } catch (error) {
+      console.error('Error loading game schedules:', error)
       return { success: false, error: error.message }
     }
   }
@@ -51,26 +65,28 @@ export const useAdminStore = defineStore('admin', () => {
         updatedAt: new Date().toISOString()
       })
 
-      await loadGameSchedules()
+      await loadGameSchedules(currentCityId.value)
       return { success: true }
     } catch (error) {
       return { success: false, error: error.message }
     }
   }
 
-  const addGameSchedule = async (scheduleData) => {
+  const addGameSchedule = async (scheduleData, cityId) => {
+    const city = cityId || currentCityId.value
     try {
-      const scheduleId = `${scheduleData.dayName.toLowerCase()}_${scheduleData.time.replace(':', '')}${scheduleData.time.includes('23') ? 'pm' : scheduleData.time.includes('22') ? 'pm' : 'pm'}_${scheduleData.venue.toLowerCase()}`
+      const scheduleId = `${city}_${scheduleData.dayName.toLowerCase()}_${scheduleData.time.replace(':', '')}_${scheduleData.venue.toLowerCase().replace(/\s+/g, '')}`
       const docRef = doc(db, 'gameSchedules', scheduleId)
 
       await setDoc(docRef, {
         id: scheduleId,
+        cityId: city,
         ...scheduleData,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       })
 
-      await loadGameSchedules()
+      await loadGameSchedules(city)
       return { success: true }
     } catch (error) {
       return { success: false, error: error.message }
@@ -82,18 +98,29 @@ export const useAdminStore = defineStore('admin', () => {
       const docRef = doc(db, 'gameSchedules', scheduleId)
       await deleteDoc(docRef)
 
-      await loadGameSchedules()
+      await loadGameSchedules(currentCityId.value)
       return { success: true }
     } catch (error) {
       return { success: false, error: error.message }
     }
   }
 
-  const loadAllGames = async () => {
+  // Load all games for a specific city
+  const loadAllGames = async (cityId) => {
+    const city = cityId || currentCityId.value || useCityStore().currentCityId
+    currentCityId.value = city
+
     loading.value = true
     try {
       const gamesRef = collection(db, 'games')
-      const q = query(gamesRef, orderBy('date', 'desc'))
+      let q
+
+      if (city) {
+        q = query(gamesRef, where('cityId', '==', city), orderBy('date', 'desc'))
+      } else {
+        q = query(gamesRef, orderBy('date', 'desc'))
+      }
+
       const querySnapshot = await getDocs(q)
 
       allGames.value = querySnapshot.docs.map(doc => ({
@@ -103,6 +130,7 @@ export const useAdminStore = defineStore('admin', () => {
 
       return { success: true }
     } catch (error) {
+      console.error('Error loading games:', error)
       return { success: false, error: error.message }
     } finally {
       loading.value = false
@@ -222,6 +250,47 @@ export const useAdminStore = defineStore('admin', () => {
     }
   }
 
+  // Toggle super admin status
+  const toggleUserSuperAdmin = async (userId, isSuperAdmin) => {
+    try {
+      const userDocRef = doc(db, 'users', userId)
+      await updateDoc(userDocRef, {
+        isSuperAdmin: !isSuperAdmin
+      })
+
+      await loadAllUsers()
+      return { success: true }
+    } catch (error) {
+      return { success: false, error: error.message }
+    }
+  }
+
+  // Toggle city admin status for a specific city
+  const toggleUserCityAdmin = async (userId, cityId, isAdmin) => {
+    try {
+      const userDocRef = doc(db, 'users', userId)
+      const userSnap = await getDoc(userDocRef)
+
+      if (!userSnap.exists()) {
+        return { success: false, error: 'User not found' }
+      }
+
+      const userData = userSnap.data()
+      const cityData = userData.cityData || {}
+      const currentCityData = cityData[cityId] || {}
+
+      await updateDoc(userDocRef, {
+        [`cityData.${cityId}.isAdmin`]: !isAdmin
+      })
+
+      await loadAllUsers()
+      return { success: true }
+    } catch (error) {
+      return { success: false, error: error.message }
+    }
+  }
+
+  // Legacy toggle for backward compatibility
   const toggleUserAdmin = async (userId, isAdmin) => {
     try {
       const userDocRef = doc(db, 'users', userId)
@@ -247,6 +316,7 @@ export const useAdminStore = defineStore('admin', () => {
 
       const game = docSnap.data()
       const players = game.players || []
+      const cityId = game.cityId
 
       for (const player of players) {
         const userDocRef = doc(db, 'users', player.uid)
@@ -254,10 +324,17 @@ export const useAdminStore = defineStore('admin', () => {
 
         if (userSnap.exists()) {
           const userData = userSnap.data()
-          const updates = {
-            gamesPlayed: increment(1)
+          const updates = {}
+
+          // Update city-specific gamesPlayed if available
+          if (cityId && userData.cityData?.[cityId]) {
+            updates[`cityData.${cityId}.gamesPlayed`] = increment(1)
+          } else {
+            // Legacy: update global gamesPlayed
+            updates.gamesPlayed = increment(1)
           }
 
+          // Decrement global pass (passes are valid for all cities)
           if (userData.passType && userData.passType !== 'full-season') {
             if (userData.passGamesRemaining > 0) {
               updates.passGamesRemaining = increment(-1)
@@ -266,6 +343,7 @@ export const useAdminStore = defineStore('admin', () => {
 
           const gameHistoryEntry = {
             gameId: gameId,
+            cityId: cityId,
             date: game.date,
             scheduleKey: game.scheduleKey,
             venue: game.venue,
@@ -289,11 +367,35 @@ export const useAdminStore = defineStore('admin', () => {
     }
   }
 
-  const updateUserRegulars = async (userId, regulars) => {
+  // Update user regulars for a specific city
+  const updateUserRegulars = async (userId, regulars, cityId) => {
+    try {
+      const userDocRef = doc(db, 'users', userId)
+
+      if (cityId) {
+        await updateDoc(userDocRef, {
+          [`cityData.${cityId}.regulars`]: regulars
+        })
+      } else {
+        // Legacy: update global regulars
+        await updateDoc(userDocRef, {
+          regulars: regulars
+        })
+      }
+
+      await loadAllUsers()
+      return { success: true }
+    } catch (error) {
+      return { success: false, error: error.message }
+    }
+  }
+
+  // Update user city data
+  const updateUserCityData = async (userId, cityId, cityData) => {
     try {
       const userDocRef = doc(db, 'users', userId)
       await updateDoc(userDocRef, {
-        regulars: regulars
+        [`cityData.${cityId}`]: cityData
       })
 
       await loadAllUsers()
@@ -368,12 +470,18 @@ export const useAdminStore = defineStore('admin', () => {
     }
   }
 
+  // Set current city for admin operations
+  const setCurrentCity = (cityId) => {
+    currentCityId.value = cityId
+  }
+
   return {
     allGames,
     allUsers,
     gameSchedules,
     selectedGame,
     loading,
+    currentCityId,
     loadAllGames,
     loadAllUsers,
     loadGameSchedules,
@@ -385,10 +493,14 @@ export const useAdminStore = defineStore('admin', () => {
     movePlayerFromWaitlist,
     removePlayerFromGame,
     toggleUserAdmin,
+    toggleUserSuperAdmin,
+    toggleUserCityAdmin,
     markGameAsPlayed,
     updateUserRegulars,
+    updateUserCityData,
     updateUser,
     updateTeamAssignments,
-    movePlayerToTeam
+    movePlayerToTeam,
+    setCurrentCity
   }
 })

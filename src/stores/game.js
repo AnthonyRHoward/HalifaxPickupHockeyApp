@@ -17,57 +17,63 @@ import {
 } from 'firebase/firestore'
 import { db } from '@/config/firebase'
 import { useAuthStore } from './auth'
+import { useCityStore } from './city'
 
 export const useGameStore = defineStore('game', () => {
   const games = ref([])
   const currentGame = ref(null)
   const loading = ref(false)
   const schedulesLoaded = ref(false)
+  const currentCityId = ref(null)
   let unsubscribeGame = null
   let unsubscribeSchedules = null
 
-  // Default schedules (fallback if Firestore hasn't loaded)
-  const DEFAULT_SCHEDULES = {
-    monday_11pm_forum: { day: 1, time: '23:00', venue: 'Forum' },
-    tuesday_1030pm_forum: { day: 2, time: '22:30', venue: 'Forum' },
-    thursday_1030pm_civic: { day: 4, time: '22:30', venue: 'Civic' },
-    friday_1030pm_forum: { day: 5, time: '22:30', venue: 'Forum' },
-    saturday_1030pm_forum: { day: 6, time: '22:30', venue: 'Forum' }
-  }
-
-  // Dynamic schedules loaded from Firestore
-  const gameSchedules = ref({ ...DEFAULT_SCHEDULES })
+  // Dynamic schedules loaded from Firestore (city-filtered)
+  const gameSchedules = ref({})
 
   // Legacy export for backward compatibility
   const GAME_SCHEDULES = gameSchedules
 
-  const subscribeToSchedules = () => {
+  // Subscribe to schedules for a specific city
+  const subscribeToSchedules = (cityId) => {
     // Unsubscribe from existing listener if any
     if (unsubscribeSchedules) {
       unsubscribeSchedules()
     }
 
+    // Update current city - get from param or city store
+    currentCityId.value = cityId || useCityStore().currentCityId
+
+    if (!currentCityId.value) {
+      console.warn('No city ID provided for schedule subscription')
+      schedulesLoaded.value = true
+      return Promise.resolve({ success: false, error: 'No city ID' })
+    }
+
     return new Promise((resolve) => {
       try {
         const schedulesRef = collection(db, 'gameSchedules')
-        const q = query(schedulesRef, orderBy('order', 'asc'))
+        const q = query(
+          schedulesRef,
+          where('cityId', '==', currentCityId.value),
+          orderBy('order', 'asc')
+        )
         let isFirstSnapshot = true
 
         unsubscribeSchedules = onSnapshot(q, (querySnapshot) => {
-          if (!querySnapshot.empty) {
-            const schedules = {}
-            querySnapshot.docs.forEach(doc => {
-              const data = doc.data()
-              if (data.isActive) {
-                schedules[doc.id] = {
-                  day: data.dayOfWeek,
-                  time: data.time,
-                  venue: data.venue
-                }
+          const schedules = {}
+          querySnapshot.docs.forEach(doc => {
+            const data = doc.data()
+            if (data.isActive) {
+              schedules[doc.id] = {
+                day: data.dayOfWeek,
+                time: data.time,
+                venue: data.venue,
+                cityId: data.cityId
               }
-            })
-            gameSchedules.value = schedules
-          }
+            }
+          })
+          gameSchedules.value = schedules
           schedulesLoaded.value = true
 
           // Resolve the promise after first snapshot
@@ -76,7 +82,6 @@ export const useGameStore = defineStore('game', () => {
             resolve({ success: true })
           }
         }, (error) => {
-          // Fall back to defaults if Firestore fails
           console.error('Error subscribing to schedules:', error)
           schedulesLoaded.value = true
           if (isFirstSnapshot) {
@@ -85,7 +90,6 @@ export const useGameStore = defineStore('game', () => {
           }
         })
       } catch (error) {
-        // Fall back to defaults if Firestore fails
         schedulesLoaded.value = true
         resolve({ success: false, error: error.message })
       }
@@ -97,28 +101,39 @@ export const useGameStore = defineStore('game', () => {
       unsubscribeSchedules()
       unsubscribeSchedules = null
     }
+    schedulesLoaded.value = false
+    gameSchedules.value = {}
   }
 
-  const getTodayGameId = () => {
+  // Get today's game ID for the current city
+  const getTodayGameId = (cityId) => {
+    const city = cityId || currentCityId.value
+    if (!city) return null
+
     const now = new Date()
     const dayOfWeek = now.getDay()
     const dateString = now.toISOString().split('T')[0]
 
     const schedules = gameSchedules.value
     const gameKey = Object.keys(schedules).find(key => {
-      return schedules[key].day === dayOfWeek
+      const schedule = schedules[key]
+      return schedule.day === dayOfWeek
     })
 
     return gameKey ? `${dateString}_${gameKey}` : null
   }
 
-  const getTodayGameScheduleKey = () => {
+  const getTodayGameScheduleKey = (cityId) => {
+    const city = cityId || currentCityId.value
+    if (!city) return null
+
     const now = new Date()
     const dayOfWeek = now.getDay()
 
     const schedules = gameSchedules.value
     return Object.keys(schedules).find(key => {
-      return schedules[key].day === dayOfWeek
+      const schedule = schedules[key]
+      return schedule.day === dayOfWeek
     })
   }
 
@@ -128,8 +143,9 @@ export const useGameStore = defineStore('game', () => {
     return hours >= 8 && hours < 18
   }
 
-  const loadTodayGame = async () => {
-    const gameId = getTodayGameId()
+  const loadTodayGame = async (cityId) => {
+    const city = cityId || currentCityId.value
+    const gameId = getTodayGameId(city)
     if (!gameId) return null
 
     if (unsubscribeGame) {
@@ -143,12 +159,13 @@ export const useGameStore = defineStore('game', () => {
       const docSnap = await getDoc(docRef)
 
       if (!docSnap.exists()) {
-        const scheduleKey = getTodayGameScheduleKey()
+        const scheduleKey = getTodayGameScheduleKey(city)
         const schedule = gameSchedules.value[scheduleKey]
 
         const newGame = {
           date: new Date().toISOString().split('T')[0],
           scheduleKey: scheduleKey,
+          cityId: city,
           venue: schedule.venue,
           time: schedule.time,
           players: [],
@@ -180,9 +197,10 @@ export const useGameStore = defineStore('game', () => {
       unsubscribeGame()
       unsubscribeGame = null
     }
+    currentGame.value = null
   }
 
-  const checkIn = async () => {
+  const checkIn = async (cityId) => {
     const authStore = useAuthStore()
     if (!authStore.user || !authStore.userProfile) {
       return { success: false, error: 'Must be logged in' }
@@ -192,13 +210,44 @@ export const useGameStore = defineStore('game', () => {
       return { success: false, error: 'Check-in only allowed between 8 AM and 6 PM' }
     }
 
-    const gameId = getTodayGameId()
+    const city = cityId || currentCityId.value
+    const gameId = getTodayGameId(city)
     if (!gameId) {
       return { success: false, error: 'No game scheduled for today' }
     }
 
-    const scheduleKey = getTodayGameScheduleKey()
-    const isRegular = authStore.userProfile.regulars?.[scheduleKey] || false
+    // Check if user is already checked in to any game today (across all cities)
+    const todayDate = new Date().toISOString().split('T')[0]
+    try {
+      const gamesRef = collection(db, 'games')
+      const todayGamesQuery = query(gamesRef, where('date', '==', todayDate))
+      const todayGamesSnapshot = await getDocs(todayGamesQuery)
+
+      for (const gameDoc of todayGamesSnapshot.docs) {
+        const gameData = gameDoc.data()
+        const isInPlayers = gameData.players?.some(p => p.uid === authStore.user.uid)
+        const isInWaitlist = gameData.waitlist?.some(p => p.uid === authStore.user.uid)
+
+        if (isInPlayers || isInWaitlist) {
+          // User is already checked in to a game today
+          const otherCityId = gameData.cityId
+          if (otherCityId !== city) {
+            const cityStore = useCityStore()
+            const otherCity = cityStore.getCityById(otherCityId)
+            const cityName = otherCity?.name || otherCityId
+            return { success: false, error: `You are already checked in for a game in ${cityName} today. Please check out there first.` }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error checking for existing check-ins:', error)
+      // Continue with check-in if we can't verify (fail open for better UX)
+    }
+
+    const scheduleKey = getTodayGameScheduleKey(city)
+
+    // Check if user is a regular for this schedule (using city-scoped data)
+    const isRegular = authStore.isRegularForSchedule(scheduleKey, city)
 
     try {
       const docRef = doc(db, 'games', gameId)
@@ -227,13 +276,14 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
-  const checkOut = async () => {
+  const checkOut = async (cityId) => {
     const authStore = useAuthStore()
     if (!authStore.user) {
       return { success: false, error: 'Must be logged in' }
     }
 
-    const gameId = getTodayGameId()
+    const city = cityId || currentCityId.value
+    const gameId = getTodayGameId(city)
     if (!gameId) {
       return { success: false, error: 'No game scheduled for today' }
     }
@@ -261,8 +311,9 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
-  const moveFromWaitlist = async (playerUid) => {
-    const gameId = getTodayGameId()
+  const moveFromWaitlist = async (playerUid, cityId) => {
+    const city = cityId || currentCityId.value
+    const gameId = getTodayGameId(city)
     if (!gameId) return { success: false, error: 'No game scheduled' }
 
     try {
@@ -367,9 +418,15 @@ export const useGameStore = defineStore('game', () => {
     return { darkTeam, lightTeam }
   }
 
+  // Set current city (for use when city changes)
+  const setCurrentCity = (cityId) => {
+    currentCityId.value = cityId
+  }
+
   return {
     games,
     currentGame,
+    currentCityId,
     loading,
     schedulesLoaded,
     gameSchedules,
@@ -377,6 +434,7 @@ export const useGameStore = defineStore('game', () => {
     subscribeToSchedules,
     stopSchedulesListener,
     getTodayGameId,
+    getTodayGameScheduleKey,
     isCheckInAllowed,
     loadTodayGame,
     stopGameListener,
@@ -384,6 +442,7 @@ export const useGameStore = defineStore('game', () => {
     checkOut,
     moveFromWaitlist,
     userCheckedIn,
-    balanceTeams
+    balanceTeams,
+    setCurrentCity
   }
 })

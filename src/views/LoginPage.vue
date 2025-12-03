@@ -100,7 +100,9 @@ const handleLogin = async () => {
     });
     await toast.present();
 
-    const redirectPath = route.query.redirect || "/";
+    // Redirect to specified path, user's default city, or city selection
+    const defaultCity = authStore.userProfile?.defaultCityId;
+    const redirectPath = route.query.redirect || (defaultCity ? `/${defaultCity}` : "/");
     router.push(redirectPath);
   } else {
     const toast = await toastController.create({
