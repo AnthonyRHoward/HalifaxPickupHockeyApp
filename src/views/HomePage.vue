@@ -16,10 +16,17 @@
           <ion-title>{{ cityStore.currentCityDisplayName }}</ion-title>
         </div>
         <ion-buttons slot="end">
-          <ion-button @click="router.push('/')" title="Switch City">
+          <ion-button
+            fill="clear"
+            color="primary"
+            @click="router.push('/')"
+            title="Switch City"
+          >
             <ion-icon :icon="swapHorizontalOutline"></ion-icon>
           </ion-button>
           <ion-button
+            fill="clear"
+            color="primary"
             v-if="authStore.isAuthenticated"
             @click="router.push(`/${cityId}/profile`)"
             title="Profile"

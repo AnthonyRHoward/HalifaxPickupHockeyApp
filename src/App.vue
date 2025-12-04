@@ -135,7 +135,6 @@ import { useRouter, useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { useCityStore } from "@/stores/city";
 import { useThemeStore } from "@/stores/theme";
-
 const router = useRouter();
 const route = useRoute();
 const authStore = useAuthStore();

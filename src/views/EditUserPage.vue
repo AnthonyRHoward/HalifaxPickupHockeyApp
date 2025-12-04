@@ -7,7 +7,12 @@
         </ion-buttons>
         <ion-title>Edit Player</ion-title>
         <ion-buttons slot="end">
-          <ion-button @click="saveUserChanges" :disabled="saving">
+          <ion-button
+            fill="clear"
+            color="primary"
+            @click="saveUserChanges"
+            :disabled="saving"
+          >
             <ion-icon :icon="checkmarkOutline" slot="icon-only"></ion-icon>
           </ion-button>
         </ion-buttons>
@@ -93,14 +98,22 @@
                     interface="action-sheet"
                     class="form-select"
                   >
-                    <ion-select-option value="Forward">Forward</ion-select-option>
-                    <ion-select-option value="Defense">Defense</ion-select-option>
+                    <ion-select-option value="Forward"
+                      >Forward</ion-select-option
+                    >
+                    <ion-select-option value="Defense"
+                      >Defense</ion-select-option
+                    >
                     <ion-select-option value="Goalie">Goalie</ion-select-option>
                   </ion-select>
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label">Games Played ({{ cityStore.currentCity?.name || 'This City' }})</label>
+                  <label class="form-label"
+                    >Games Played ({{
+                      cityStore.currentCity?.name || "This City"
+                    }})</label
+                  >
                   <ion-input
                     v-model.number="cityData.gamesPlayed"
                     type="number"
@@ -158,7 +171,9 @@
                   >
                     <ion-icon :icon="passType.icon"></ion-icon>
                     <span class="pass-type-name">{{ passType.name }}</span>
-                    <span v-if="passType.games" class="pass-type-games">{{ passType.games }}</span>
+                    <span v-if="passType.games" class="pass-type-games">{{
+                      passType.games
+                    }}</span>
                   </button>
                 </div>
               </div>
@@ -169,9 +184,13 @@
                 @click="handleAddPass"
                 class="add-pass-button"
               >
-                <ion-spinner v-if="addingPass" name="crescent" slot="start"></ion-spinner>
+                <ion-spinner
+                  v-if="addingPass"
+                  name="crescent"
+                  slot="start"
+                ></ion-spinner>
                 <ion-icon v-else :icon="addOutline" slot="start"></ion-icon>
-                {{ addingPass ? 'Adding...' : 'Add Pass' }}
+                {{ addingPass ? "Adding..." : "Add Pass" }}
               </ion-button>
             </div>
 
@@ -191,24 +210,44 @@
                 >
                   <div class="pass-item-header">
                     <div class="pass-item-info">
-                      <ion-icon :icon="ticketOutline" class="pass-item-icon"></ion-icon>
+                      <ion-icon
+                        :icon="ticketOutline"
+                        class="pass-item-icon"
+                      ></ion-icon>
                       <div class="pass-item-details">
-                        <span class="pass-item-type">{{ getPassTypeName(pass.type) }}</span>
-                        <span class="pass-item-date">Added {{ formatDate(pass.purchaseDate) }}</span>
+                        <span class="pass-item-type">{{
+                          getPassTypeName(pass.type)
+                        }}</span>
+                        <span class="pass-item-date"
+                          >Added {{ formatDate(pass.purchaseDate) }}</span
+                        >
                       </div>
                     </div>
-                    <ion-badge :color="pass.status === 'active' ? 'success' : 'medium'">
-                      {{ pass.status === 'active' ? 'Active' : 'Exhausted' }}
+                    <ion-badge
+                      :color="pass.status === 'active' ? 'success' : 'medium'"
+                    >
+                      {{ pass.status === "active" ? "Active" : "Exhausted" }}
                     </ion-badge>
                   </div>
 
-                  <div v-if="pass.type !== 'full-season'" class="pass-item-games">
+                  <div
+                    v-if="pass.type !== 'full-season'"
+                    class="pass-item-games"
+                  >
                     <div class="games-remaining-control compact">
-                      <button class="control-btn small" @click="adjustPassGames(pass.id, -1)">
+                      <button
+                        class="control-btn small"
+                        @click="adjustPassGames(pass.id, -1)"
+                      >
                         <ion-icon :icon="removeOutline"></ion-icon>
                       </button>
-                      <span class="games-display">{{ pass.gamesRemaining }} / {{ pass.gamesTotal }}</span>
-                      <button class="control-btn small" @click="adjustPassGames(pass.id, 1)">
+                      <span class="games-display"
+                        >{{ pass.gamesRemaining }} / {{ pass.gamesTotal }}</span
+                      >
+                      <button
+                        class="control-btn small"
+                        @click="adjustPassGames(pass.id, 1)"
+                      >
                         <ion-icon :icon="addOutline"></ion-icon>
                       </button>
                     </div>
@@ -216,7 +255,11 @@
                       <div class="meter-bar">
                         <div
                           class="meter-fill"
-                          :style="{ width: (pass.gamesRemaining / pass.gamesTotal * 100) + '%' }"
+                          :style="{
+                            width:
+                              (pass.gamesRemaining / pass.gamesTotal) * 100 +
+                              '%',
+                          }"
                         ></div>
                       </div>
                     </div>
@@ -229,9 +272,15 @@
 
                   <div class="pass-item-footer">
                     <span v-if="pass.usageHistory?.length" class="usage-count">
-                      {{ pass.usageHistory.length }} game{{ pass.usageHistory.length !== 1 ? 's' : '' }} used
+                      {{ pass.usageHistory.length }} game{{
+                        pass.usageHistory.length !== 1 ? "s" : ""
+                      }}
+                      used
                     </span>
-                    <button class="remove-pass-btn" @click="handleRemovePass(pass.id)">
+                    <button
+                      class="remove-pass-btn"
+                      @click="handleRemovePass(pass.id)"
+                    >
                       <ion-icon :icon="trashOutline"></ion-icon>
                       Remove
                     </button>
@@ -253,7 +302,9 @@
               <div class="card-header">
                 <ion-icon :icon="calendarOutline"></ion-icon>
                 <h3>Regular Nights</h3>
-                <span class="header-badge">{{ cityStore.currentCity?.name }}</span>
+                <span class="header-badge">{{
+                  cityStore.currentCity?.name
+                }}</span>
               </div>
 
               <p class="section-description">
@@ -305,7 +356,9 @@
                   </div>
                   <div class="permission-text">
                     <span class="permission-title">Super Admin</span>
-                    <span class="permission-desc">Full access to all cities and features</span>
+                    <span class="permission-desc"
+                      >Full access to all cities and features</span
+                    >
                   </div>
                 </div>
                 <ion-toggle
@@ -321,8 +374,12 @@
                     <ion-icon :icon="shieldCheckmarkOutline"></ion-icon>
                   </div>
                   <div class="permission-text">
-                    <span class="permission-title">{{ cityStore.currentCity?.name || 'City' }} Admin</span>
-                    <span class="permission-desc">Manage games and players for this city</span>
+                    <span class="permission-title"
+                      >{{ cityStore.currentCity?.name || "City" }} Admin</span
+                    >
+                    <span class="permission-desc"
+                      >Manage games and players for this city</span
+                    >
                   </div>
                 </div>
                 <ion-toggle
@@ -348,9 +405,13 @@
             :disabled="saving"
             class="save-button"
           >
-            <ion-spinner v-if="saving" name="crescent" slot="start"></ion-spinner>
+            <ion-spinner
+              v-if="saving"
+              name="crescent"
+              slot="start"
+            ></ion-spinner>
             <ion-icon v-else :icon="checkmarkOutline" slot="start"></ion-icon>
-            {{ saving ? 'Saving...' : 'Save Changes' }}
+            {{ saving ? "Saving..." : "Save Changes" }}
           </ion-button>
         </div>
       </div>
@@ -432,9 +493,24 @@ const cityData = reactive({
 
 // Skill levels
 const skillLevels = [
-  { value: 1, name: "Beginner", description: "Basic skating ability but struggles with backward skating and crossovers" },
-  { value: 2, name: "Intermediate", description: "A good mix of basic skills, decent knowledge of the game, and athletic ability" },
-  { value: 3, name: "Advanced", description: "Advanced skills, strong physical shape, and a high understanding of the game" },
+  {
+    value: 1,
+    name: "Beginner",
+    description:
+      "Basic skating ability but struggles with backward skating and crossovers",
+  },
+  {
+    value: 2,
+    name: "Intermediate",
+    description:
+      "A good mix of basic skills, decent knowledge of the game, and athletic ability",
+  },
+  {
+    value: 3,
+    name: "Advanced",
+    description:
+      "Advanced skills, strong physical shape, and a high understanding of the game",
+  },
 ];
 
 // Pass types for adding new passes
@@ -442,7 +518,12 @@ const addablePassTypes = [
   { value: "1-game", name: "1 Game", icon: ticketOutline, games: "1 game" },
   { value: "5-game", name: "5 Game", icon: ticketOutline, games: "5 games" },
   { value: "10-game", name: "10 Game", icon: ticketOutline, games: "10 games" },
-  { value: "full-season", name: "Full Season", icon: infiniteOutline, games: "Unlimited" },
+  {
+    value: "full-season",
+    name: "Full Season",
+    icon: infiniteOutline,
+    games: "Unlimited",
+  },
 ];
 
 // Computed
@@ -450,12 +531,21 @@ const cityId = computed(() => route.params.cityId);
 
 const userInitials = computed(() => {
   const name = user.value?.name || "";
-  return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 });
 
 const positionClass = computed(() => {
   const pos = user.value?.position?.toLowerCase();
-  return pos === "goalie" ? "goalie" : pos === "defense" ? "defense" : "forward";
+  return pos === "goalie"
+    ? "goalie"
+    : pos === "defense"
+    ? "defense"
+    : "forward";
 });
 
 const positionIcon = computed(() => {
@@ -470,7 +560,15 @@ const isUserAdmin = computed(() => {
 });
 
 const citySchedules = computed(() => {
-  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const dayNames = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
   const schedules = gameStore.gameSchedules;
 
   return Object.entries(schedules)
@@ -487,14 +585,14 @@ const citySchedules = computed(() => {
 // Multi-pass computed property
 const userPasses = computed(() => {
   if (!user.value?.passes || !Array.isArray(user.value.passes)) return [];
-  return [...user.value.passes].sort((a, b) =>
-    new Date(a.purchaseDate) - new Date(b.purchaseDate)
+  return [...user.value.passes].sort(
+    (a, b) => new Date(a.purchaseDate) - new Date(b.purchaseDate)
   );
 });
 
 // Methods
 const getSkillDescription = (level) => {
-  const skill = skillLevels.find(s => s.value === level);
+  const skill = skillLevels.find((s) => s.value === level);
   return skill?.description || "Not set";
 };
 
@@ -513,7 +611,10 @@ const handleAddPass = async () => {
   if (!selectedNewPassType.value || !user.value) return;
 
   addingPass.value = true;
-  const result = await adminStore.addUserPass(user.value.id, selectedNewPassType.value);
+  const result = await adminStore.addUserPass(
+    user.value.id,
+    selectedNewPassType.value
+  );
 
   const toast = await toastController.create({
     message: result.success ? "Pass added successfully!" : result.error,
@@ -524,7 +625,7 @@ const handleAddPass = async () => {
 
   if (result.success) {
     // Refresh user data
-    const updatedUser = adminStore.allUsers.find(u => u.id === user.value.id);
+    const updatedUser = adminStore.allUsers.find((u) => u.id === user.value.id);
     if (updatedUser) {
       user.value.passes = updatedUser.passes || [];
     }
@@ -548,7 +649,7 @@ const handleRemovePass = async (passId) => {
 
   if (result.success) {
     // Refresh user data
-    const updatedUser = adminStore.allUsers.find(u => u.id === user.value.id);
+    const updatedUser = adminStore.allUsers.find((u) => u.id === user.value.id);
     if (updatedUser) {
       user.value.passes = updatedUser.passes || [];
     }
@@ -558,18 +659,21 @@ const handleRemovePass = async (passId) => {
 const adjustPassGames = async (passId, amount) => {
   if (!user.value) return;
 
-  const pass = user.value.passes?.find(p => p.id === passId);
-  if (!pass || pass.type === 'full-season') return;
+  const pass = user.value.passes?.find((p) => p.id === passId);
+  if (!pass || pass.type === "full-season") return;
 
-  const newGamesRemaining = Math.max(0, Math.min(pass.gamesTotal, pass.gamesRemaining + amount));
+  const newGamesRemaining = Math.max(
+    0,
+    Math.min(pass.gamesTotal, pass.gamesRemaining + amount)
+  );
 
   const result = await adminStore.updateUserPass(user.value.id, passId, {
-    gamesRemaining: newGamesRemaining
+    gamesRemaining: newGamesRemaining,
   });
 
   if (result.success) {
     // Refresh user data
-    const updatedUser = adminStore.allUsers.find(u => u.id === user.value.id);
+    const updatedUser = adminStore.allUsers.find((u) => u.id === user.value.id);
     if (updatedUser) {
       user.value.passes = updatedUser.passes || [];
     }
@@ -861,8 +965,14 @@ ion-segment-button::part(indicator-background) {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ========================================
@@ -1016,8 +1126,12 @@ ion-segment-button::part(indicator-background) {
   font-weight: 500;
 }
 
-.skill-option.active .level-number { color: var(--accent-color); }
-.skill-option.active .level-name { color: var(--accent-color); }
+.skill-option.active .level-number {
+  color: var(--accent-color);
+}
+.skill-option.active .level-name {
+  color: var(--accent-color);
+}
 
 .skill-description {
   font-size: 14px;

@@ -144,7 +144,9 @@
                   class="purchase-card"
                   :class="{ featured: pass.type === '10-game' }"
                 >
-                  <div v-if="pass.type === '10-game'" class="featured-badge">Best Value</div>
+                  <div v-if="pass.type === '10-game'" class="featured-badge">
+                    Best Value
+                  </div>
                   <div class="purchase-card-header">
                     <ion-icon :icon="ticketOutline"></ion-icon>
                     <h4>{{ pass.name }}</h4>
@@ -154,16 +156,27 @@
                     <span class="price-label">CAD</span>
                   </div>
                   <p class="purchase-card-games">
-                    {{ pass.games === 'Unlimited' ? 'Unlimited' : pass.games }} game{{ pass.games !== 1 && pass.games !== 'Unlimited' ? 's' : '' }}
+                    {{ pass.games === "Unlimited" ? "Unlimited" : pass.games }}
+                    game{{
+                      pass.games !== 1 && pass.games !== "Unlimited" ? "s" : ""
+                    }}
                   </p>
                   <p class="purchase-card-desc">{{ pass.description }}</p>
                   <ion-button
                     expand="block"
-                    :disabled="paymentStore.loading && purchasingPassType === pass.type"
+                    :disabled="
+                      paymentStore.loading && purchasingPassType === pass.type
+                    "
                     @click="buyPass(pass.type)"
                     class="purchase-button"
                   >
-                    <ion-spinner v-if="paymentStore.loading && purchasingPassType === pass.type" name="crescent" slot="start"></ion-spinner>
+                    <ion-spinner
+                      v-if="
+                        paymentStore.loading && purchasingPassType === pass.type
+                      "
+                      name="crescent"
+                      slot="start"
+                    ></ion-spinner>
                     <span v-else>Buy Now</span>
                   </ion-button>
                 </div>
@@ -755,9 +768,9 @@ const buyPass = async (passType) => {
   const result = await paymentStore.initiateCheckout(passType, cityId.value);
   if (!result.success) {
     const toast = await toastController.create({
-      message: result.error || 'Failed to initiate checkout',
+      message: result.error || "Failed to initiate checkout",
       duration: 3000,
-      color: 'danger'
+      color: "danger",
     });
     await toast.present();
   }
@@ -1795,7 +1808,8 @@ ion-segment-button::part(indicator-background) {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  transition: transform var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .purchase-card:hover {

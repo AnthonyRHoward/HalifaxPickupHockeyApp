@@ -7,7 +7,12 @@
         </ion-buttons>
         <ion-title>Admin</ion-title>
         <ion-buttons slot="end">
-          <ion-button @click="router.push('/')" title="Switch City">
+          <ion-button
+            fill="clear"
+            color="primary"
+            @click="router.push('/')"
+            title="Switch City"
+          >
             <ion-icon :icon="swapHorizontalOutline" slot="icon-only"></ion-icon>
           </ion-button>
         </ion-buttons>
@@ -21,14 +26,32 @@
           <div class="hero-content">
             <div class="admin-avatar">
               <ion-icon :icon="settingsOutline"></ion-icon>
-              <div class="admin-type-badge" :class="authStore.isSuperAdmin ? 'super' : 'city'">
-                <ion-icon :icon="authStore.isSuperAdmin ? starOutline : shieldCheckmarkOutline"></ion-icon>
+              <div
+                class="admin-type-badge"
+                :class="authStore.isSuperAdmin ? 'super' : 'city'"
+              >
+                <ion-icon
+                  :icon="
+                    authStore.isSuperAdmin
+                      ? starOutline
+                      : shieldCheckmarkOutline
+                  "
+                ></ion-icon>
               </div>
             </div>
-            <h1 class="admin-title">{{ cityStore.currentCity?.displayName || 'Admin' }}</h1>
+            <h1 class="admin-title">
+              {{ cityStore.currentCity?.displayName || "Admin" }}
+            </h1>
             <p class="admin-subtitle">Dashboard</p>
-            <div class="admin-role-badge" :class="authStore.isSuperAdmin ? 'super' : 'city'">
-              {{ authStore.isSuperAdmin ? 'Super Admin' : `${cityStore.currentCity?.name} Admin` }}
+            <div
+              class="admin-role-badge"
+              :class="authStore.isSuperAdmin ? 'super' : 'city'"
+            >
+              {{
+                authStore.isSuperAdmin
+                  ? "Super Admin"
+                  : `${cityStore.currentCity?.name} Admin`
+              }}
             </div>
           </div>
 
@@ -46,7 +69,9 @@
             </div>
             <div class="stat-item" @click="selectedTab = 'schedules'">
               <ion-icon :icon="calendarOutline"></ion-icon>
-              <span class="stat-value">{{ adminStore.gameSchedules.length }}</span>
+              <span class="stat-value">{{
+                adminStore.gameSchedules.length
+              }}</span>
               <span class="stat-label">Schedules</span>
             </div>
             <div class="stat-item" @click="selectedTab = 'history'">
@@ -81,8 +106,15 @@
           <div v-show="selectedTab === 'games'" class="tab-panel">
             <div class="section-header">
               <h2>Active Games</h2>
-              <button class="refresh-btn" @click="loadGames" :disabled="adminStore.loading">
-                <ion-icon :icon="refreshOutline" :class="{ spinning: adminStore.loading }"></ion-icon>
+              <button
+                class="refresh-btn"
+                @click="loadGames"
+                :disabled="adminStore.loading"
+              >
+                <ion-icon
+                  :icon="refreshOutline"
+                  :class="{ spinning: adminStore.loading }"
+                ></ion-icon>
                 Refresh
               </button>
             </div>
@@ -92,15 +124,21 @@
                 <div class="game-header">
                   <div class="game-date">
                     <span class="date-day">{{ formatDateDay(game.date) }}</span>
-                    <span class="date-month">{{ formatDateMonth(game.date) }}</span>
+                    <span class="date-month">{{
+                      formatDateMonth(game.date)
+                    }}</span>
                   </div>
                   <div class="game-info">
                     <h3>{{ game.venue }}</h3>
                     <p>{{ formatTime(game.time) }}</p>
                   </div>
                   <div class="game-badges">
-                    <ion-badge color="primary">{{ game.players?.length || 0 }} Playing</ion-badge>
-                    <ion-badge v-if="game.waitlist?.length > 0" color="warning">{{ game.waitlist.length }} Waiting</ion-badge>
+                    <ion-badge color="primary"
+                      >{{ game.players?.length || 0 }} Playing</ion-badge
+                    >
+                    <ion-badge v-if="game.waitlist?.length > 0" color="warning"
+                      >{{ game.waitlist.length }} Waiting</ion-badge
+                    >
                   </div>
                 </div>
 
@@ -110,31 +148,55 @@
                     <span>Players</span>
                   </div>
                   <div class="player-list">
-                    <div v-for="player in game.players" :key="player.uid" class="player-chip">
-                      <span class="player-initials">{{ getInitials(player.name) }}</span>
+                    <div
+                      v-for="player in game.players"
+                      :key="player.uid"
+                      class="player-chip"
+                    >
+                      <span class="player-initials">{{
+                        getInitials(player.name)
+                      }}</span>
                       <span class="player-name">{{ player.name }}</span>
                       <span class="player-position">{{ player.position }}</span>
-                      <button class="remove-btn" @click="removePlayer(game.id, player.uid, false)">
+                      <button
+                        class="remove-btn"
+                        @click="removePlayer(game.id, player.uid, false)"
+                      >
                         <ion-icon :icon="closeOutline"></ion-icon>
                       </button>
                     </div>
                   </div>
                 </div>
 
-                <div v-if="game.waitlist?.length > 0" class="player-section waitlist">
+                <div
+                  v-if="game.waitlist?.length > 0"
+                  class="player-section waitlist"
+                >
                   <div class="section-title">
                     <ion-icon :icon="timeOutline"></ion-icon>
                     <span>Waitlist</span>
                   </div>
                   <div class="player-list">
-                    <div v-for="player in game.waitlist" :key="player.uid" class="player-chip waitlist">
-                      <span class="player-initials">{{ getInitials(player.name) }}</span>
+                    <div
+                      v-for="player in game.waitlist"
+                      :key="player.uid"
+                      class="player-chip waitlist"
+                    >
+                      <span class="player-initials">{{
+                        getInitials(player.name)
+                      }}</span>
                       <span class="player-name">{{ player.name }}</span>
                       <span class="player-position">{{ player.position }}</span>
-                      <button class="promote-btn" @click="moveToPlayers(game.id, player.uid)">
+                      <button
+                        class="promote-btn"
+                        @click="moveToPlayers(game.id, player.uid)"
+                      >
                         <ion-icon :icon="arrowUpOutline"></ion-icon>
                       </button>
-                      <button class="remove-btn" @click="removePlayer(game.id, player.uid, true)">
+                      <button
+                        class="remove-btn"
+                        @click="removePlayer(game.id, player.uid, true)"
+                      >
                         <ion-icon :icon="closeOutline"></ion-icon>
                       </button>
                     </div>
@@ -142,11 +204,19 @@
                 </div>
 
                 <div class="game-actions">
-                  <button class="action-btn primary" @click="router.push(`/${cityId}/admin/manage-teams/${game.id}`)">
+                  <button
+                    class="action-btn primary"
+                    @click="
+                      router.push(`/${cityId}/admin/manage-teams/${game.id}`)
+                    "
+                  >
                     <ion-icon :icon="peopleOutline"></ion-icon>
                     Manage Teams
                   </button>
-                  <button class="action-btn success" @click="markAsPlayed(game.id)">
+                  <button
+                    class="action-btn success"
+                    @click="markAsPlayed(game.id)"
+                  >
                     <ion-icon :icon="checkmarkOutline"></ion-icon>
                     Mark Played
                   </button>
@@ -175,7 +245,11 @@
                 v-model="userSearchQuery"
                 placeholder="Search by name, email, or position..."
               />
-              <button v-if="userSearchQuery" class="clear-btn" @click="userSearchQuery = ''">
+              <button
+                v-if="userSearchQuery"
+                class="clear-btn"
+                @click="userSearchQuery = ''"
+              >
                 <ion-icon :icon="closeOutline"></ion-icon>
               </button>
             </div>
@@ -189,7 +263,10 @@
               >
                 <div class="user-avatar">
                   <span>{{ getInitials(user.name) }}</span>
-                  <div v-if="user.isSuperAdmin || user.cityData?.[cityId]?.isAdmin" class="admin-indicator">
+                  <div
+                    v-if="user.isSuperAdmin || user.cityData?.[cityId]?.isAdmin"
+                    class="admin-indicator"
+                  >
                     <ion-icon :icon="starOutline"></ion-icon>
                   </div>
                 </div>
@@ -198,7 +275,9 @@
                   <p>{{ user.email }}</p>
                   <div class="user-meta">
                     <span class="position-tag">{{ user.position }}</span>
-                    <span class="level-tag">Level {{ user.skillLevel || 2 }}</span>
+                    <span class="level-tag"
+                      >Level {{ user.skillLevel || 2 }}</span
+                    >
                   </div>
                 </div>
                 <div class="user-badge">
@@ -206,14 +285,19 @@
                     {{ getUserAdminLabel(user) }}
                   </ion-badge>
                 </div>
-                <ion-icon :icon="chevronForwardOutline" class="chevron"></ion-icon>
+                <ion-icon
+                  :icon="chevronForwardOutline"
+                  class="chevron"
+                ></ion-icon>
               </div>
             </div>
 
             <div v-else class="empty-state">
               <ion-icon :icon="peopleOutline"></ion-icon>
               <h3>No Users Found</h3>
-              <p v-if="userSearchQuery">No users match "{{ userSearchQuery }}"</p>
+              <p v-if="userSearchQuery">
+                No users match "{{ userSearchQuery }}"
+              </p>
               <p v-else>No registered users yet.</p>
             </div>
           </div>
@@ -228,7 +312,10 @@
               </button>
             </div>
 
-            <div v-if="adminStore.gameSchedules.length > 0" class="schedules-grid">
+            <div
+              v-if="adminStore.gameSchedules.length > 0"
+              class="schedules-grid"
+            >
               <div
                 v-for="schedule in adminStore.gameSchedules"
                 :key="schedule.id"
@@ -241,7 +328,7 @@
                     <span class="day-time">{{ schedule.displayTime }}</span>
                   </div>
                   <ion-badge :color="schedule.isActive ? 'success' : 'medium'">
-                    {{ schedule.isActive ? 'Active' : 'Inactive' }}
+                    {{ schedule.isActive ? "Active" : "Inactive" }}
                   </ion-badge>
                 </div>
                 <div class="schedule-venue">
@@ -254,12 +341,18 @@
                     :class="schedule.isActive ? 'warning' : 'success'"
                     @click="toggleScheduleStatus(schedule)"
                   >
-                    {{ schedule.isActive ? 'Deactivate' : 'Activate' }}
+                    {{ schedule.isActive ? "Deactivate" : "Activate" }}
                   </button>
-                  <button class="action-btn small" @click="editSchedule(schedule)">
+                  <button
+                    class="action-btn small"
+                    @click="editSchedule(schedule)"
+                  >
                     <ion-icon :icon="createOutline"></ion-icon>
                   </button>
-                  <button class="action-btn small danger" @click="deleteSchedule(schedule)">
+                  <button
+                    class="action-btn small danger"
+                    @click="deleteSchedule(schedule)"
+                  >
                     <ion-icon :icon="trashOutline"></ion-icon>
                   </button>
                 </div>
@@ -328,27 +421,56 @@
             </div>
 
             <div v-if="completedGames.length > 0" class="history-list">
-              <div v-for="game in completedGames" :key="game.id" class="history-card">
+              <div
+                v-for="game in completedGames"
+                :key="game.id"
+                class="history-card"
+              >
                 <div class="history-date">
                   <span class="date-day">{{ formatDateDay(game.date) }}</span>
-                  <span class="date-month">{{ formatDateMonth(game.date) }}</span>
+                  <span class="date-month">{{
+                    formatDateMonth(game.date)
+                  }}</span>
                 </div>
                 <div class="history-info">
                   <h3>{{ game.venue }}</h3>
                   <p>{{ formatTime(game.time) }}</p>
                   <div class="history-stats">
-                    <ion-badge color="success">{{ game.players?.length || 0 }} played</ion-badge>
-                    <span class="completed-date">Completed {{ formatCompletedDate(game.completedAt) }}</span>
+                    <ion-badge color="success"
+                      >{{ game.players?.length || 0 }} played</ion-badge
+                    >
+                    <span class="completed-date"
+                      >Completed
+                      {{ formatCompletedDate(game.completedAt) }}</span
+                    >
                   </div>
                 </div>
-                <button class="expand-btn" @click="toggleHistoryExpand(game.id)">
-                  <ion-icon :icon="expandedHistory.includes(game.id) ? chevronUpOutline : chevronDownOutline"></ion-icon>
+                <button
+                  class="expand-btn"
+                  @click="toggleHistoryExpand(game.id)"
+                >
+                  <ion-icon
+                    :icon="
+                      expandedHistory.includes(game.id)
+                        ? chevronUpOutline
+                        : chevronDownOutline
+                    "
+                  ></ion-icon>
                 </button>
 
-                <div v-if="expandedHistory.includes(game.id)" class="history-players">
+                <div
+                  v-if="expandedHistory.includes(game.id)"
+                  class="history-players"
+                >
                   <div class="players-grid">
-                    <div v-for="player in game.players" :key="player.uid" class="history-player">
-                      <span class="player-initials small">{{ getInitials(player.name) }}</span>
+                    <div
+                      v-for="player in game.players"
+                      :key="player.uid"
+                      class="history-player"
+                    >
+                      <span class="player-initials small">{{
+                        getInitials(player.name)
+                      }}</span>
                       <span>{{ player.name }}</span>
                     </div>
                   </div>
@@ -484,7 +606,12 @@ const getUserAdminBadgeColor = (user) => {
 
 const getInitials = (name) => {
   if (!name) return "?";
-  return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 };
 
 const toggleHistoryExpand = (gameId) => {
@@ -634,7 +761,15 @@ const deleteSchedule = async (schedule) => {
 };
 
 const addNewSchedule = async () => {
-  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
   const dayName = days[newSchedule.value.dayOfWeek];
   const displayTime = formatDisplayTime(newSchedule.value.time);
 
@@ -676,7 +811,10 @@ const moveToPlayers = async (gameId, playerUid) => {
       {
         text: "Move",
         handler: async () => {
-          const result = await adminStore.movePlayerFromWaitlist(gameId, playerUid);
+          const result = await adminStore.movePlayerFromWaitlist(
+            gameId,
+            playerUid
+          );
           const toast = await toastController.create({
             message: result.success ? "Player moved!" : result.error,
             duration: 2000,
@@ -702,14 +840,20 @@ const removePlayer = async (gameId, playerUid, fromWaitlist) => {
 
   const alert = await alertController.create({
     header: "Remove Player",
-    message: `Remove ${player.name} from the ${fromWaitlist ? "waitlist" : "roster"}?`,
+    message: `Remove ${player.name} from the ${
+      fromWaitlist ? "waitlist" : "roster"
+    }?`,
     buttons: [
       { text: "Cancel", role: "cancel" },
       {
         text: "Remove",
         role: "destructive",
         handler: async () => {
-          const result = await adminStore.removePlayerFromGame(gameId, playerUid, fromWaitlist);
+          const result = await adminStore.removePlayerFromGame(
+            gameId,
+            playerUid,
+            fromWaitlist
+          );
           const toast = await toastController.create({
             message: result.success ? "Player removed!" : result.error,
             duration: 2000,
@@ -982,8 +1126,14 @@ ion-segment-button::part(indicator-background) {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ========================================
@@ -1043,8 +1193,12 @@ ion-segment-button::part(indicator-background) {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ========================================
@@ -1197,7 +1351,8 @@ ion-segment-button::part(indicator-background) {
   color: var(--text-tertiary);
 }
 
-.promote-btn, .remove-btn {
+.promote-btn,
+.remove-btn {
   width: 24px;
   height: 24px;
   border-radius: var(--radius-full);
@@ -1231,7 +1386,8 @@ ion-segment-button::part(indicator-background) {
   background: rgba(255, 59, 48, 0.1);
 }
 
-.promote-btn ion-icon, .remove-btn ion-icon {
+.promote-btn ion-icon,
+.remove-btn ion-icon {
   font-size: 14px;
 }
 
@@ -1462,7 +1618,8 @@ ion-segment-button::part(indicator-background) {
   gap: var(--space-xs);
 }
 
-.position-tag, .level-tag {
+.position-tag,
+.level-tag {
   font-size: 12px;
   padding: 2px 8px;
   border-radius: var(--radius-sm);

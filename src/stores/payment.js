@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { getFunctions, httpsCallable } from 'firebase/functions'
 import { Capacitor } from '@capacitor/core'
 import { Browser } from '@capacitor/browser'
+import { useAuthStore } from '@/stores/auth'
 
 // Pass pricing configuration (for display purposes)
 export const PASS_PRICES = {
@@ -36,6 +37,9 @@ export const PASS_PRICES = {
   }
 }
 
+// Cloud Function URL for native direct calls
+const FUNCTIONS_URL = 'https://us-central1-halifaxpickuphockey-50910.cloudfunctions.net'
+
 export const usePaymentStore = defineStore('payment', () => {
   const loading = ref(false)
   const error = ref(null)
@@ -56,11 +60,6 @@ export const usePaymentStore = defineStore('payment', () => {
     error.value = null
 
     try {
-      const functions = getFunctions()
-      const createCheckoutSession = httpsCallable(functions, 'createCheckoutSession')
-
-      // Determine base URL - always use web URL for Stripe redirects
-      // This works for both web and native (via Capacitor Browser in-app browser)
       const isNative = Capacitor.isNativePlatform()
       const baseUrl = isNative
         ? 'https://halifaxpickuphockey-50910.web.app'
@@ -70,20 +69,60 @@ export const usePaymentStore = defineStore('payment', () => {
       const successUrl = `${baseUrl}/${cityId}/payment-success?session_id={CHECKOUT_SESSION_ID}`
       const cancelUrl = `${baseUrl}/${cityId}/payment-cancel`
 
-      // Call Cloud Function to create checkout session
-      const result = await createCheckoutSession({
-        passType,
-        successUrl,
-        cancelUrl
-      })
+      let sessionId, url
 
-      const { sessionId, url } = result.data
+      if (isNative) {
+        // On native, use fetch with ID token since Firebase JS SDK auth isn't available
+        const authStore = useAuthStore()
+        const idToken = await authStore.getIdToken()
+
+        if (!idToken) {
+          throw new Error('Please log in to purchase a pass')
+        }
+
+        const response = await fetch(`${FUNCTIONS_URL}/createCheckoutSession`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${idToken}`
+          },
+          body: JSON.stringify({
+            data: {
+              passType,
+              successUrl,
+              cancelUrl
+            }
+          })
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}))
+          throw new Error(errorData.error?.message || 'Failed to create checkout session')
+        }
+
+        const result = await response.json()
+        sessionId = result.result.sessionId
+        url = result.result.url
+      } else {
+        // On web, use httpsCallable as Firebase JS SDK auth is available
+        const functions = getFunctions()
+        const createCheckoutSession = httpsCallable(functions, 'createCheckoutSession')
+
+        const result = await createCheckoutSession({
+          passType,
+          successUrl,
+          cancelUrl
+        })
+
+        sessionId = result.data.sessionId
+        url = result.data.url
+      }
+
       currentCheckoutSession.value = sessionId
 
       // Redirect to Stripe Checkout
       if (isNative) {
-        // Use in-app browser for native platforms (Safari View Controller / Chrome Custom Tabs)
-        // This provides a better UX and is more secure for payment flows
+        // Use in-app browser for native platforms
         await Browser.open({ url, windowName: '_blank' })
       } else {
         // For web, use standard navigation

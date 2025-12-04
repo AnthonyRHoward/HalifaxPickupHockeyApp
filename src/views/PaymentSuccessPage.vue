@@ -28,12 +28,22 @@
             Your pass should appear in your profile within a few seconds.
           </p>
 
+          <p class="mobile-note">
+            Using the mobile app? Close this window using the
+            <strong>X</strong> in the top left corner to return to the app.
+          </p>
+
           <div class="action-buttons">
             <ion-button expand="block" @click="goToProfile">
               <ion-icon :icon="personOutline" slot="start"></ion-icon>
               View My Pass
             </ion-button>
-            <ion-button expand="block" @click="goToSchedule">
+            <ion-button
+              expand="block"
+              color="primary"
+              fill="outline"
+              @click="goToSchedule"
+            >
               <ion-icon :icon="calendarOutline" slot="start"></ion-icon>
               View Schedule
             </ion-button>
@@ -54,6 +64,7 @@ import {
   IonButton,
   IonIcon,
   IonSpinner,
+  IonButtons,
 } from "@ionic/vue";
 import {
   checkmarkCircleOutline,
@@ -68,7 +79,6 @@ const router = useRouter();
 const route = useRoute();
 const authStore = useAuthStore();
 const loading = ref(true);
-
 const cityId = ref("halifax");
 
 onMounted(async () => {
@@ -76,7 +86,6 @@ onMounted(async () => {
   cityId.value = route.params.cityId || "halifax";
 
   // Refresh user profile to get updated pass info
-  // The webhook may take a few seconds to process, so we'll try a few times
   if (authStore.user) {
     try {
       await authStore.loadUserProfile(authStore.user.uid);
@@ -157,6 +166,18 @@ h1 {
   color: var(--text-tertiary);
   margin: 0 0 var(--space-lg);
   font-style: italic;
+}
+
+.mobile-note {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  margin: 0 0 var(--space-lg);
+  line-height: 1.5;
+  font-weight: 800;
+}
+
+.mobile-note strong {
+  color: var(--text-secondary);
 }
 
 .action-buttons {

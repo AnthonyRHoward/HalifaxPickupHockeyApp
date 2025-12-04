@@ -18,6 +18,10 @@
             Your payment was cancelled. No charges were made to your account.
           </p>
 
+          <p class="mobile-note">
+            Using the mobile app? Close this window using the <strong>X</strong> in the top left corner to return to the app.
+          </p>
+
           <div class="action-buttons">
             <ion-button expand="block" @click="goToProfile">
               <ion-icon :icon="refreshOutline" slot="start"></ion-icon>
@@ -113,6 +117,17 @@ h1 {
   color: var(--text-secondary);
   margin: 0 0 var(--space-xl);
   line-height: 1.5;
+}
+
+.mobile-note {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  margin: 0 0 var(--space-lg);
+  line-height: 1.5;
+}
+
+.mobile-note strong {
+  color: var(--text-secondary);
 }
 
 .action-buttons {

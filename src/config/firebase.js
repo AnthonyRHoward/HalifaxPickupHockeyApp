@@ -15,8 +15,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 
-// Always initialize auth - needed for httpsCallable to work on native platforms
-export const auth = getAuth(app)
+// Only initialize Firebase Auth on web - on native, Capacitor plugin handles auth
+// This avoids CORS/gapi errors in the Capacitor webview
+export const auth = Capacitor.isNativePlatform() ? null : getAuth(app)
 
 export const db = getFirestore(app)
 
