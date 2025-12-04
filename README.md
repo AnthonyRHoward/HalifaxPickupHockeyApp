@@ -1,6 +1,6 @@
-# Halifax Pickup Hockey
+# Nova Adult Hockey
 
-A cross-platform application for managing Halifax Pickup Hockey league check-ins, team assignments, and player management.
+A cross-platform application for managing Nova Adult Hockey league check-ins, team assignments, player management, and skate pass purchases across multiple cities.
 
 ## Features
 
@@ -12,7 +12,10 @@ A cross-platform application for managing Halifax Pickup Hockey league check-ins
 - Automatic waitlist management for non-regular players
 - Real-time team rosters with balanced skill levels
 - Live waitlist with check-in times and order numbers
-- Skate pass management (5-game, 10-game, and full-season passes)
+- **Multi-city support** - Switch between Halifax, Bridgewater, and other locations
+- **Stripe payment integration** - Purchase skate passes with credit cards or Apple Pay
+- Skate pass options: 1-game ($18), 5-game ($85), 10-game ($160), and full-season ($600)
+- Profile page with Overview, My Passes, Purchase, Schedule, and History tabs
 - Next game date display when no game is scheduled
 
 ### Admin Features
@@ -42,21 +45,15 @@ A cross-platform application for managing Halifax Pickup Hockey league check-ins
 - Ionic Framework 8
 - Firebase Authentication
 - Cloud Firestore (real-time database)
+- Firebase Cloud Functions (payment processing)
+- Stripe (payment gateway)
 - Capacitor 7 (iOS/Android)
 - Vite (build tool)
 - Pinia (state management)
 
 ## Game Schedule
 
-Game schedules are stored in Firebase Firestore and can be managed dynamically through the admin dashboard. Default schedules include:
-
-- Monday 11:00 PM - Forum
-- Tuesday 10:30 PM - Forum
-- Thursday 10:30 PM - Civic
-- Friday 10:30 PM - Forum
-- Saturday 10:30 PM - Forum
-
-Schedules can be added, edited, activated/deactivated, or deleted in real-time. Changes automatically update across all connected clients.
+Game schedules are stored in Firebase Firestore per city and can be managed dynamically through the admin dashboard. Each city has its own set of schedules. Schedules can be added, edited, activated/deactivated, or deleted in real-time. Changes automatically update across all connected clients.
 
 ## Setup Instructions
 
@@ -101,12 +98,33 @@ VITE_FIREBASE_PROJECT_ID=your_project_id
 VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
 VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 VITE_FIREBASE_APP_ID=your_app_id
+VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
 ```
 
 5. Deploy Firestore security rules:
 
 ```bash
 firebase deploy --only firestore:rules
+```
+
+6. Set up Cloud Functions for payments:
+
+```bash
+cd functions
+npm install
+```
+
+Create `functions/.env` with your Stripe keys:
+
+```env
+STRIPE_SECRET_KEY=your_stripe_secret_key
+STRIPE_WEBHOOK_SECRET=your_stripe_webhook_signing_secret
+```
+
+Deploy Cloud Functions:
+
+```bash
+firebase deploy --only functions
 ```
 
 ### Development
@@ -160,20 +178,29 @@ npx cap open android
   position: 'Forward' | 'Defense' | 'Goalie',
   skillLevel: 1 | 2 | 3,
   regulars: {
-    sunday_1030pm_forum: boolean,
-    monday_11pm_forum: boolean,
-    tuesday_1030pm_forum: boolean,
-    wednesday_1030pm_forum: boolean,
-    thursday_1030pm_civic: boolean,
-    friday_1030pm_forum: boolean,
-    saturday_1030pm_forum: boolean
+    [cityId]: {
+      [scheduleId]: boolean
+    }
   },
-  gamesPlayed: number,
+  gamesPlayed: {
+    [cityId]: number
+  },
   isAdmin: boolean,
   gameHistory: array,
-  passType: null | '5-game' | '10-game' | 'full-season',
-  passGamesRemaining: number,
-  passStartDate: string (ISO date),
+  passes: [{
+    id: string,
+    type: '1-game' | '5-game' | '10-game' | 'full-season',
+    gamesRemaining: number,
+    gamesTotal: number,
+    purchaseDate: string (ISO date),
+    status: 'active' | 'exhausted',
+    stripeSessionId: string,
+    usageHistory: [{
+      date: string,
+      venue: string,
+      cityId: string
+    }]
+  }],
   createdAt: string (ISO date)
 }
 ```
@@ -183,6 +210,7 @@ npx cap open android
 ```javascript
 {
   date: string (YYYY-MM-DD),
+  cityId: string,
   scheduleKey: string,
   venue: string,
   time: string (HH:MM),
@@ -215,6 +243,7 @@ npx cap open android
 ```javascript
 {
   id: string,                    // e.g., 'monday_11pm_forum'
+  cityId: string,                // e.g., 'halifax'
   dayOfWeek: number,             // 0 (Sunday) - 6 (Saturday)
   dayName: string,               // e.g., 'Monday'
   time: string,                  // 24h format, e.g., '23:00'
@@ -245,7 +274,8 @@ npx cap open android
 
 ## User Interface Features
 
-- Dark mode theme optimized for hockey arenas
+- Clean, Apple-inspired light theme design
+- Dark mode support (toggleable)
 - Compact, information-dense layouts
 - Primary color highlights for important information
 - Real-time updates without page refreshes
@@ -253,6 +283,7 @@ npx cap open android
 - Mobile-optimized touch interactions
 - Desktop drag-and-drop functionality
 - Responsive grid layouts for admin panels
+- Tabbed profile page for organized user experience
 
 ## Future Enhancements
 
@@ -261,10 +292,10 @@ npx cap open android
   - Check-in closing at 6:00 PM for checked-in players
   - Waitlist to roster promotions
 - Player statistics and analytics dashboard
-- Payment integration for skate passes
 - Email notifications for game updates
 - Historical performance tracking
 - Team formation history
+- Google Pay support for Android
 
 ## License
 
