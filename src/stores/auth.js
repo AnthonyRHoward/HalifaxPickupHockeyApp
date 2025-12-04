@@ -210,8 +210,20 @@ export const useAuthStore = defineStore('auth', () => {
       try {
         const result = await FirebaseAuthentication.getCurrentUser()
         if (result.user) {
-          user.value = result.user
-          await loadUserProfile(result.user.uid)
+          // Check if JS SDK is also authenticated
+          const jsAuth = auth.currentUser
+          if (!jsAuth) {
+            // User has Capacitor session but no JS SDK session
+            // This can happen if they logged in before we added dual-auth
+            // Sign them out so they can re-login with synced sessions
+            console.log('Auth sync required - signing out for re-login')
+            await FirebaseAuthentication.signOut()
+            user.value = null
+            userProfile.value = null
+          } else {
+            user.value = result.user
+            await loadUserProfile(result.user.uid)
+          }
         }
 
         FirebaseAuthentication.addListener('authStateChange', async (change) => {
@@ -224,6 +236,7 @@ export const useAuthStore = defineStore('auth', () => {
           }
         })
       } catch (error) {
+        console.error('Auth init error:', error)
       }
       loading.value = false
     } else {
@@ -271,11 +284,16 @@ export const useAuthStore = defineStore('auth', () => {
   const login = async (email, password) => {
     try {
       if (isNative) {
+        // Sign in with Capacitor plugin (for native features)
         const result = await FirebaseAuthentication.signInWithEmailAndPassword({
           email,
           password
         })
         user.value = result.user
+
+        // Also sign in to JS SDK so httpsCallable has auth context
+        await signInWithEmailAndPassword(auth, email, password)
+
         await loadUserProfile(result.user.uid)
       } else {
         const result = await signInWithEmailAndPassword(auth, email, password)
@@ -292,10 +310,14 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       let result
       if (isNative) {
+        // Register with Capacitor plugin (for native features)
         result = await FirebaseAuthentication.createUserWithEmailAndPassword({
           email,
           password
         })
+
+        // Also register with JS SDK so httpsCallable has auth context
+        await createUserWithEmailAndPassword(auth, email, password)
       } else {
         result = await createUserWithEmailAndPassword(auth, email, password)
       }
@@ -349,7 +371,9 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       stopProfileListener()
       if (isNative) {
+        // Sign out from both Capacitor plugin and JS SDK
         await FirebaseAuthentication.signOut()
+        await signOut(auth)
       } else {
         await signOut(auth)
       }

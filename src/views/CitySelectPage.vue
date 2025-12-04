@@ -74,6 +74,7 @@
             <p v-else>
               <ion-button
                 fill="clear"
+                color="primary"
                 size="small"
                 @click="router.push('/login')"
                 >Login</ion-button
@@ -81,6 +82,7 @@
               or
               <ion-button
                 fill="clear"
+                color="primary"
                 size="small"
                 @click="router.push('/register')"
                 >Register</ion-button

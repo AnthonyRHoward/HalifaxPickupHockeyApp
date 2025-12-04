@@ -15,7 +15,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 
-export const auth = Capacitor.isNativePlatform() ? null : getAuth(app)
+// Always initialize auth - needed for httpsCallable to work on native platforms
+export const auth = getAuth(app)
 
 export const db = getFirestore(app)
 
