@@ -467,68 +467,82 @@ const formatCheckInTime = (timestamp) => {
 </script>
 
 <style scoped>
+/* ========================================
+   Manage Teams Page - Apple-Inspired Light Theme
+   ======================================== */
+
 .teams-page {
   min-height: 100%;
-  background: var(--ion-background-color);
+  background: var(--bg-secondary);
 }
 
-/* Hero Section */
+/* ========================================
+   Hero Section
+   ======================================== */
+
 .teams-hero {
-  background: linear-gradient(135deg, #1a5c3e 0%, #0d3321 100%);
-  padding: 2rem 1rem 1.5rem;
+  background: var(--bg-primary);
+  padding: var(--space-xl) var(--space-md) var(--space-lg);
   text-align: center;
+  border-bottom: 1px solid var(--separator-color);
 }
 
 .hero-content {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-lg);
 }
 
 .game-badge {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.5rem 1rem;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
-  margin-bottom: 1rem;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--accent-color);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .badge-day {
-  font-size: 2rem;
+  font-size: 28px;
   font-weight: 700;
   color: white;
   line-height: 1;
 }
 
 .badge-month {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.9);
   text-transform: uppercase;
+  font-weight: 500;
 }
 
 .game-title {
-  font-size: 1.5rem;
+  font-size: 22px;
   font-weight: 700;
-  color: white;
-  margin: 0 0 0.25rem;
+  color: var(--text-primary);
+  margin: 0 0 2px;
+  letter-spacing: -0.02em;
 }
 
 .game-subtitle {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 17px;
+  color: var(--text-secondary);
   margin: 0;
 }
 
-/* Team Stats */
+/* ========================================
+   Team Stats
+   ======================================== */
+
 .team-stats {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1.5rem;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  margin: 0 0.5rem;
+  gap: var(--space-lg);
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  margin: 0 var(--space-sm);
 }
 
 .stat-column {
@@ -539,43 +553,47 @@ const formatCheckInTime = (timestamp) => {
 }
 
 .stat-label {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  color: var(--text-tertiary);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 0.25rem;
+  letter-spacing: 0;
+  margin-bottom: 4px;
+  font-weight: 500;
 }
 
 .stat-value {
-  font-size: 2rem;
+  font-size: 32px;
   font-weight: 700;
-  color: white;
+  color: var(--text-primary);
   line-height: 1;
 }
 
 .stat-avg {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.7);
-  margin-top: 0.25rem;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
 }
 
 .stat-column.dark .stat-value {
-  color: #c4c4c4;
+  color: #3a3a3c;
 }
 
 .stat-column.light .stat-value {
-  color: #fafafa;
+  color: var(--text-secondary);
 }
 
 .stat-divider {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-quaternary);
 }
 
-/* Action Bar */
+/* ========================================
+   Action Bar
+   ======================================== */
+
 .action-bar {
-  padding: 1rem;
+  padding: var(--space-md);
   display: flex;
   justify-content: center;
 }
@@ -583,149 +601,167 @@ const formatCheckInTime = (timestamp) => {
 .balance-btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  background: #3880ff;
+  gap: var(--space-sm);
+  background: var(--accent-color);
   color: white;
   border: none;
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
-  font-size: 0.95rem;
-  font-weight: 500;
+  border-radius: var(--radius-md);
+  padding: 12px var(--space-lg);
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
 }
 
 .balance-btn:hover {
-  background: #3171e0;
+  background: var(--accent-color-hover);
+}
+
+.balance-btn:active {
+  transform: scale(0.97);
 }
 
 .balance-btn ion-icon {
-  font-size: 1.25rem;
+  font-size: 20px;
 }
 
-/* Teams Layout */
+/* ========================================
+   Teams Layout
+   ======================================== */
+
 .teams-layout {
   display: grid;
-  gap: 1rem;
-  padding: 0 1rem;
+  gap: var(--space-md);
+  padding: 0 var(--space-md);
 }
 
-/* Team Section */
+/* ========================================
+   Team Section
+   ======================================== */
+
 .team-section {
-  background: #2d2d2d;
-  border-radius: 12px;
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--separator-color);
 }
 
 .section-title {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-sm);
 }
 
 .section-title ion-icon {
-  font-size: 1.25rem;
-  color: #ffc409;
+  font-size: 20px;
+  color: var(--color-warning);
 }
 
 .section-title h2 {
-  font-size: 1rem;
+  font-size: 17px;
   font-weight: 600;
-  color: white;
+  color: var(--text-primary);
   margin: 0;
 }
 
 .team-indicator {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 4px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .team-indicator.dark {
-  background: #333;
-  border: 2px solid #666;
+  background: linear-gradient(180deg, #3a3a3c 0%, #1c1c1e 100%);
 }
 
 .team-indicator.light {
-  background: #e0e0e0;
-  border: 2px solid #fff;
+  background: linear-gradient(180deg, #ffffff 0%, #e5e5ea 100%);
+  border: 1px solid var(--separator-color-opaque);
 }
 
-/* Drop Zone */
+/* ========================================
+   Drop Zone
+   ======================================== */
+
 .drop-zone {
   min-height: 150px;
-  padding: 0.5rem;
-  transition: all 0.2s ease;
+  padding: var(--space-sm);
+  transition: all var(--transition-fast);
 }
 
 .drop-zone.drag-over {
-  background: rgba(56, 128, 255, 0.1);
+  background: var(--accent-color-light);
 }
 
-/* Players List */
+/* ========================================
+   Players List
+   ======================================== */
+
 .players-list {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--space-sm);
 }
 
 .player-card {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  background: #3d3d3d;
-  border-radius: 10px;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--fill-tertiary);
+  border-radius: var(--radius-md);
   cursor: grab;
-  transition: all 0.2s;
+  transition: all var(--transition-fast);
 }
 
 .player-card:hover {
-  background: #4d4d4d;
+  background: var(--bg-tertiary);
 }
 
 .player-card:active {
   cursor: grabbing;
+  transform: scale(0.98);
 }
 
 .player-rank {
-  font-size: 0.8rem;
+  font-size: 13px;
   font-weight: 600;
-  color: #ffc409;
+  color: var(--color-warning);
   min-width: 24px;
 }
 
 .player-avatar {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
-  background: #1a5c3e;
+  border-radius: var(--radius-full);
+  background: linear-gradient(180deg, #007aff 0%, #0056b3 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.85rem;
+  font-size: 14px;
   font-weight: 600;
   color: white;
   flex-shrink: 0;
 }
 
 .player-avatar.dark {
-  background: #333;
-  border: 2px solid #666;
+  background: linear-gradient(180deg, #3a3a3c 0%, #1c1c1e 100%);
 }
 
 .player-avatar.light {
-  background: #e0e0e0;
-  border: 2px solid #fff;
-  color: #333;
+  background: linear-gradient(180deg, #ffffff 0%, #e5e5ea 100%);
+  border: 1px solid var(--separator-color-opaque);
+  color: var(--text-primary);
 }
 
 .player-info {
@@ -735,9 +771,9 @@ const formatCheckInTime = (timestamp) => {
 
 .player-name {
   display: block;
-  font-size: 0.95rem;
+  font-size: 15px;
   font-weight: 500;
-  color: white;
+  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -745,19 +781,19 @@ const formatCheckInTime = (timestamp) => {
 
 .player-meta {
   display: block;
-  font-size: 0.8rem;
-  color: #92949c;
+  font-size: 13px;
+  color: var(--text-secondary);
 }
 
 .check-in-time {
-  font-size: 0.75rem;
-  color: #666;
+  font-size: 12px;
+  color: var(--text-tertiary);
 }
 
 .position-badge {
   width: 28px;
   height: 28px;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -770,68 +806,73 @@ const formatCheckInTime = (timestamp) => {
 }
 
 .position-badge.forward {
-  background: #3880ff;
+  background: linear-gradient(180deg, #34c759 0%, #28a745 100%);
 }
 
 .position-badge.defense {
-  background: #2dd36f;
+  background: linear-gradient(180deg, #007aff 0%, #0056b3 100%);
 }
 
 .position-badge.goalie {
-  background: #ffc409;
+  background: linear-gradient(180deg, #af52de 0%, #9a40c9 100%);
 }
 
-.position-badge.goalie ion-icon {
-  color: #1a1a1a;
-}
+/* ========================================
+   Empty Zone
+   ======================================== */
 
-/* Empty Zone */
 .empty-zone {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem 1rem;
-  color: #666;
+  padding: var(--space-xl) var(--space-md);
   text-align: center;
 }
 
 .empty-zone ion-icon {
-  font-size: 2.5rem;
-  margin-bottom: 0.75rem;
-  opacity: 0.5;
+  font-size: 40px;
+  margin-bottom: var(--space-sm);
+  color: var(--text-quaternary);
 }
 
 .empty-zone p {
-  font-size: 0.95rem;
-  color: #92949c;
-  margin: 0 0 0.25rem;
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin: 0 0 4px;
 }
 
 .empty-zone .hint {
-  font-size: 0.8rem;
-  color: #666;
+  font-size: 13px;
+  color: var(--text-tertiary);
 }
 
-/* Mobile Tip */
+/* ========================================
+   Mobile Tip
+   ======================================== */
+
 .mobile-tip {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  margin: 1rem;
-  padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  font-size: 0.85rem;
-  color: #92949c;
+  gap: var(--space-sm);
+  margin: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--fill-tertiary);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  color: var(--text-secondary);
 }
 
 .mobile-tip ion-icon {
-  font-size: 1rem;
+  font-size: 16px;
+  color: var(--accent-color);
 }
 
-/* Loading State */
+/* ========================================
+   Loading State
+   ======================================== */
+
 .loading-state {
   display: flex;
   justify-content: center;
@@ -839,14 +880,17 @@ const formatCheckInTime = (timestamp) => {
   min-height: 50vh;
 }
 
-/* Responsive */
+/* ========================================
+   Responsive
+   ======================================== */
+
 @media (min-width: 768px) {
   .teams-hero {
-    padding: 2.5rem 2rem 2rem;
+    padding: var(--space-xl) var(--space-lg);
   }
 
   .game-title {
-    font-size: 1.75rem;
+    font-size: 28px;
   }
 
   .team-stats {
@@ -858,7 +902,7 @@ const formatCheckInTime = (timestamp) => {
     grid-template-columns: repeat(2, 1fr);
     max-width: 1000px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 var(--space-lg);
   }
 
   .waitlist-section {

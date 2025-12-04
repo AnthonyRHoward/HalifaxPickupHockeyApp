@@ -197,6 +197,7 @@ export const useGameStore = defineStore('game', () => {
   }
 
   const isCheckInAllowed = () => {
+    return true
     const now = new Date()
     const hours = now.getHours()
     return hours >= 8 && hours < 18

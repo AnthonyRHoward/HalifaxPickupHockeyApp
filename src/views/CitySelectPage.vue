@@ -63,7 +63,11 @@
           <ion-text color="medium">
             <p v-if="authStore.isAuthenticated">
               Logged in as {{ authStore.userProfile?.name }}
-              <ion-button fill="clear" size="small" @click="handleLogout"
+              <ion-button
+                fill="clear"
+                color="danger"
+                size="small"
+                @click="handleLogout"
                 >Logout</ion-button
               >
             </p>

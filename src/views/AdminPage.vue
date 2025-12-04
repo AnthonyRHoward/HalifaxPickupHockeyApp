@@ -782,156 +782,199 @@ const formatCompletedDate = (dateString) => {
 </script>
 
 <style scoped>
+/* ========================================
+   Admin Page - Apple-Inspired Light Theme
+   ======================================== */
+
 .admin-page {
   min-height: 100%;
-  background: var(--ion-background-color);
+  background: var(--bg-secondary);
 }
 
-/* Hero Section */
+/* ========================================
+   Hero Section - Clean Light Design
+   ======================================== */
+
 .admin-hero {
-  background: linear-gradient(135deg, #1a5c3e 0%, #0d3321 100%);
-  padding: 2rem 1rem 1.5rem;
+  background: var(--bg-primary);
+  padding: var(--space-xl) var(--space-md) var(--space-lg);
   text-align: center;
+  border-bottom: 1px solid var(--separator-color);
 }
 
 .hero-content {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-lg);
 }
 
 .admin-avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-full);
+  background: var(--accent-color-light);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 1rem;
+  margin: 0 auto var(--space-md);
   position: relative;
-  border: 3px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-sm);
 }
 
 .admin-avatar > ion-icon {
-  font-size: 2rem;
-  color: white;
+  font-size: 28px;
+  color: var(--accent-color);
 }
 
 .admin-type-badge {
   position: absolute;
-  bottom: -4px;
-  right: -4px;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
+  bottom: -2px;
+  right: -2px;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #0d3321;
+  border: 2px solid var(--bg-primary);
+  box-shadow: var(--shadow-xs);
 }
 
 .admin-type-badge ion-icon {
-  font-size: 14px;
+  font-size: 12px;
   color: white;
 }
 
-.admin-type-badge.super { background: #ffc409; }
-.admin-type-badge.city { background: #3880ff; }
+.admin-type-badge.super {
+  background: linear-gradient(180deg, #ff9500 0%, #ff7b00 100%);
+}
+
+.admin-type-badge.city {
+  background: linear-gradient(180deg, #007aff 0%, #0056b3 100%);
+}
 
 .admin-title {
-  font-size: 1.5rem;
+  font-size: 22px;
   font-weight: 700;
-  color: white;
-  margin: 0 0 0.25rem;
+  color: var(--text-primary);
+  margin: 0 0 2px;
+  letter-spacing: -0.02em;
 }
 
 .admin-subtitle {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
-  margin: 0 0 0.75rem;
+  font-size: 15px;
+  color: var(--text-tertiary);
+  margin: 0 0 var(--space-sm);
 }
 
 .admin-role-badge {
   display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.8rem;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
   font-weight: 600;
-  color: white;
 }
 
-.admin-role-badge.super { background: #ffc409; color: #1a1a1a; }
-.admin-role-badge.city { background: #3880ff; }
+.admin-role-badge.super {
+  background: rgba(255, 149, 0, 0.12);
+  color: #cc7700;
+}
 
-/* Quick Stats */
+.admin-role-badge.city {
+  background: var(--accent-color-light);
+  color: var(--accent-color);
+}
+
+/* ========================================
+   Quick Stats - Apple Widget Style
+   ======================================== */
+
 .quick-stats {
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  margin: 0 0.5rem;
+  gap: var(--space-sm);
+  padding: 0 var(--space-sm);
 }
 
 .stat-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
+  gap: 2px;
   cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 8px;
-  transition: background 0.2s;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  min-width: 70px;
+  transition: all var(--transition-fast);
 }
 
 .stat-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--bg-tertiary);
+}
+
+.stat-item:active {
+  transform: scale(0.97);
 }
 
 .stat-item ion-icon {
-  font-size: 1.25rem;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 20px;
+  color: var(--accent-color);
 }
 
 .stat-value {
-  font-size: 1.25rem;
+  font-size: 20px;
   font-weight: 700;
-  color: white;
+  color: var(--text-primary);
+  line-height: 1.2;
 }
 
 .stat-label {
-  font-size: 0.65rem;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  color: var(--text-tertiary);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0;
+  font-weight: 500;
 }
 
-/* Tabs */
+/* ========================================
+   Tabs - Apple Segment Style
+   ======================================== */
+
 .tabs-container {
-  padding: 1rem;
-  background: var(--ion-background-color);
+  padding: var(--space-md);
+  background: var(--bg-secondary);
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
 ion-segment {
-  --background: #2d2d2d;
-  border-radius: 8px;
+  --background: var(--fill-tertiary);
+  border-radius: var(--radius-sm);
+  padding: 2px;
 }
 
 ion-segment-button {
-  --color: #92949c;
-  --color-checked: white;
-  --indicator-color: #1a5c3e;
+  --color: var(--text-secondary);
+  --color-checked: var(--text-primary);
+  --indicator-color: transparent;
   --border-radius: 6px;
-  min-height: 36px;
-  font-size: 0.85rem;
+  min-height: 32px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: none;
 }
 
-/* Tab Content */
+ion-segment-button::part(indicator-background) {
+  background: var(--card-bg);
+  box-shadow: var(--shadow-xs);
+}
+
+/* ========================================
+   Tab Content
+   ======================================== */
+
 .tab-content {
-  padding: 0 1rem 2rem;
+  padding: 0 var(--space-md) var(--space-xl);
 }
 
 .tab-panel {
@@ -943,46 +986,56 @@ ion-segment-button {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Section Header */
+/* ========================================
+   Section Header
+   ======================================== */
+
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-md);
 }
 
 .section-header h2 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
   margin: 0;
+  letter-spacing: -0.02em;
 }
 
 .user-count {
-  font-size: 0.85rem;
-  color: #92949c;
+  font-size: 15px;
+  color: var(--text-tertiary);
 }
 
 .refresh-btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  background: #2d2d2d;
+  gap: 6px;
+  background: var(--card-bg);
   border: none;
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-  color: white;
-  font-size: 0.85rem;
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  color: var(--accent-color);
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-xs);
 }
 
 .refresh-btn:hover {
-  background: #3d3d3d;
+  background: var(--bg-tertiary);
+}
+
+.refresh-btn:active {
+  transform: scale(0.97);
 }
 
 .refresh-btn ion-icon {
-  font-size: 1rem;
+  font-size: 18px;
 }
 
 .refresh-btn ion-icon.spinning {
@@ -994,48 +1047,53 @@ ion-segment-button {
   to { transform: rotate(360deg); }
 }
 
-/* Games Grid */
+/* ========================================
+   Games Grid
+   ======================================== */
+
 .games-grid {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-md);
 }
 
 .game-card {
-  background: #2d2d2d;
-  border-radius: 12px;
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .game-header {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--separator-color);
 }
 
 .game-date {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 50px;
-  padding: 0.5rem;
-  background: #1a5c3e;
-  border-radius: 8px;
+  min-width: 48px;
+  padding: var(--space-sm);
+  background: var(--accent-color);
+  border-radius: var(--radius-sm);
 }
 
 .game-date .date-day {
-  font-size: 1.5rem;
+  font-size: 22px;
   font-weight: 700;
   color: white;
   line-height: 1;
 }
 
 .game-date .date-month {
-  font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.9);
   text-transform: uppercase;
+  font-weight: 500;
 }
 
 .game-info {
@@ -1043,190 +1101,209 @@ ion-segment-button {
 }
 
 .game-info h3 {
-  font-size: 1rem;
+  font-size: 17px;
   font-weight: 600;
-  color: white;
-  margin: 0 0 0.25rem;
+  color: var(--text-primary);
+  margin: 0 0 2px;
 }
 
 .game-info p {
-  font-size: 0.85rem;
-  color: #92949c;
+  font-size: 15px;
+  color: var(--text-secondary);
   margin: 0;
 }
 
 .game-badges {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 4px;
 }
 
 .game-badges ion-badge {
-  font-size: 0.7rem;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 8px;
 }
 
-/* Player Section */
+/* ========================================
+   Player Section
+   ======================================== */
+
 .player-section {
-  padding: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--separator-color);
 }
 
 .player-section.waitlist {
-  background: rgba(255, 196, 9, 0.05);
+  background: rgba(255, 149, 0, 0.04);
 }
 
 .section-title {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-  font-size: 0.85rem;
+  gap: 6px;
+  margin-bottom: var(--space-sm);
+  font-size: 13px;
   font-weight: 600;
-  color: #92949c;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0;
 }
 
 .section-title ion-icon {
-  font-size: 1rem;
+  font-size: 16px;
 }
 
 .player-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--space-sm);
 }
 
 .player-chip {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  background: #3d3d3d;
-  border-radius: 20px;
-  padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+  gap: var(--space-sm);
+  background: var(--fill-tertiary);
+  border-radius: var(--radius-full);
+  padding: 4px 10px 4px 4px;
 }
 
 .player-chip.waitlist {
-  background: rgba(255, 196, 9, 0.15);
+  background: rgba(255, 149, 0, 0.1);
 }
 
 .player-initials {
   width: 28px;
   height: 28px;
-  border-radius: 50%;
-  background: #1a5c3e;
+  border-radius: var(--radius-full);
+  background: linear-gradient(180deg, #007aff 0%, #0056b3 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
+  font-size: 11px;
   font-weight: 600;
   color: white;
 }
 
 .player-name {
-  font-size: 0.85rem;
-  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
 }
 
 .player-position {
-  font-size: 0.7rem;
-  color: #92949c;
+  font-size: 13px;
+  color: var(--text-tertiary);
 }
 
 .promote-btn, .remove-btn {
   width: 24px;
   height: 24px;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all var(--transition-fast);
 }
 
 .promote-btn {
-  background: #2dd36f;
+  background: var(--color-success);
   color: white;
 }
 
 .promote-btn:hover {
-  background: #28ba62;
+  opacity: 0.85;
+}
+
+.promote-btn:active {
+  transform: scale(0.92);
 }
 
 .remove-btn {
   background: transparent;
-  color: #eb445a;
+  color: var(--color-danger);
 }
 
 .remove-btn:hover {
-  background: rgba(235, 68, 90, 0.2);
+  background: rgba(255, 59, 48, 0.1);
 }
 
 .promote-btn ion-icon, .remove-btn ion-icon {
   font-size: 14px;
 }
 
-/* Game Actions */
+/* ========================================
+   Game Actions
+   ======================================== */
+
 .game-actions {
   display: flex;
-  gap: 0.5rem;
-  padding: 1rem;
+  gap: var(--space-sm);
+  padding: var(--space-md);
 }
 
 .action-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 6px;
   flex: 1;
-  padding: 0.75rem 1rem;
+  padding: 12px var(--space-md);
   border: none;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  font-weight: 500;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--transition-fast);
+}
+
+.action-btn:active {
+  transform: scale(0.97);
 }
 
 .action-btn ion-icon {
-  font-size: 1rem;
+  font-size: 18px;
 }
 
 .action-btn.primary {
-  background: #3880ff;
+  background: var(--accent-color);
   color: white;
 }
 
 .action-btn.primary:hover {
-  background: #3171e0;
+  background: var(--accent-color-hover);
 }
 
 .action-btn.success {
-  background: #2dd36f;
+  background: var(--color-success);
   color: white;
 }
 
 .action-btn.success:hover {
-  background: #28ba62;
+  opacity: 0.9;
 }
 
 .action-btn.warning {
-  background: #ffc409;
-  color: #1a1a1a;
+  background: var(--color-warning);
+  color: white;
 }
 
 .action-btn.danger {
-  background: #eb445a;
+  background: var(--color-danger);
   color: white;
 }
 
 .action-btn.danger:hover {
-  background: #cf3c4f;
+  opacity: 0.9;
 }
 
 .action-btn.small {
   flex: 0;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.8rem;
+  padding: 8px 12px;
+  font-size: 14px;
 }
 
 .action-btn.full-width {
@@ -1234,24 +1311,28 @@ ion-segment-button {
 }
 
 .action-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
-/* Search Box */
+/* ========================================
+   Search Box - Apple Style
+   ======================================== */
+
 .search-box {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  background: #2d2d2d;
-  border-radius: 10px;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
+  gap: var(--space-sm);
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  padding: 10px var(--space-md);
+  margin-bottom: var(--space-md);
+  box-shadow: var(--shadow-xs);
 }
 
 .search-box ion-icon {
-  font-size: 1.25rem;
-  color: #92949c;
+  font-size: 20px;
+  color: var(--text-tertiary);
 }
 
 .search-box input {
@@ -1259,53 +1340,74 @@ ion-segment-button {
   background: none;
   border: none;
   outline: none;
-  color: white;
-  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-size: 17px;
 }
 
 .search-box input::placeholder {
-  color: #666;
+  color: var(--text-tertiary);
 }
 
 .clear-btn {
-  background: none;
+  background: var(--fill-tertiary);
   border: none;
-  padding: 0.25rem;
+  padding: 4px;
+  border-radius: var(--radius-full);
   cursor: pointer;
-  color: #92949c;
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Users List */
+.clear-btn ion-icon {
+  font-size: 16px;
+}
+
+/* ========================================
+   Users List
+   ======================================== */
+
 .users-list {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .user-card {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  background: #2d2d2d;
-  border-radius: 12px;
-  padding: 1rem;
+  gap: var(--space-md);
+  padding: var(--space-md);
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background var(--transition-fast);
+  border-bottom: 1px solid var(--separator-color);
+}
+
+.user-card:last-child {
+  border-bottom: none;
 }
 
 .user-card:hover {
-  background: #3d3d3d;
+  background: var(--fill-tertiary);
+}
+
+.user-card:active {
+  background: var(--bg-tertiary);
 }
 
 .user-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: #1a5c3e;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(180deg, #007aff 0%, #0056b3 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  font-size: 15px;
   font-weight: 600;
   color: white;
   position: relative;
@@ -1316,18 +1418,19 @@ ion-segment-button {
   position: absolute;
   bottom: -2px;
   right: -2px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #ffc409;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(180deg, #ff9500 0%, #ff7b00 100%);
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 2px solid var(--card-bg);
 }
 
 .admin-indicator ion-icon {
-  font-size: 10px;
-  color: #1a1a1a;
+  font-size: 8px;
+  color: white;
 }
 
 .user-info {
@@ -1336,19 +1439,19 @@ ion-segment-button {
 }
 
 .user-info h3 {
-  font-size: 1rem;
+  font-size: 17px;
   font-weight: 600;
-  color: white;
-  margin: 0 0 0.125rem;
+  color: var(--text-primary);
+  margin: 0 0 2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .user-info p {
-  font-size: 0.8rem;
-  color: #92949c;
-  margin: 0 0 0.5rem;
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-xs);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1356,15 +1459,16 @@ ion-segment-button {
 
 .user-meta {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-xs);
 }
 
 .position-tag, .level-tag {
-  font-size: 0.7rem;
-  padding: 0.125rem 0.5rem;
-  border-radius: 4px;
-  background: #3d3d3d;
-  color: #c4c4c4;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--fill-tertiary);
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 .user-badge {
@@ -1372,319 +1476,366 @@ ion-segment-button {
 }
 
 .user-badge ion-badge {
-  font-size: 0.7rem;
+  font-size: 12px;
 }
 
 .chevron {
-  font-size: 1.25rem;
-  color: #666;
+  font-size: 20px;
+  color: var(--text-quaternary);
   flex-shrink: 0;
 }
 
-/* Schedules Grid */
+/* ========================================
+   Schedules Grid
+   ======================================== */
+
 .schedules-grid {
   display: grid;
-  gap: 0.75rem;
+  gap: var(--space-sm);
 }
 
 .schedule-card {
-  background: #2d2d2d;
-  border-radius: 12px;
-  padding: 1rem;
-  border-left: 3px solid #2dd36f;
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-sm);
+  border-left: 4px solid var(--color-success);
 }
 
 .schedule-card.inactive {
-  border-left-color: #92949c;
-  opacity: 0.7;
+  border-left-color: var(--text-quaternary);
+  opacity: 0.6;
 }
 
 .schedule-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--space-sm);
 }
 
 .schedule-day .day-name {
   display: block;
-  font-size: 1rem;
+  font-size: 17px;
   font-weight: 600;
-  color: white;
+  color: var(--text-primary);
 }
 
 .schedule-day .day-time {
   display: block;
-  font-size: 0.85rem;
-  color: #92949c;
+  font-size: 15px;
+  color: var(--text-secondary);
 }
 
 .schedule-venue {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  color: #c4c4c4;
-  margin-bottom: 1rem;
+  gap: 6px;
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
 }
 
 .schedule-venue ion-icon {
-  font-size: 1rem;
-  color: #92949c;
+  font-size: 18px;
+  color: var(--text-tertiary);
 }
 
 .schedule-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-sm);
 }
 
-/* Add Schedule Section */
+/* ========================================
+   Add Schedule Section
+   ======================================== */
+
 .add-schedule-section {
-  margin-top: 1.5rem;
-  background: #2d2d2d;
-  border-radius: 12px;
-  padding: 1.25rem;
-  border: 2px dashed #3d3d3d;
+  margin-top: var(--space-lg);
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .section-title-bar {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--separator-color);
 }
 
 .section-title-bar ion-icon {
-  font-size: 1.25rem;
-  color: #1a5c3e;
+  font-size: 22px;
+  color: var(--accent-color);
 }
 
 .section-title-bar h3 {
-  font-size: 1rem;
+  font-size: 17px;
   font-weight: 600;
-  color: white;
+  color: var(--text-primary);
   margin: 0;
 }
 
 .add-schedule-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-md);
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: var(--space-md);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 6px;
 }
 
 .form-group label {
-  font-size: 0.8rem;
-  color: #92949c;
+  font-size: 13px;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .form-group input,
 .form-group select {
-  background: #3d3d3d;
-  border: none;
-  border-radius: 8px;
-  padding: 0.75rem;
-  color: white;
-  font-size: 0.9rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--separator-color);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  color: var(--text-primary);
+  font-size: 17px;
+  transition: border-color var(--transition-fast);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--accent-color);
 }
 
 .form-group input::placeholder {
-  color: #666;
+  color: var(--text-tertiary);
 }
 
 .form-group select {
   cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238e8e93' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
 }
 
-/* History List */
+/* ========================================
+   History List
+   ======================================== */
+
 .history-list {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .history-card {
   display: grid;
   grid-template-columns: auto 1fr auto;
-  gap: 1rem;
+  gap: var(--space-md);
   align-items: center;
-  background: #2d2d2d;
-  border-radius: 12px;
-  padding: 1rem;
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--separator-color);
+}
+
+.history-card:last-child {
+  border-bottom: none;
 }
 
 .history-date {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 45px;
-  padding: 0.5rem;
-  background: #3d3d3d;
-  border-radius: 8px;
+  min-width: 44px;
+  padding: var(--space-sm);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
 }
 
 .history-date .date-day {
-  font-size: 1.25rem;
+  font-size: 20px;
   font-weight: 700;
-  color: white;
+  color: var(--text-primary);
   line-height: 1;
 }
 
 .history-date .date-month {
-  font-size: 0.65rem;
-  color: #92949c;
+  font-size: 11px;
+  color: var(--text-tertiary);
   text-transform: uppercase;
+  font-weight: 500;
 }
 
 .history-info h3 {
-  font-size: 1rem;
+  font-size: 17px;
   font-weight: 600;
-  color: white;
-  margin: 0 0 0.25rem;
+  color: var(--text-primary);
+  margin: 0 0 2px;
 }
 
 .history-info p {
-  font-size: 0.85rem;
-  color: #92949c;
-  margin: 0 0 0.5rem;
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-xs);
 }
 
 .history-stats {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--space-sm);
 }
 
 .history-stats ion-badge {
-  font-size: 0.7rem;
+  font-size: 12px;
 }
 
 .completed-date {
-  font-size: 0.75rem;
-  color: #666;
+  font-size: 13px;
+  color: var(--text-tertiary);
 }
 
 .expand-btn {
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-  background: #3d3d3d;
+  border-radius: var(--radius-full);
+  background: var(--fill-tertiary);
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #92949c;
-  transition: background 0.2s;
+  color: var(--text-tertiary);
+  transition: all var(--transition-fast);
 }
 
 .expand-btn:hover {
-  background: #4d4d4d;
+  background: var(--bg-tertiary);
+}
+
+.expand-btn:active {
+  transform: scale(0.92);
 }
 
 .history-players {
   grid-column: 1 / -1;
-  padding-top: 1rem;
-  margin-top: 0.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: var(--space-md);
+  margin-top: var(--space-xs);
+  border-top: 1px solid var(--separator-color);
 }
 
 .players-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--space-sm);
 }
 
 .history-player {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  background: #3d3d3d;
-  border-radius: 20px;
-  padding: 0.25rem 0.75rem 0.25rem 0.25rem;
-  font-size: 0.8rem;
-  color: #c4c4c4;
+  gap: var(--space-sm);
+  background: var(--fill-tertiary);
+  border-radius: var(--radius-full);
+  padding: 4px 12px 4px 4px;
+  font-size: 14px;
+  color: var(--text-primary);
 }
 
 .player-initials.small {
   width: 24px;
   height: 24px;
-  font-size: 0.6rem;
+  font-size: 10px;
 }
 
-/* Empty State */
+/* ========================================
+   Empty State
+   ======================================== */
+
 .empty-state {
   text-align: center;
-  padding: 3rem 1rem;
-  color: #92949c;
+  padding: var(--space-xl) var(--space-md);
+  color: var(--text-tertiary);
 }
 
 .empty-state.small {
-  padding: 2rem 1rem;
+  padding: var(--space-lg) var(--space-md);
 }
 
 .empty-state ion-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  opacity: 0.5;
+  font-size: 48px;
+  margin-bottom: var(--space-md);
+  color: var(--text-quaternary);
 }
 
 .empty-state h3 {
-  font-size: 1.1rem;
-  color: white;
-  margin: 0 0 0.5rem;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-xs);
 }
 
 .empty-state p {
-  font-size: 0.9rem;
+  font-size: 15px;
   margin: 0;
+  color: var(--text-secondary);
 }
 
-/* Loading Overlay */
+/* ========================================
+   Loading Overlay
+   ======================================== */
+
 .loading-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 100;
 }
 
-/* Responsive */
+/* ========================================
+   Responsive
+   ======================================== */
+
 @media (min-width: 768px) {
   .admin-hero {
-    padding: 2.5rem 2rem 2rem;
+    padding: var(--space-xl) var(--space-lg);
   }
 
   .admin-avatar {
-    width: 100px;
-    height: 100px;
+    width: 88px;
+    height: 88px;
   }
 
   .admin-avatar > ion-icon {
-    font-size: 2.5rem;
+    font-size: 36px;
   }
 
   .admin-title {
-    font-size: 1.75rem;
+    font-size: 28px;
   }
 
   .quick-stats {
@@ -1695,22 +1846,22 @@ ion-segment-button {
   .tabs-container {
     max-width: 600px;
     margin: 0 auto;
-    padding: 1.5rem 1rem;
+    padding: var(--space-lg) var(--space-md);
   }
 
   .tab-content {
     max-width: 900px;
     margin: 0 auto;
-    padding: 0 2rem 2rem;
+    padding: 0 var(--space-lg) var(--space-xl);
   }
 
   .games-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
   }
 
   .schedules-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
 }
 

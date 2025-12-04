@@ -27,7 +27,10 @@
             </div>
             <h1 class="user-name">{{ authStore.userProfile.name }}</h1>
             <p class="user-email">{{ authStore.userProfile.email }}</p>
-            <div class="skill-badge" :class="`skill-${authStore.userProfile.skillLevel}`">
+            <div
+              class="skill-badge"
+              :class="`skill-${authStore.userProfile.skillLevel}`"
+            >
               Level {{ authStore.userProfile.skillLevel }}
             </div>
           </div>
@@ -84,13 +87,14 @@
                 <div class="info-row">
                   <span class="info-label">Position</span>
                   <span class="info-value">
-                    <ion-icon :icon="positionIcon" class="position-icon"></ion-icon>
                     {{ authStore.userProfile.position }}
                   </span>
                 </div>
                 <div class="info-row">
                   <span class="info-label">City</span>
-                  <span class="info-value">{{ cityStore.currentCity?.name || 'Not Set' }}</span>
+                  <span class="info-value">{{
+                    cityStore.currentCity?.name || "Not Set"
+                  }}</span>
                 </div>
                 <div class="info-row">
                   <span class="info-label">Member Since</span>
@@ -109,7 +113,9 @@
                     v-for="level in skillLevels"
                     :key="level.value"
                     class="skill-option"
-                    :class="{ active: authStore.userProfile.skillLevel === level.value }"
+                    :class="{
+                      active: authStore.userProfile.skillLevel === level.value,
+                    }"
                     @click="updateSkillLevel(level.value)"
                   >
                     <span class="level-number">{{ level.value }}</span>
@@ -136,15 +142,24 @@
                 </div>
 
                 <div class="pass-details">
-                  <div v-if="passInfo.passType !== 'full-season'" class="pass-meter">
+                  <div
+                    v-if="passInfo.passType !== 'full-season'"
+                    class="pass-meter"
+                  >
                     <div class="meter-label">
                       <span>Games Remaining</span>
-                      <span class="meter-value" :class="{ danger: passInfo.passGamesRemaining === 0 }">
+                      <span
+                        class="meter-value"
+                        :class="{ danger: passInfo.passGamesRemaining === 0 }"
+                      >
                         {{ passInfo.passGamesRemaining }}
                       </span>
                     </div>
                     <div class="meter-bar">
-                      <div class="meter-fill" :style="{ width: passPercentage + '%' }"></div>
+                      <div
+                        class="meter-fill"
+                        :style="{ width: passPercentage + '%' }"
+                      ></div>
                     </div>
                   </div>
                   <div v-else class="unlimited-badge">
@@ -154,7 +169,10 @@
 
                   <div v-if="passInfo.passStartDate" class="pass-date">
                     <ion-icon :icon="calendarOutline"></ion-icon>
-                    <span>Started {{ formatPassDate(passInfo.passStartDate) }}</span>
+                    <span
+                      >Started
+                      {{ formatPassDate(passInfo.passStartDate) }}</span
+                    >
                   </div>
                 </div>
               </div>
@@ -183,7 +201,9 @@
           <div v-show="activeTab === 'schedule'" class="tab-panel">
             <div class="schedule-header">
               <h3>Regular Nights</h3>
-              <p class="schedule-city">{{ cityStore.currentCity?.name || 'Current City' }}</p>
+              <p class="schedule-city">
+                {{ cityStore.currentCity?.name || "Current City" }}
+              </p>
             </div>
 
             <div v-if="citySchedules.length > 0" class="schedule-list">
@@ -202,8 +222,16 @@
                   {{ schedule.venue }}
                 </div>
                 <div class="schedule-status">
-                  <ion-badge :color="isRegularForSchedule(schedule.id) ? 'success' : 'medium'">
-                    {{ isRegularForSchedule(schedule.id) ? 'Regular' : 'Not Regular' }}
+                  <ion-badge
+                    :color="
+                      isRegularForSchedule(schedule.id) ? 'success' : 'medium'
+                    "
+                  >
+                    {{
+                      isRegularForSchedule(schedule.id)
+                        ? "Regular"
+                        : "Not Regular"
+                    }}
                   </ion-badge>
                 </div>
               </div>
@@ -229,15 +257,21 @@
                 class="history-item"
               >
                 <div class="history-date">
-                  <span class="date-day">{{ formatHistoryDay(game.date) }}</span>
-                  <span class="date-month">{{ formatHistoryMonth(game.date) }}</span>
+                  <span class="date-day">{{
+                    formatHistoryDay(game.date)
+                  }}</span>
+                  <span class="date-month">{{
+                    formatHistoryMonth(game.date)
+                  }}</span>
                 </div>
                 <div class="history-details">
                   <span class="history-venue">{{ game.venue }}</span>
                   <span class="history-time">{{ formatTime(game.time) }}</span>
                 </div>
-                <ion-badge :color="game.status === 'played' ? 'success' : 'warning'">
-                  {{ game.status === 'played' ? 'Played' : 'Confirmed' }}
+                <ion-badge
+                  :color="game.status === 'played' ? 'success' : 'warning'"
+                >
+                  {{ game.status === "played" ? "Played" : "Confirmed" }}
                 </ion-badge>
               </div>
             </div>
@@ -308,9 +342,24 @@ const activeTab = ref("overview");
 
 // Skill levels configuration
 const skillLevels = [
-  { value: 1, name: "Beginner", description: "Basic skating ability but struggles with backward skating and crossovers" },
-  { value: 2, name: "Intermediate", description: "A good mix of basic skills, decent knowledge of the game, and athletic ability" },
-  { value: 3, name: "Advanced", description: "Advanced skills, strong physical shape, and a high understanding of the game" },
+  {
+    value: 1,
+    name: "Beginner",
+    description:
+      "Basic skating ability but struggles with backward skating and crossovers",
+  },
+  {
+    value: 2,
+    name: "Intermediate",
+    description:
+      "A good mix of basic skills, decent knowledge of the game, and athletic ability",
+  },
+  {
+    value: 3,
+    name: "Advanced",
+    description:
+      "Advanced skills, strong physical shape, and a high understanding of the game",
+  },
 ];
 
 // Computed properties
@@ -318,12 +367,21 @@ const cityId = computed(() => route.params.cityId);
 
 const userInitials = computed(() => {
   const name = authStore.userProfile?.name || "";
-  return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 });
 
 const positionClass = computed(() => {
   const pos = authStore.userProfile?.position?.toLowerCase();
-  return pos === "goalie" ? "goalie" : pos === "defense" ? "defense" : "forward";
+  return pos === "goalie"
+    ? "goalie"
+    : pos === "defense"
+    ? "defense"
+    : "forward";
 });
 
 const positionIcon = computed(() => {
@@ -333,7 +391,9 @@ const positionIcon = computed(() => {
   return fitnessOutline;
 });
 
-const cityGamesPlayed = computed(() => authStore.getCityGamesPlayed(cityId.value));
+const cityGamesPlayed = computed(() =>
+  authStore.getCityGamesPlayed(cityId.value)
+);
 
 const passInfo = computed(() => authStore.getPassInfo());
 
@@ -360,17 +420,26 @@ const passTypeName = computed(() => {
 });
 
 const passPercentage = computed(() => {
-  if (!passInfo.value.passType || passInfo.value.passType === "full-season") return 100;
+  if (!passInfo.value.passType || passInfo.value.passType === "full-season")
+    return 100;
   const total = passInfo.value.passType === "5-game" ? 5 : 10;
   return (passInfo.value.passGamesRemaining / total) * 100;
 });
 
 const regularNightsCount = computed(() => {
-  return citySchedules.value.filter(s => isRegularForSchedule(s.id)).length;
+  return citySchedules.value.filter((s) => isRegularForSchedule(s.id)).length;
 });
 
 const citySchedules = computed(() => {
-  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const dayNames = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
   const schedules = gameStore.gameSchedules;
 
   return Object.entries(schedules)
@@ -385,23 +454,30 @@ const citySchedules = computed(() => {
 });
 
 const currentSkillDescription = computed(() => {
-  const level = skillLevels.find(l => l.value === authStore.userProfile?.skillLevel);
+  const level = skillLevels.find(
+    (l) => l.value === authStore.userProfile?.skillLevel
+  );
   return level?.description || "Not set";
 });
 
 const memberSince = computed(() => {
   const date = authStore.userProfile?.createdAt;
   if (!date) return "Unknown";
-  return new Date(date).toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  return new Date(date).toLocaleDateString("en-US", {
+    month: "short",
+    year: "numeric",
+  });
 });
 
 const filteredGameHistory = computed(() => {
   const history = authStore.userProfile?.gameHistory || [];
-  return history.filter(game => !game.cityId || game.cityId === cityId.value);
+  return history.filter((game) => !game.cityId || game.cityId === cityId.value);
 });
 
 const sortedGameHistory = computed(() => {
-  return [...filteredGameHistory.value].sort((a, b) => new Date(b.date) - new Date(a.date));
+  return [...filteredGameHistory.value].sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  );
 });
 
 // Methods
@@ -487,37 +563,45 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+/* ========================================
+   Profile Page - Apple-Inspired Light Theme
+   ======================================== */
+
 .profile-page {
   min-height: 100%;
-  background: var(--ion-background-color);
+  background: var(--bg-secondary);
 }
 
-/* Hero Section */
+/* ========================================
+   Hero Section
+   ======================================== */
+
 .profile-hero {
-  background: linear-gradient(135deg, #4f001e 0%, #2d0011 100%);
-  padding: 2rem 1rem 1.5rem;
+  background: var(--bg-primary);
+  padding: var(--space-xl) var(--space-md) var(--space-lg);
   text-align: center;
+  border-bottom: 1px solid var(--separator-color);
 }
 
 .hero-content {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-lg);
 }
 
 .avatar {
   width: 80px;
   height: 80px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-full);
+  background: linear-gradient(180deg, #007aff 0%, #0056b3 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 1rem;
+  margin: 0 auto var(--space-md);
   position: relative;
-  border: 3px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-sm);
 }
 
 .avatar-initials {
-  font-size: 1.75rem;
+  font-size: 28px;
   font-weight: 700;
   color: white;
 }
@@ -528,11 +612,12 @@ onMounted(async () => {
   right: -4px;
   width: 28px;
   height: 28px;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #2d0011;
+  border: 2px solid var(--bg-primary);
+  box-shadow: var(--shadow-xs);
 }
 
 .position-badge ion-icon {
@@ -540,103 +625,148 @@ onMounted(async () => {
   color: white;
 }
 
-.position-badge.forward { background: #3880ff; }
-.position-badge.defense { background: #2dd36f; }
-.position-badge.goalie { background: #ffc409; }
+.position-badge.forward {
+  background: linear-gradient(180deg, #34c759 0%, #28a745 100%);
+}
+
+.position-badge.defense {
+  background: linear-gradient(180deg, #007aff 0%, #0056b3 100%);
+}
+
+.position-badge.goalie {
+  background: linear-gradient(180deg, #af52de 0%, #9a40c9 100%);
+}
 
 .user-name {
-  font-size: 1.5rem;
+  font-size: 24px;
   font-weight: 700;
-  color: white;
-  margin: 0 0 0.25rem;
+  color: var(--text-primary);
+  margin: 0 0 2px;
+  letter-spacing: -0.02em;
 }
 
 .user-email {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
-  margin: 0 0 0.75rem;
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-sm);
 }
 
 .skill-badge {
   display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.8rem;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
   font-weight: 600;
   color: white;
 }
 
-.skill-badge.skill-1 { background: #92949c; }
-.skill-badge.skill-2 { background: #3880ff; }
-.skill-badge.skill-3 { background: #2dd36f; }
+.skill-badge.skill-1 {
+  background: linear-gradient(180deg, #8e8e93 0%, #636366 100%);
+}
 
-/* Quick Stats */
+.skill-badge.skill-2 {
+  background: linear-gradient(180deg, #007aff 0%, #0056b3 100%);
+}
+
+.skill-badge.skill-3 {
+  background: linear-gradient(180deg, #34c759 0%, #28a745 100%);
+}
+
+/* ========================================
+   Quick Stats - Apple Widget Style
+   ======================================== */
+
 .quick-stats {
   display: flex;
   justify-content: center;
-  gap: 1.5rem;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  margin: 0 0.5rem;
+  gap: var(--space-sm);
+  padding: 0 var(--space-sm);
 }
 
 .stat-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
+  gap: 2px;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  min-width: 80px;
 }
 
 .stat-item ion-icon {
-  font-size: 1.25rem;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 20px;
+  color: var(--accent-color);
 }
 
 .stat-value {
-  font-size: 1.25rem;
+  font-size: 20px;
   font-weight: 700;
-  color: white;
+  color: var(--text-primary);
+  line-height: 1.2;
 }
 
 .stat-label {
-  font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  color: var(--text-tertiary);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0;
+  font-weight: 500;
 }
 
-.stat-item.no-pass .stat-value { color: #92949c; }
-.stat-item.expired .stat-value { color: #eb445a; }
-.stat-item.unlimited .stat-value { color: #2dd36f; }
-.stat-item.active .stat-value { color: #3880ff; }
+.stat-item.no-pass .stat-value {
+  color: var(--text-tertiary);
+}
+.stat-item.expired .stat-value {
+  color: var(--color-danger);
+}
+.stat-item.unlimited .stat-value {
+  color: var(--color-success);
+}
+.stat-item.active .stat-value {
+  color: var(--accent-color);
+}
 
-/* Tabs */
+/* ========================================
+   Tabs - Apple Segment Style
+   ======================================== */
+
 .tabs-container {
-  padding: 1rem;
-  background: var(--ion-background-color);
+  padding: var(--space-md);
+  background: var(--bg-secondary);
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
 ion-segment {
-  --background: #2d2d2d;
-  border-radius: 8px;
+  --background: var(--fill-tertiary);
+  border-radius: var(--radius-sm);
+  padding: 2px;
 }
 
 ion-segment-button {
-  --color: #92949c;
-  --color-checked: white;
-  --indicator-color: #4f001e;
+  --color: var(--text-secondary);
+  --color-checked: var(--text-primary);
+  --indicator-color: transparent;
   --border-radius: 6px;
-  min-height: 36px;
-  font-size: 0.85rem;
+  min-height: 32px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: none;
 }
 
-/* Tab Content */
+ion-segment-button::part(indicator-background) {
+  background: var(--card-bg);
+  box-shadow: var(--shadow-xs);
+}
+
+/* ========================================
+   Tab Content
+   ======================================== */
+
 .tab-content {
-  padding: 0 1rem 2rem;
+  padding: 0 var(--space-md) var(--space-xl);
 }
 
 .tab-panel {
@@ -644,50 +774,63 @@ ion-segment-button {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Section Grid */
+/* ========================================
+   Section Grid
+   ======================================== */
+
 .section-grid {
   display: grid;
-  gap: 1rem;
+  gap: var(--space-md);
 }
 
-/* Info Card */
+/* ========================================
+   Info Card
+   ======================================== */
+
 .info-card {
-  background: #2d2d2d;
-  border-radius: 12px;
-  padding: 1.25rem;
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .card-header {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--separator-color);
 }
 
 .card-header ion-icon {
-  font-size: 1.25rem;
-  color: #4f001e;
+  font-size: 20px;
+  color: var(--accent-color);
 }
 
 .card-header h3 {
-  font-size: 1rem;
+  font-size: 17px;
   font-weight: 600;
   margin: 0;
-  color: white;
+  color: var(--text-primary);
 }
 
 .info-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--separator-color);
 }
 
 .info-row:last-child {
@@ -696,150 +839,167 @@ ion-segment-button {
 }
 
 .info-label {
-  font-size: 0.9rem;
-  color: #92949c;
+  font-size: 15px;
+  color: var(--text-secondary);
 }
 
 .info-value {
-  font-size: 0.9rem;
-  color: white;
+  font-size: 15px;
+  color: var(--text-primary);
   font-weight: 500;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-sm);
 }
 
 .position-icon {
-  font-size: 1rem;
-  color: #3880ff;
+  font-size: 18px;
+  color: var(--accent-color);
 }
 
-/* Skill Card */
+/* ========================================
+   Skill Card
+   ======================================== */
+
 .skill-selector {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
 }
 
 .skill-option {
-  background: #3d3d3d;
+  background: var(--bg-secondary);
   border: 2px solid transparent;
-  border-radius: 8px;
-  padding: 0.75rem 0.5rem;
+  border-radius: var(--radius-md);
+  padding: var(--space-sm);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
+  gap: 2px;
 }
 
 .skill-option:hover {
-  background: #4d4d4d;
+  background: var(--bg-tertiary);
+}
+
+.skill-option:active {
+  transform: scale(0.97);
 }
 
 .skill-option.active {
-  border-color: #4f001e;
-  background: rgba(79, 0, 30, 0.2);
+  border-color: var(--accent-color);
+  background: var(--accent-color-light);
 }
 
 .level-number {
-  font-size: 1.5rem;
+  font-size: 24px;
   font-weight: 700;
-  color: white;
+  color: var(--text-primary);
 }
 
 .level-name {
-  font-size: 0.7rem;
-  color: #92949c;
+  font-size: 11px;
+  color: var(--text-tertiary);
   text-transform: uppercase;
+  font-weight: 500;
 }
 
-.skill-option.active .level-number { color: #ff6b9d; }
-.skill-option.active .level-name { color: #ff6b9d; }
+.skill-option.active .level-number {
+  color: var(--accent-color);
+}
+.skill-option.active .level-name {
+  color: var(--accent-color);
+}
 
 .skill-description {
-  font-size: 0.85rem;
-  color: #92949c;
+  font-size: 14px;
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.4;
 }
 
-/* Pass Card */
+/* ========================================
+   Pass Card
+   ======================================== */
+
 .pass-card {
-  background: #2d2d2d;
-  border-radius: 12px;
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .pass-content {
-  padding: 1.5rem;
+  padding: var(--space-lg);
 }
 
 .pass-header {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
 }
 
 .pass-icon {
-  font-size: 2.5rem;
-  color: #3880ff;
+  font-size: 40px;
+  color: var(--accent-color);
 }
 
 .pass-title h3 {
-  font-size: 1.25rem;
+  font-size: 20px;
   font-weight: 600;
-  margin: 0 0 0.25rem;
-  color: white;
+  margin: 0 0 2px;
+  color: var(--text-primary);
 }
 
 .pass-valid {
-  font-size: 0.8rem;
-  color: #2dd36f;
+  font-size: 14px;
+  color: var(--color-success);
+  font-weight: 500;
 }
 
 .pass-details {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-md);
 }
 
 .pass-meter {
-  background: #3d3d3d;
-  border-radius: 8px;
-  padding: 1rem;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
 }
 
 .meter-label {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-  color: #92949c;
+  margin-bottom: var(--space-sm);
+  font-size: 15px;
+  color: var(--text-secondary);
 }
 
 .meter-value {
   font-weight: 600;
-  color: #3880ff;
+  color: var(--accent-color);
 }
 
 .meter-value.danger {
-  color: #eb445a;
+  color: var(--color-danger);
 }
 
 .meter-bar {
   height: 8px;
-  background: #4d4d4d;
+  background: var(--fill-tertiary);
   border-radius: 4px;
   overflow: hidden;
 }
 
 .meter-fill {
   height: 100%;
-  background: linear-gradient(90deg, #3880ff, #5a9dff);
+  background: linear-gradient(90deg, var(--accent-color), #5aa5ff);
   border-radius: 4px;
   transition: width 0.3s ease;
 }
@@ -848,123 +1008,139 @@ ion-segment-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  background: rgba(45, 211, 111, 0.1);
-  border-radius: 8px;
-  color: #2dd36f;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: rgba(52, 199, 89, 0.1);
+  border-radius: var(--radius-md);
+  color: var(--color-success);
   font-weight: 600;
+  font-size: 15px;
 }
 
 .unlimited-badge ion-icon {
-  font-size: 1.5rem;
+  font-size: 22px;
 }
 
 .pass-date {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
-  color: #92949c;
+  gap: var(--space-sm);
+  font-size: 14px;
+  color: var(--text-tertiary);
 }
 
 .pass-date ion-icon {
-  font-size: 1rem;
+  font-size: 16px;
 }
 
-/* No Pass State */
+/* ========================================
+   No Pass State
+   ======================================== */
+
 .no-pass-content {
-  padding: 2rem 1.5rem;
+  padding: var(--space-xl) var(--space-lg);
   text-align: center;
 }
 
 .no-pass-icon {
-  font-size: 3rem;
-  color: #92949c;
-  margin-bottom: 1rem;
+  font-size: 48px;
+  color: var(--text-quaternary);
+  margin-bottom: var(--space-md);
 }
 
 .no-pass-content h3 {
-  font-size: 1.25rem;
-  color: white;
-  margin: 0 0 0.5rem;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-xs);
 }
 
 .no-pass-content p {
-  font-size: 0.9rem;
-  color: #92949c;
-  margin: 0 0 1.5rem;
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-lg);
 }
 
 .pass-options {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
+  gap: var(--space-sm);
 }
 
 .pass-option {
-  background: #3d3d3d;
-  border-radius: 8px;
-  padding: 0.75rem 0.5rem;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: 12px var(--space-sm);
   text-align: center;
+  transition: all var(--transition-fast);
+}
+
+.pass-option:hover {
+  background: var(--bg-tertiary);
 }
 
 .pass-option.featured {
-  background: rgba(79, 0, 30, 0.3);
-  border: 1px solid #4f001e;
+  background: var(--accent-color-light);
+  border: 1px solid var(--accent-color);
 }
 
 .option-name {
   display: block;
-  font-size: 0.8rem;
-  color: white;
+  font-size: 14px;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
 .option-badge {
   display: block;
-  font-size: 0.65rem;
-  color: #ff6b9d;
-  margin-top: 0.25rem;
+  font-size: 11px;
+  color: var(--accent-color);
+  margin-top: 4px;
+  font-weight: 500;
 }
 
-/* Schedule Section */
+/* ========================================
+   Schedule Section
+   ======================================== */
+
 .schedule-header {
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-md);
 }
 
 .schedule-header h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: white;
-  margin: 0 0 0.25rem;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 2px;
+  letter-spacing: -0.02em;
 }
 
 .schedule-city {
-  font-size: 0.85rem;
-  color: #92949c;
+  font-size: 15px;
+  color: var(--text-tertiary);
   margin: 0;
 }
 
 .schedule-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--space-sm);
 }
 
 .schedule-item {
   display: grid;
   grid-template-columns: auto 1fr auto;
-  gap: 1rem;
+  gap: var(--space-md);
   align-items: center;
-  padding: 1rem;
-  background: #2d2d2d;
-  border-radius: 12px;
-  border-left: 3px solid #92949c;
+  padding: var(--space-md);
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--text-quaternary);
+  box-shadow: var(--shadow-xs);
 }
 
 .schedule-item.regular {
-  border-left-color: #2dd36f;
+  border-left-color: var(--color-success);
 }
 
 .schedule-day {
@@ -974,128 +1150,146 @@ ion-segment-button {
 
 .day-name {
   display: block;
-  font-size: 0.9rem;
+  font-size: 15px;
   font-weight: 600;
-  color: white;
+  color: var(--text-primary);
 }
 
 .day-time {
   display: block;
-  font-size: 0.75rem;
-  color: #92949c;
+  font-size: 13px;
+  color: var(--text-tertiary);
 }
 
 .schedule-venue {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  color: #c4c4c4;
+  gap: var(--space-sm);
+  font-size: 15px;
+  color: var(--text-secondary);
 }
 
 .schedule-venue ion-icon {
-  font-size: 1rem;
-  color: #92949c;
+  font-size: 18px;
+  color: var(--text-tertiary);
 }
 
 .schedule-note {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  font-size: 0.8rem;
-  color: #92949c;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--fill-tertiary);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--text-tertiary);
 }
 
 .schedule-note ion-icon {
-  font-size: 1rem;
+  font-size: 16px;
 }
 
-/* History Section */
+/* ========================================
+   History Section
+   ======================================== */
+
 .history-list {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .history-item {
   display: grid;
   grid-template-columns: auto 1fr auto;
-  gap: 1rem;
+  gap: var(--space-md);
   align-items: center;
-  padding: 0.75rem 1rem;
-  background: #2d2d2d;
-  border-radius: 10px;
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--separator-color);
+}
+
+.history-item:last-child {
+  border-bottom: none;
 }
 
 .history-date {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 40px;
-  padding: 0.5rem;
-  background: #3d3d3d;
-  border-radius: 8px;
+  min-width: 44px;
+  padding: var(--space-sm);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
 }
 
 .date-day {
-  font-size: 1.25rem;
+  font-size: 20px;
   font-weight: 700;
-  color: white;
+  color: var(--text-primary);
   line-height: 1;
 }
 
 .date-month {
-  font-size: 0.65rem;
-  color: #92949c;
+  font-size: 11px;
+  color: var(--text-tertiary);
   text-transform: uppercase;
+  font-weight: 500;
 }
 
 .history-details {
   display: flex;
   flex-direction: column;
-  gap: 0.125rem;
+  gap: 2px;
 }
 
 .history-venue {
-  font-size: 0.9rem;
-  color: white;
+  font-size: 15px;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
 .history-time {
-  font-size: 0.8rem;
-  color: #92949c;
+  font-size: 13px;
+  color: var(--text-tertiary);
 }
 
-/* Empty State */
+/* ========================================
+   Empty State
+   ======================================== */
+
 .empty-state {
   text-align: center;
-  padding: 3rem 1rem;
-  color: #92949c;
+  padding: var(--space-xl) var(--space-md);
+  color: var(--text-tertiary);
 }
 
 .empty-state ion-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  opacity: 0.5;
+  font-size: 48px;
+  margin-bottom: var(--space-md);
+  color: var(--text-quaternary);
 }
 
 .empty-state h3 {
-  font-size: 1.1rem;
-  color: white;
-  margin: 0 0 0.5rem;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-xs);
 }
 
 .empty-state p {
-  font-size: 0.9rem;
+  font-size: 15px;
   margin: 0;
+  color: var(--text-secondary);
 }
 
-/* Loading State */
+/* ========================================
+   Loading State
+   ======================================== */
+
 .loading-state {
   display: flex;
   justify-content: center;
@@ -1103,10 +1297,13 @@ ion-segment-button {
   min-height: 50vh;
 }
 
-/* Responsive */
+/* ========================================
+   Responsive
+   ======================================== */
+
 @media (min-width: 768px) {
   .profile-hero {
-    padding: 2.5rem 2rem 2rem;
+    padding: var(--space-xl) var(--space-lg);
   }
 
   .avatar {
@@ -1115,11 +1312,11 @@ ion-segment-button {
   }
 
   .avatar-initials {
-    font-size: 2rem;
+    font-size: 32px;
   }
 
   .user-name {
-    font-size: 1.75rem;
+    font-size: 28px;
   }
 
   .quick-stats {
@@ -1130,13 +1327,13 @@ ion-segment-button {
   .tabs-container {
     max-width: 600px;
     margin: 0 auto;
-    padding: 1.5rem 1rem;
+    padding: var(--space-lg) var(--space-md);
   }
 
   .tab-content {
     max-width: 800px;
     margin: 0 auto;
-    padding: 0 2rem 2rem;
+    padding: 0 var(--space-lg) var(--space-xl);
   }
 
   .section-grid {
@@ -1144,7 +1341,7 @@ ion-segment-button {
   }
 
   .schedule-item {
-    padding: 1.25rem 1.5rem;
+    padding: var(--space-md) var(--space-lg);
   }
 }
 
@@ -1154,7 +1351,7 @@ ion-segment-button {
   }
 
   .section-grid {
-    gap: 1.5rem;
+    gap: var(--space-lg);
   }
 
   .pass-options {
