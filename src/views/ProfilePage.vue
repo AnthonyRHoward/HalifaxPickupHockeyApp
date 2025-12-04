@@ -131,6 +131,49 @@
 
           <!-- Pass Tab -->
           <div v-show="activeTab === 'pass'" class="tab-panel">
+            <!-- Buy a Pass Section -->
+            <div class="buy-pass-section">
+              <h3 class="section-title">
+                <ion-icon :icon="cardOutline"></ion-icon>
+                Buy a Pass
+              </h3>
+              <div class="pass-purchase-grid">
+                <div
+                  v-for="pass in availablePasses"
+                  :key="pass.type"
+                  class="purchase-card"
+                  :class="{ featured: pass.type === '10-game' }"
+                >
+                  <div v-if="pass.type === '10-game'" class="featured-badge">Best Value</div>
+                  <div class="purchase-card-header">
+                    <ion-icon :icon="ticketOutline"></ion-icon>
+                    <h4>{{ pass.name }}</h4>
+                  </div>
+                  <div class="purchase-card-price">
+                    <span class="price-amount">${{ pass.price }}</span>
+                    <span class="price-label">CAD</span>
+                  </div>
+                  <p class="purchase-card-games">
+                    {{ pass.games === 'Unlimited' ? 'Unlimited' : pass.games }} game{{ pass.games !== 1 && pass.games !== 'Unlimited' ? 's' : '' }}
+                  </p>
+                  <p class="purchase-card-desc">{{ pass.description }}</p>
+                  <ion-button
+                    expand="block"
+                    :disabled="paymentStore.loading && purchasingPassType === pass.type"
+                    @click="buyPass(pass.type)"
+                    class="purchase-button"
+                  >
+                    <ion-spinner v-if="paymentStore.loading && purchasingPassType === pass.type" name="crescent" slot="start"></ion-spinner>
+                    <span v-else>Buy Now</span>
+                  </ion-button>
+                </div>
+              </div>
+              <p class="payment-note">
+                <ion-icon :icon="cardOutline"></ion-icon>
+                Secure payment via Stripe. Supports credit cards and Apple Pay.
+              </p>
+            </div>
+
             <!-- Active Passes -->
             <div v-if="activePasses.length > 0" class="passes-section">
               <h3 class="section-title">Active Passes</h3>
@@ -309,25 +352,11 @@
               </div>
             </div>
 
-            <!-- No Passes -->
-            <div v-if="allPasses.length === 0" class="pass-card no-pass">
-              <div class="no-pass-content">
-                <ion-icon :icon="ticketOutline" class="no-pass-icon"></ion-icon>
-                <h3>No Active Pass</h3>
-                <p>Contact an admin to purchase a skate pass.</p>
-                <div class="pass-options">
-                  <div class="pass-option">
-                    <span class="option-name">5-Game Pass</span>
-                  </div>
-                  <div class="pass-option">
-                    <span class="option-name">10-Game Pass</span>
-                  </div>
-                  <div class="pass-option featured">
-                    <span class="option-name">Full Season</span>
-                    <span class="option-badge">Best Value</span>
-                  </div>
-                </div>
-              </div>
+            <!-- No Passes Message -->
+            <div v-if="allPasses.length === 0" class="no-passes-message">
+              <ion-icon :icon="ticketOutline" class="no-pass-icon"></ion-icon>
+              <h3>No Active Pass</h3>
+              <p>Purchase a pass above to start playing!</p>
             </div>
           </div>
 
@@ -461,20 +490,24 @@ import {
   handLeftOutline,
   chevronUpOutline,
   chevronDownOutline,
+  cardOutline,
 } from "ionicons/icons";
 import { computed, ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { useCityStore } from "@/stores/city";
 import { useGameStore } from "@/stores/game";
+import { usePaymentStore, PASS_PRICES } from "@/stores/payment";
 
 const router = useRouter();
 const route = useRoute();
 const authStore = useAuthStore();
 const cityStore = useCityStore();
 const gameStore = useGameStore();
+const paymentStore = usePaymentStore();
 
 const activeTab = ref("overview");
+const purchasingPassType = ref(null);
 const expandedPass = ref(null);
 const showPassHistory = ref(false);
 
@@ -628,6 +661,8 @@ const sortedGameHistory = computed(() => {
   );
 });
 
+const availablePasses = computed(() => paymentStore.getAvailablePasses());
+
 // Methods
 const isRegularForSchedule = (scheduleId) => {
   return authStore.isRegularForSchedule(scheduleId, cityId.value);
@@ -713,6 +748,20 @@ const formatHistoryDay = (dateString) => {
 
 const formatHistoryMonth = (dateString) => {
   return new Date(dateString).toLocaleDateString("en-US", { month: "short" });
+};
+
+const buyPass = async (passType) => {
+  purchasingPassType.value = passType;
+  const result = await paymentStore.initiateCheckout(passType, cityId.value);
+  if (!result.success) {
+    const toast = await toastController.create({
+      message: result.error || 'Failed to initiate checkout',
+      duration: 3000,
+      color: 'danger'
+    });
+    await toast.present();
+  }
+  purchasingPassType.value = null;
 };
 
 // Lifecycle
@@ -1664,5 +1713,201 @@ ion-segment-button::part(indicator-background) {
     max-width: 400px;
     margin: 0 auto;
   }
+}
+
+/* ========================================
+   No Passes Message
+   ======================================== */
+
+.no-passes-message {
+  text-align: center;
+  padding: var(--space-xl) var(--space-md);
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.no-passes-message .no-pass-icon {
+  font-size: 48px;
+  color: var(--text-quaternary);
+  margin-bottom: var(--space-md);
+}
+
+.no-passes-message h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-xs);
+}
+
+.no-passes-message p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ========================================
+   Buy Pass Section
+   ======================================== */
+
+.buy-pass-section {
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--separator-color);
+}
+
+.buy-pass-section .section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 var(--space-md) var(--space-xs);
+}
+
+.buy-pass-section .section-title ion-icon {
+  font-size: 16px;
+}
+
+.pass-purchase-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+}
+
+@media (min-width: 768px) {
+  .pass-purchase-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.purchase-card {
+  position: relative;
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.purchase-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.purchase-card.featured {
+  border: 2px solid var(--accent-color);
+  background: var(--accent-color-light);
+}
+
+.featured-badge {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent-color);
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.purchase-card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+}
+
+.purchase-card-header ion-icon {
+  font-size: 28px;
+  color: var(--accent-color);
+}
+
+.purchase-card-header h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.purchase-card-price {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  margin-bottom: var(--space-xs);
+}
+
+.price-amount {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.price-label {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+.purchase-card-games {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-xs);
+  font-weight: 500;
+}
+
+.purchase-card-desc {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin: 0 0 var(--space-md);
+  line-height: 1.3;
+  flex-grow: 1;
+}
+
+.purchase-button {
+  --background: var(--accent-color);
+  --background-hover: var(--accent-color-hover);
+  --border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  width: 100%;
+  height: 36px;
+}
+
+.purchase-card.featured .purchase-button {
+  --background: var(--accent-color);
+}
+
+.payment-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--fill-tertiary);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+.payment-note ion-icon {
+  font-size: 14px;
+  flex-shrink: 0;
 }
 </style>

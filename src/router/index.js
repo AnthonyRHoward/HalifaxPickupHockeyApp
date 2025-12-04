@@ -66,6 +66,20 @@ const routes = [
     meta: { requiresAuth: true, requiresAdmin: true, requiresCity: true }
   },
 
+  // Payment routes
+  {
+    path: '/:cityId/payment-success',
+    name: 'PaymentSuccess',
+    component: () => import('@/views/PaymentSuccessPage.vue'),
+    meta: { requiresCity: true }
+  },
+  {
+    path: '/:cityId/payment-cancel',
+    name: 'PaymentCancel',
+    component: () => import('@/views/PaymentCancelPage.vue'),
+    meta: { requiresCity: true }
+  },
+
   // Catch-all redirect to city select
   {
     path: '/:pathMatch(.*)*',
