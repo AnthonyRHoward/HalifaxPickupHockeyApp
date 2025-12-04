@@ -51,6 +51,24 @@
             </ion-list>
           </div>
 
+          <!-- Appearance Section -->
+          <div class="appearance-switcher">
+            <ion-list-header>
+              <ion-label>Appearance</ion-label>
+            </ion-list-header>
+            <ion-list>
+              <ion-item lines="none">
+                <ion-icon slot="start" :icon="themeStore.isDark ? moonOutline : sunnyOutline"></ion-icon>
+                <ion-label>Dark Mode</ion-label>
+                <ion-toggle
+                  slot="end"
+                  :checked="themeStore.isDark"
+                  @ionChange="themeStore.toggleTheme()"
+                ></ion-toggle>
+              </ion-item>
+            </ion-list>
+          </div>
+
         </div>
 
       </ion-content>
@@ -74,6 +92,7 @@ import {
   IonItem,
   IonLabel,
   IonIcon,
+  IonToggle,
   menuController
 } from '@ionic/vue'
 import {
@@ -82,17 +101,21 @@ import {
   settings,
   logInOutline,
   locationOutline,
-  checkmarkOutline
+  checkmarkOutline,
+  moonOutline,
+  sunnyOutline
 } from 'ionicons/icons'
 import { computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useCityStore } from '@/stores/city'
+import { useThemeStore } from '@/stores/theme'
 
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
 const cityStore = useCityStore()
+const themeStore = useThemeStore()
 
 // Load cities on app mount (uses localStorage cache)
 onMounted(() => {
@@ -206,6 +229,46 @@ body {
   --brand-primary: var(--accent-color);
 
   /* Ionic overrides */
+  --ion-background-color: var(--bg-secondary);
+  --ion-text-color: var(--text-primary);
+  --ion-card-background: var(--card-bg);
+  --ion-item-background: var(--bg-primary);
+  --ion-toolbar-background: var(--bg-elevated);
+  --ion-toolbar-color: var(--text-primary);
+}
+
+/* Dark Theme - Apple-inspired */
+.dark-theme,
+.dark-theme body {
+  --bg-primary: #1c1c1e;
+  --bg-secondary: #000000;
+  --bg-tertiary: #2c2c2e;
+  --bg-elevated: #1c1c1e;
+  --bg-grouped: #000000;
+
+  --text-primary: #ffffff;
+  --text-secondary: rgba(235, 235, 245, 0.6);
+  --text-tertiary: rgba(235, 235, 245, 0.3);
+  --text-quaternary: rgba(235, 235, 245, 0.18);
+  --text-inverse: #000000;
+
+  --separator-color: rgba(84, 84, 88, 0.65);
+  --separator-color-opaque: #38383a;
+
+  --card-bg: #1c1c1e;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+  --fill-primary: rgba(120, 120, 128, 0.36);
+  --fill-secondary: rgba(120, 120, 128, 0.32);
+  --fill-tertiary: rgba(118, 118, 128, 0.24);
+
+  /* Shadows need adjustment for dark mode */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+
+  /* Ionic overrides for dark mode */
   --ion-background-color: var(--bg-secondary);
   --ion-text-color: var(--text-primary);
   --ion-card-background: var(--card-bg);
@@ -521,6 +584,38 @@ ion-menu .city-switcher .selected-city {
 
 ion-menu .city-switcher .selected-city ion-icon:first-child {
   color: var(--accent-color);
+}
+
+/* Appearance switcher styles */
+ion-menu .appearance-switcher {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+ion-menu .appearance-switcher ion-list-header {
+  font-size: 13px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  color: var(--text-tertiary);
+  padding: 0 var(--space-md) var(--space-sm);
+  margin-bottom: 0;
+  background: transparent;
+}
+
+ion-menu .appearance-switcher ion-list {
+  margin-bottom: var(--space-lg);
+}
+
+ion-menu .appearance-switcher ion-item {
+  font-size: 17px;
+}
+
+ion-menu .appearance-switcher ion-toggle {
+  --background: var(--fill-secondary);
+  --background-checked: var(--accent-color);
+  --handle-background: var(--card-bg);
+  --handle-background-checked: var(--text-inverse);
 }
 
 /* ========================================

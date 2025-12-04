@@ -31,7 +31,7 @@
               class="skill-badge"
               :class="`skill-${authStore.userProfile.skillLevel}`"
             >
-              Level {{ authStore.userProfile.skillLevel }}
+              Skill Level {{ authStore.userProfile.skillLevel }}
             </div>
           </div>
 
